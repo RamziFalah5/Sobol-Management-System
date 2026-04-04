@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600" prefWidth="900" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.EditBranchController">
+   <AnchorPane layoutX="294.0" layoutY="94.0" prefHeight="485.0" prefWidth="342.0" style="-fx-background-color: #f7931e;">
+      <children>
+      
+      	<Label layoutX="105.0" layoutY="22.0" prefHeight="32.0" prefWidth="132.0" style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" text="Edit Branch" textFill="WHITE" />
+         <Line endX="144.60003662109375" endY="-1.52587890625E-5" layoutX="171.0" layoutY="67.0" startX="-142.60000610351562" startY="-1.52587890625E-5" style="-fx-stroke: white;" />
+   
+   		<Label layoutX="28.0" layoutY="147.0" text="Branch Name:" textFill="WHITE">
+            <font>
+               <Font size="17.0" />
+            </font>
+         </Label>
+   		<TextField fx:id="txtName" layoutX="143.0" layoutY="147.0" prefHeight="26.0" prefWidth="178.0" />
+   
+   		<Label layoutX="28.0" layoutY="194.0" text="City:" textFill="WHITE">
+            <font>
+               <Font size="17.0" />
+            </font>
+         </Label>
+   		<TextField fx:id="txtCity" layoutX="143.0" layoutY="194.0" prefHeight="26.0" prefWidth="178.0" />
+   
+   		<Label layoutX="28.0" layoutY="238.0" text="Phone:" textFill="WHITE">
+            <font>
+               <Font size="17.0" />
+            </font>
+         </Label>
+   		<TextField fx:id="txtPhone" layoutX="143.0" layoutY="238.0" prefHeight="26.0" prefWidth="178.0" />
+      
+      	<Label fx:id="lblId" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="91.0" layoutY="90.0" prefHeight="18.0" prefWidth="143.0" style="-fx-font-weight: bold; -fx-text-fill: white;">
+            <font>
+               <Font size="15.0" />
+            </font></Label>
+         <TextArea layoutX="143.0" layoutY="278.0" prefHeight="114.0" prefWidth="178.0" />
+      		<Button layoutX="173.0" layoutY="445.0" onAction="#onCancel" style="-fx-background-color:#C62828; -fx-text-fill:white;" text="Cancel" />
+      		<Button layoutX="112.0" layoutY="445.0" onAction="#onSave" prefHeight="26.0" prefWidth="51.0" style="-fx-background-color:#2E7D32; -fx-text-fill:white;" text="Save" />
+         <Line endX="144.60003662109375" endY="-1.52587890625E-5" layoutX="169.0" layoutY="416.0" startX="-142.60000610351562" startY="-1.52587890625E-5" style="-fx-stroke: white;" />
+         <Label layoutX="28.0" layoutY="278.0" text="Description" textFill="WHITE">
+            <font>
+               <Font size="17.0" />
+            </font>
+         </Label>
+      </children>
+   </AnchorPane>
+
+</AnchorPane>

@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="889.0" prefWidth="962.0" style="-fx-background-color: linear-gradient(to bottom, #f7f8fb, #eef1f7);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.DashboardController">
+
+	<!-- Title -->
+	<Label layoutX="28" layoutY="18" style="-fx-font-size:28px; -fx-text-fill:#f7931e; -fx-font-weight:900;" text="Dashboard" />
+
+	<!-- Sub shadow under title -->
+	<Region layoutX="28" layoutY="56" prefHeight="2" prefWidth="844" style="-fx-background-color: rgba(247,147,30,0.25); -fx-background-radius: 10;" />
+
+	<ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="28" layoutY="70" prefHeight="650" prefWidth="844" style="-fx-background-color:transparent; -fx-border-color:transparent;" vbarPolicy="AS_NEEDED">
+
+		<content>
+
+			<!-- Main Container -->
+			<VBox prefWidth="877.0" spacing="16" style="-fx-background-color:transparent;">
+
+				<!-- ================= QUICK ACTIONS ================= -->
+				<AnchorPane prefHeight="190" prefWidth="844" style="                         -fx-background-color: white;                         -fx-background-radius: 18;                         -fx-padding: 20;                         -fx-border-color: rgba(0,0,0,0.05);                         -fx-border-radius: 18;                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);                     ">
+
+					<Label layoutX="18" layoutY="14" style="-fx-font-size:16px; -fx-font-weight:800; -fx-text-fill:#222;" text="Quick Actions" />
+
+					<Label layoutX="18" layoutY="33" style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" text="Jump quickly to any module" />
+
+					<Separator layoutX="18" layoutY="56" prefWidth="808" style="-fx-opacity:0.55;" />
+
+					<FlowPane hgap="12" layoutX="18" layoutY="74" prefWidth="808" style="-fx-background-color:transparent;" vgap="12">
+
+						<Button onAction="#openCategories" style="                                 -fx-background-color: linear-gradient(to bottom right, #74b9ff, #3f8efc);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(63,142,252,0.28), 18, 0.25, 0, 6);                             " text="Categories">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/Category.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<!-- ✅ FIXED: removed the broken CSS line -->
+						<Button onAction="#openCategories" style="                                 -fx-background-color: linear-gradient(to bottom right, #6c5ce7, #5e35b1);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(94,53,177,0.28), 18, 0.25, 0, 6);                             " text="Products">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/product.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openBranches" style="                                 -fx-background-color: linear-gradient(to bottom right, #ff7675, #e53935);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(229,57,53,0.24), 18, 0.25, 0, 6);                             " text="Branches">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/Branches.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openBranches" style="                                 -fx-background-color: linear-gradient(to bottom right, #00d2d3, #00bfa5);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(0,191,165,0.22), 18, 0.25, 0, 6);                             " text="Warehouses">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/warehouse.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openEmployees" style="                                 -fx-background-color: linear-gradient(to bottom right, #55efc4, #009688);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(0,150,136,0.22), 18, 0.25, 0, 6);                             " text="Employees">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/Employee.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openVehicles" style="                                 -fx-background-color: linear-gradient(to bottom right, #ffeaa7, #ff9800);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(255,152,0,0.22), 18, 0.25, 0, 6);                             " text="Vehicles">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/truck.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openSuppliers" style="                                 -fx-background-color: linear-gradient(to bottom right, #fdcb6e, #f57c00);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(245,124,0,0.22), 18, 0.25, 0, 6);                             " text="Suppliers">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/Supplier.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openCustomers" style="                                 -fx-background-color: linear-gradient(to bottom right, #fab1a0, #e91e63);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(233,30,99,0.20), 18, 0.25, 0, 6);                             " text="Customers">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/Customer.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openImports" style="                                 -fx-background-color: linear-gradient(to bottom right, #81ecec, #43a047);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(67,160,71,0.18), 18, 0.25, 0, 6);                             " text="Imports">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/Imports.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openSales" style="                                 -fx-background-color: linear-gradient(to bottom right, #ff6b6b, #c0392b);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(192,57,43,0.22), 18, 0.25, 0, 6);                             " text="Sales">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/Sales.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openReports" style="                                 -fx-background-color: linear-gradient(to bottom right, #74b9ff, #1e88e5);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(30,136,229,0.22), 18, 0.25, 0, 6);                             " text="Reports">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/Reports.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+						<Button onAction="#openSettings" style="                                 -fx-background-color: linear-gradient(to bottom right, #90a4ae, #455a64);                                 -fx-text-fill: white;                                 -fx-font-weight:800;                                 -fx-background-radius: 14;                                 -fx-padding: 10 14;                                 -fx-pref-width: 150;                                 -fx-pref-height: 42;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(69,90,100,0.20), 18, 0.25, 0, 6);                             " text="Settings">
+							<graphic>
+								<ImageView fitHeight="24.0" fitWidth="32.0" preserveRatio="true">
+									<image>
+										<Image url="@../../../../OneDrive/Pictures/DataBases/Settings.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+
+					</FlowPane>
+				</AnchorPane>
+
+				<!-- ================= COUNTERS ================= -->
+				<AnchorPane prefHeight="240" prefWidth="844" style="                         -fx-background-color: white;                         -fx-background-radius: 18;                         -fx-padding: 20;                         -fx-border-color: rgba(0,0,0,0.05);                         -fx-border-radius: 18;                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);                     ">
+
+					<Label layoutX="18" layoutY="14" style="-fx-font-size:16px; -fx-font-weight:800; -fx-text-fill:#222;" text="System Counters" />
+
+					<Label layoutX="18" layoutY="33" style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" text="High-level overview of your system" />
+
+					<Separator layoutX="18" layoutY="56" prefWidth="808" style="-fx-opacity:0.55;" />
+
+					<GridPane hgap="12" layoutX="18" layoutY="74" style="-fx-background-color:transparent;" vgap="12">
+
+						<columnConstraints>
+							<ColumnConstraints prefWidth="190" />
+							<ColumnConstraints prefWidth="190" />
+							<ColumnConstraints prefWidth="190" />
+							<ColumnConstraints prefWidth="190" />
+						</columnConstraints>
+						<rowConstraints>
+							<RowConstraints />
+							<RowConstraints />
+						</rowConstraints>
+
+						<!-- ✅ Colored metric cards like your screenshot -->
+						<VBox spacing="6" style="                                 -fx-background-color: linear-gradient(to bottom, #ffffff, #f7f8fb);                                 -fx-background-radius: 16;                                 -fx-padding: 14;                                 -fx-border-color: rgba(0,0,0,0.06);                                 -fx-border-radius: 16;                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.2, 0, 4);                                 -fx-border-width: 1;                                 -fx-border-insets: 0;                                 -fx-border-style: solid;                                 -fx-border-color: rgba(0,0,0,0.06);                             " GridPane.columnIndex="0" GridPane.rowIndex="0">
+							<Region prefHeight="5" style="-fx-background-color:#6c5ce7; -fx-background-radius: 10;" />
+							<Label style="-fx-text-fill:#444; -fx-font-weight:800;" text="Products" />
+							<Label fx:id="lblProducts" style="-fx-font-size:26px; -fx-text-fill:#111; -fx-font-weight:900;" text="0" />
+						</VBox>
+
+						<VBox spacing="6" style="                                 -fx-background-color: linear-gradient(to bottom, #ffffff, #f7f8fb);                                 -fx-background-radius: 16;                                 -fx-padding: 14;                                 -fx-border-color: rgba(0,0,0,0.06);                                 -fx-border-radius: 16;                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.2, 0, 4);                             " GridPane.columnIndex="1" GridPane.rowIndex="0">
+							<Region prefHeight="5" style="-fx-background-color:#3f8efc; -fx-background-radius: 10;" />
+							<Label style="-fx-text-fill:#444; -fx-font-weight:800;" text="Categories" />
+							<Label fx:id="lblCategories" style="-fx-font-size:26px; -fx-text-fill:#111; -fx-font-weight:900;" text="0" />
+						</VBox>
+
+						<VBox spacing="6" style="                                 -fx-background-color: linear-gradient(to bottom, #ffffff, #f7f8fb);                                 -fx-background-radius: 16;                                 -fx-padding: 14;                                 -fx-border-color: rgba(0,0,0,0.06);                                 -fx-border-radius: 16;                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.2, 0, 4);                             " GridPane.columnIndex="2" GridPane.rowIndex="0">
+							<Region prefHeight="5" style="-fx-background-color:#00bfa5; -fx-background-radius: 10;" />
+							<Label style="-fx-text-fill:#444; -fx-font-weight:800;" text="Suppliers" />
+							<Label fx:id="lblSuppliers" style="-fx-font-size:26px; -fx-text-fill:#111; -fx-font-weight:900;" text="0" />
+						</VBox>
+
+						<VBox spacing="6" style="                                 -fx-background-color: linear-gradient(to bottom, #ffffff, #f7f8fb);                                 -fx-background-radius: 16;                                 -fx-padding: 14;                                 -fx-border-color: rgba(0,0,0,0.06);                                 -fx-border-radius: 16;                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.2, 0, 4);                             " GridPane.columnIndex="3" GridPane.rowIndex="0">
+							<Region prefHeight="5" style="-fx-background-color:#e91e63; -fx-background-radius: 10;" />
+							<Label style="-fx-text-fill:#444; -fx-font-weight:800;" text="Customers" />
+							<Label fx:id="lblCustomers" style="-fx-font-size:26px; -fx-text-fill:#111; -fx-font-weight:900;" text="0" />
+						</VBox>
+
+						<VBox spacing="6" style="                                 -fx-background-color: linear-gradient(to bottom, #ffffff, #f7f8fb);                                 -fx-background-radius: 16;                                 -fx-padding: 14;                                 -fx-border-color: rgba(0,0,0,0.06);                                 -fx-border-radius: 16;                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.2, 0, 4);                             " GridPane.columnIndex="0" GridPane.rowIndex="1">
+							<Region prefHeight="5" style="-fx-background-color:#009688; -fx-background-radius: 10;" />
+							<Label style="-fx-text-fill:#444; -fx-font-weight:800;" text="Employees" />
+							<Label fx:id="lblEmployees" style="-fx-font-size:26px; -fx-text-fill:#111; -fx-font-weight:900;" text="0" />
+						</VBox>
+
+						<VBox spacing="6" style="                                 -fx-background-color: linear-gradient(to bottom, #ffffff, #f7f8fb);                                 -fx-background-radius: 16;                                 -fx-padding: 14;                                 -fx-border-color: rgba(0,0,0,0.06);                                 -fx-border-radius: 16;                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.2, 0, 4);                             " GridPane.columnIndex="1" GridPane.rowIndex="1">
+							<Region prefHeight="5" style="-fx-background-color:#ff9800; -fx-background-radius: 10;" />
+							<Label style="-fx-text-fill:#444; -fx-font-weight:800;" text="Vehicles" />
+							<Label fx:id="lblVehicles" style="-fx-font-size:26px; -fx-text-fill:#111; -fx-font-weight:900;" text="0" />
+						</VBox>
+
+						<VBox spacing="6" style="                                 -fx-background-color: linear-gradient(to bottom, #ffffff, #f7f8fb);                                 -fx-background-radius: 16;                                 -fx-padding: 14;                                 -fx-border-color: rgba(0,0,0,0.06);                                 -fx-border-radius: 16;                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.2, 0, 4);                             " GridPane.columnIndex="2" GridPane.rowIndex="1">
+							<Region prefHeight="5" style="-fx-background-color:#e53935; -fx-background-radius: 10;" />
+							<Label style="-fx-text-fill:#444; -fx-font-weight:800;" text="Branches" />
+							<Label fx:id="lblBranches" style="-fx-font-size:26px; -fx-text-fill:#111; -fx-font-weight:900;" text="0" />
+						</VBox>
+
+						<VBox spacing="6" style="                                 -fx-background-color: linear-gradient(to bottom, #ffffff, #f7f8fb);                                 -fx-background-radius: 16;                                 -fx-padding: 14;                                 -fx-border-color: rgba(0,0,0,0.06);                                 -fx-border-radius: 16;                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.2, 0, 4);                             " GridPane.columnIndex="3" GridPane.rowIndex="1">
+							<Region prefHeight="5" style="-fx-background-color:#00bfa5; -fx-background-radius: 10;" />
+							<Label style="-fx-text-fill:#444; -fx-font-weight:800;" text="Warehouses" />
+							<Label fx:id="lblWarehouses" style="-fx-font-size:26px; -fx-text-fill:#111; -fx-font-weight:900;" text="0" />
+						</VBox>
+
+					</GridPane>
+				</AnchorPane>
+
+				<!-- ================= CIRCLE STATS ================= -->
+				<AnchorPane prefHeight="270" prefWidth="844" style="                         -fx-background-color: white;                         -fx-background-radius: 18;                         -fx-padding: 20;                         -fx-border-color: rgba(0,0,0,0.05);                         -fx-border-radius: 18;                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);                     ">
+
+					<Label layoutX="18" layoutY="14" style="-fx-font-size:16px; -fx-font-weight:800; -fx-text-fill:#222;" text="Statistics" />
+
+					<Label layoutX="18" layoutY="33" style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" text="Key ratios and performance indicators" />
+
+					<Separator layoutX="18" layoutY="56" prefWidth="808" style="-fx-opacity:0.55;" />
+
+					<HBox alignment="TOP_CENTER" layoutX="18" layoutY="74" spacing="18">
+
+						<VBox alignment="TOP_CENTER" prefWidth="256" spacing="8" style="-fx-background-color:#f7f8fb; -fx-background-radius:14; -fx-padding:14;                                    -fx-border-color:#e8e8e8; -fx-border-radius:14;">
+							<Label style="-fx-font-weight:900; -fx-text-fill:#222;" text="Total Space Usage" />
+							<StackPane prefHeight="180" prefWidth="180">
+								<ProgressIndicator fx:id="piCapacity" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="160.0" prefWidth="160.0" progress="0" style="-fx-accent:#43A047;" />
+								<Label fx:id="lblCapPercent" style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#222;" text="0%" />
+							</StackPane>
+							<Label fx:id="lblCapDetails" style="-fx-font-size:12px; -fx-text-fill:#555;" text="Used 0 / 0 pallets" />
+						</VBox>
+
+						<VBox alignment="TOP_CENTER" prefWidth="256" spacing="8" style="-fx-background-color:#f7f8fb; -fx-background-radius:14; -fx-padding:14;                                    -fx-border-color:#e8e8e8; -fx-border-radius:14;">
+							<Label style="-fx-font-weight:900; -fx-text-fill:#222;" text="Low Stock Ratio" />
+							<StackPane prefHeight="180" prefWidth="180">
+								<ProgressIndicator fx:id="piLowStock" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="160" prefWidth="160" progress="0" style="-fx-accent:#E53935;" />
+								<Label fx:id="lblLowPercent" style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#222;" text="0%" />
+							</StackPane>
+							<Label fx:id="lblLowDetails" style="-fx-font-size:12px; -fx-text-fill:#555;" text="0 low out of 0 products" />
+						</VBox>
+
+						<VBox alignment="TOP_CENTER" prefWidth="256" spacing="8" style="-fx-background-color:#f7f8fb; -fx-background-radius:14; -fx-padding:14;                                    -fx-border-color:#e8e8e8; -fx-border-radius:14;">
+							<Label style="-fx-font-weight:900; -fx-text-fill:#222;" text="Shipments (30 days)" />
+							<StackPane prefHeight="180" prefWidth="180">
+								<ProgressIndicator fx:id="piShipments" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="160" prefWidth="160" progress="0" style="-fx-accent:#1E88E5;" />
+								<Label fx:id="lblShipPercent" style="-fx-font-size:18px; -fx-font-weight:900; -fx-text-fill:#222;" text="0%" />
+							</StackPane>
+							<Label fx:id="lblShipDetails" style="-fx-font-size:12px; -fx-text-fill:#555;" text="0 shipments" />
+						</VBox>
+
+					</HBox>
+				</AnchorPane>
+
+				<!-- ================= EXTRA ================= -->
+				<AnchorPane prefHeight="190" prefWidth="844" style="                         -fx-background-color: white;                         -fx-background-radius: 18;                         -fx-padding: 20;                         -fx-border-color: rgba(0,0,0,0.05);                         -fx-border-radius: 18;                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);                     ">
+
+					<Label layoutX="18" layoutY="14" style="-fx-font-size:16px; -fx-font-weight:800; -fx-text-fill:#222;" text="Extra Insights" />
+
+					<Label layoutX="18" layoutY="33" style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" text="Financial and inventory context" />
+
+					<Separator layoutX="18" layoutY="56" prefWidth="808" style="-fx-opacity:0.55;" />
+
+					<VBox layoutX="18" layoutY="74" prefWidth="808" spacing="10" style="-fx-background-color:#f7f8fb; -fx-background-radius:14; -fx-padding:14;                                -fx-border-color:#e8e8e8; -fx-border-radius:14;">
+
+						<Label fx:id="lblInventoryCost" style="-fx-text-fill:#111; -fx-font-size:15px; -fx-font-weight:900;" text="Inventory Cost: 0.00" />
+
+						<Label fx:id="lblTotalImports" style="-fx-text-fill:#444; -fx-font-size:13px;" text="Total Imports Cost: 0.00" />
+
+						<Label fx:id="lblStockSplit" style="-fx-text-fill:#444; -fx-font-size:13px;" text="Stock: Normal 0 | Low 0 | High 0" />
+					</VBox>
+
+				</AnchorPane>
+
+				<Region prefHeight="12" />
+
+			</VBox>
+
+		</content>
+	</ScrollPane>
+
+</AnchorPane>

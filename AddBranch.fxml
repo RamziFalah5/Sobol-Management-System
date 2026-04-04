@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600" prefWidth="900"
+	style="-fx-background-color: white;"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.AddBranchController">
+
+	<AnchorPane layoutX="296" layoutY="96" prefHeight="496"
+		prefWidth="336" style="-fx-background-color: #f7931e;">
+
+		<children>
+
+			<Label layoutX="102" layoutY="14" text="Add Branch"
+				style="-fx-font-size:22px; -fx-text-fill:white; -fx-font-weight:bold;" />
+
+			<Line layoutX="168" layoutY="61" startX="-145" endX="145"
+				style="-fx-stroke:white;" />
+
+			<Label layoutX="22" layoutY="98" text="Branch Name:"
+				textFill="WHITE">
+				<font>
+					<Font size="17" />
+				</font>
+			</Label>
+
+			<TextField fx:id="txtName" layoutX="139" layoutY="101"
+				prefWidth="171" />
+
+			<Label layoutX="21" layoutY="142" text="City:" textFill="WHITE">
+				<font>
+					<Font size="17" />
+				</font>
+			</Label>
+
+			<TextField fx:id="txtCity" layoutX="139" layoutY="142"
+				prefWidth="171" />
+
+			<Label layoutX="20" layoutY="183" text="Phone:"
+				textFill="WHITE">
+				<font>
+					<Font size="17" />
+				</font>
+			</Label>
+
+			<TextField fx:id="txtPhone" layoutX="139" layoutY="183"
+				prefWidth="171" />
+
+			<!-- Optional UI only -->
+			<Label layoutX="20" layoutY="235" text="Description:"
+				textFill="WHITE">
+				<font>
+					<Font size="17" />
+				</font>
+			</Label>
+
+			<TextArea layoutX="141" layoutY="235" prefWidth="171"
+				prefHeight="160" />
+
+			<Line layoutX="167" layoutY="427" startX="-145" endX="145"
+				style="-fx-stroke:white;" />
+
+			<Button layoutX="102" layoutY="449" text="Add"
+				onAction="#onAdd"
+				style="-fx-background-color:#2E7D32; -fx-text-fill:white;" />
+
+			<Button layoutX="168" layoutY="450" text="Cancel"
+				onAction="#onCancel"
+				style="-fx-background-color:#C62828; -fx-text-fill:white;" />
+
+		</children>
+	</AnchorPane>
+</AnchorPane>

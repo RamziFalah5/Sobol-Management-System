@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefWidth="910" prefHeight="650"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.PickCustomerForSaleController"
+	style="-fx-background-color: linear-gradient(to bottom, #f7f8fb, #eef1f7);">
+
+	<!-- Title -->
+	<Label layoutX="28" layoutY="18" text="Pick Customer"
+		style="-fx-font-size:28px; -fx-text-fill:#f7931e; -fx-font-weight:900;" />
+
+	<!-- Underline -->
+	<Region layoutX="28" layoutY="56" prefWidth="854" prefHeight="2"
+		style="-fx-background-color: rgba(247,147,30,0.22); -fx-background-radius: 10;" />
+
+	<!-- Main Card -->
+	<AnchorPane layoutX="28" layoutY="70" prefWidth="854"
+		prefHeight="560"
+		style="
+            -fx-background-color: white;
+            -fx-background-radius: 18;
+            -fx-padding: 18;
+            -fx-border-color: rgba(0,0,0,0.05);
+            -fx-border-radius: 18;
+            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);
+        ">
+
+		<!-- Header -->
+		<Label layoutX="18" layoutY="14" text="Customer List"
+			style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#222;" />
+
+		<Label layoutX="18" layoutY="34"
+			text="Search and select a customer to continue the sale"
+			style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" />
+
+		<!-- Search (same fx:id) -->
+		<TextField fx:id="txtSearch" layoutX="590" layoutY="18"
+			prefWidth="240" promptText="Search customer…"
+			style="
+                -fx-background-radius: 12;
+                -fx-background-color: #f7f8fb;
+                -fx-border-color: #e8e8e8;
+                -fx-border-radius: 12;
+                -fx-text-fill: #222;
+                -fx-prompt-text-fill: #9a9a9a;
+                -fx-padding: 8 12;
+                -fx-font-weight: 700;
+            " />
+
+		<Separator layoutX="18" layoutY="58" prefWidth="818"
+			style="-fx-opacity:0.55;" />
+
+		<!-- Table -->
+		<TableView fx:id="table" layoutX="18" layoutY="78"
+			prefWidth="818" prefHeight="395"
+			style="
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: #e8e8e8;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0.18, 0, 3);
+            ">
+			<columns>
+				<TableColumn fx:id="colName" text="Name" prefWidth="300"
+					style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colPhone" text="Phone"
+					prefWidth="180" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colEmail" text="Email"
+					prefWidth="338" style="-fx-alignment:CENTER;" />
+			</columns>
+		</TableView>
+
+		<!-- Bottom Actions Bar -->
+		<HBox layoutX="18" layoutY="490" spacing="12" prefWidth="818"
+			style="
+                -fx-background-color: #f7f8fb;
+                -fx-background-radius: 14;
+                -fx-padding: 12;
+                -fx-border-color: #e8e8e8;
+                -fx-border-radius: 14;
+            ">
+
+			<Button text="Select Customer" onAction="#onSelectCustomer"
+				style="
+                    -fx-background-color: linear-gradient(to bottom right, #1E88E5, #1565C0);
+                    -fx-text-fill: white;
+                    -fx-font-weight: 900;
+                    -fx-background-radius: 12;
+                    -fx-pref-width: 170;
+                    -fx-pref-height: 40;
+                    -fx-cursor: hand;
+                    -fx-effect: dropshadow(gaussian, rgba(21,101,192,0.20), 16, 0.22, 0, 5);
+                " />
+
+			<Button text="Back" onAction="#onBack"
+				style="
+                    -fx-background-color: linear-gradient(to bottom right, #ff7675, #C62828);
+                    -fx-text-fill: white;
+                    -fx-font-weight: 900;
+                    -fx-background-radius: 12;
+                    -fx-pref-width: 110;
+                    -fx-pref-height: 40;
+                    -fx-cursor: hand;
+                    -fx-effect: dropshadow(gaussian, rgba(198,40,40,0.18), 16, 0.22, 0, 5);
+                " />
+
+			<Region HBox.hgrow="ALWAYS" />
+
+			<!-- Tiny hint legend (visual only) -->
+			<HBox spacing="10" alignment="CENTER_RIGHT">
+				<HBox spacing="6" alignment="CENTER">
+					<Circle radius="6" fill="#43A047" />
+					<Label text="Double click to preview"
+						style="-fx-text-fill:#666; -fx-font-size:12px; -fx-font-weight:800;" />
+				</HBox>
+				<HBox spacing="6" alignment="CENTER">
+					<Circle radius="6" fill="#f7931e" />
+					<Label text="Select then continue"
+						style="-fx-text-fill:#666; -fx-font-size:12px; -fx-font-weight:800;" />
+				</HBox>
+			</HBox>
+
+		</HBox>
+
+	</AnchorPane>
+
+</AnchorPane>

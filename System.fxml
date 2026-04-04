@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane style="-fx-background-color: #f6f7fb;" stylesheets="@application.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControllerSystem">
+
+	<fx:define>
+		<ToggleGroup fx:id="navGroup" />
+	</fx:define>
+
+	<!-- ================= LEFT SIDEBAR ================= -->
+	<left>
+		<VBox spacing="10" style="                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 22, 0.25, 6, 0);               " styleClass="sidebar" BorderPane.alignment="CENTER">
+
+			<Label styleClass="brand" text="INVENTORY SUITE" />
+			<Separator styleClass="sidebar-sep" />
+
+			<ToggleButton fx:id="btnDashboard" graphicTextGap="10" onAction="#switchToDashboard" selected="true" styleClass="nav-btn" text="Dashboard">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Dashboard.png" />
+					</ImageView>
+				</graphic>
+            <toggleGroup>
+               <ToggleGroup fx:id="navGroup" />
+            </toggleGroup>
+			</ToggleButton>
+
+			<ToggleButton fx:id="btnCategory" graphicTextGap="10" onAction="#switchToCategory" styleClass="nav-btn" text="Category" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Category.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<ToggleButton fx:id="btnSales" graphicTextGap="10" onAction="#switchToSales" styleClass="nav-btn" text="Sales" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Sales.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<ToggleButton fx:id="btnImports" graphicTextGap="10" onAction="#switchToImports" styleClass="nav-btn" text="Imports" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Imports.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<ToggleButton fx:id="btnBranches" graphicTextGap="10" onAction="#switchToBranches" styleClass="nav-btn" text="Branches" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Branches.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<ToggleButton fx:id="btnEmployee" graphicTextGap="10" onAction="#switchToEmployee" styleClass="nav-btn" text="Employee" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Employee.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<ToggleButton fx:id="btnVehicles" graphicTextGap="10" onAction="#switchToVehicles" styleClass="nav-btn" text="Vehicles" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Data%20Bases/New%20folder%20(2)/truck.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<ToggleButton fx:id="btnSupplier" graphicTextGap="10" onAction="#switchToSupplier" styleClass="nav-btn" text="Supplier" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Supplier.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<ToggleButton fx:id="btnCustomer" graphicTextGap="10" onAction="#switchToCustomer" styleClass="nav-btn" text="Customer" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Customer.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<Pane VBox.vgrow="ALWAYS" />
+
+			<ToggleButton fx:id="btnReports" graphicTextGap="10" onAction="#switchToReports" styleClass="nav-btn" text="Reports" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Reports.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<ToggleButton fx:id="btnSettings" graphicTextGap="10" onAction="#switchToSettings" styleClass="nav-btn" text="Settings" toggleGroup="$navGroup">
+				<graphic>
+					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+						<Image url="@../../../../OneDrive/Pictures/DataBases/Settings.png" />
+					</ImageView>
+				</graphic>
+			</ToggleButton>
+
+			<Button onAction="#logout" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 14, 0.25, 0, 6);" styleClass="logout-btn" text="Logout" />
+		</VBox>
+	</left>
+
+	<!-- ================= CENTER ================= -->
+	<center>
+		<StackPane id="contentArea" fx:id="contentArea" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 22, 0.22, 0, 8);" styleClass="content-area" />
+	</center>
+
+	<!-- ================= TOP BAR ================= -->
+	<top>
+		<HBox alignment="CENTER_LEFT" spacing="10" style="                     -fx-background-color: #f7931e;                     -fx-padding: 10 20;                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 18, 0.25, 0, 6);               ">
+			<Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;" text="System Control Panel" />
+			<Pane HBox.hgrow="ALWAYS" />
+			<Button fx:id="btnSearch" onAction="#onSearchClicked" style="-fx-background-color: #f7931e;" />
+		</HBox>
+	</top>
+
+</BorderPane>

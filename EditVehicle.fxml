@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="900" prefHeight="600"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.EditVehicleController"
+	style="-fx-background-color:#f7f8fb;">
+
+	<AnchorPane layoutX="28" layoutY="24" prefWidth="844"
+		prefHeight="552"
+		style="-fx-background-color:white; -fx-background-radius:14;
+                       -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+
+		<Label layoutX="20" layoutY="16" text="Edit Vehicle"
+			style="-fx-font-size:22px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" />
+
+		<Label fx:id="lblId" layoutX="700" layoutY="22"
+			style="-fx-text-fill:#666; -fx-font-weight:bold;" />
+
+		<!-- نفس حقول Add -->
+		<!-- Left -->
+		<GridPane layoutX="20" layoutY="70" hgap="14" vgap="12">
+
+			<Label text="Name:" />
+			<TextField fx:id="txtName" GridPane.columnIndex="1"
+				prefWidth="220" />
+
+			<Label text="Plate Number:" GridPane.rowIndex="1" />
+			<TextField fx:id="txtPlate" GridPane.rowIndex="1"
+				GridPane.columnIndex="1" />
+
+			<Label text="VIN:" GridPane.rowIndex="2" />
+			<TextField fx:id="txtVin" GridPane.rowIndex="2"
+				GridPane.columnIndex="1" />
+
+			<Label text="Type:" GridPane.rowIndex="3" />
+			<ComboBox fx:id="cbType" GridPane.rowIndex="3"
+				GridPane.columnIndex="1" prefWidth="220" />
+
+			<Label text="Manufacturer:" GridPane.rowIndex="4" />
+			<TextField fx:id="txtManufacturer" GridPane.rowIndex="4"
+				GridPane.columnIndex="1" />
+
+			<Label text="Model:" GridPane.rowIndex="5" />
+			<TextField fx:id="txtModel" GridPane.rowIndex="5"
+				GridPane.columnIndex="1" />
+
+			<Label text="Year:" GridPane.rowIndex="6" />
+			<Spinner fx:id="spYear" GridPane.rowIndex="6"
+				GridPane.columnIndex="1" prefWidth="120" />
+
+			<Label text="Status:" GridPane.rowIndex="7" />
+			<ComboBox fx:id="cbStatus" GridPane.rowIndex="7"
+				GridPane.columnIndex="1" prefWidth="220" />
+
+			<Label text="Fuel:" GridPane.rowIndex="8" />
+			<ComboBox fx:id="cbFuel" GridPane.rowIndex="8"
+				GridPane.columnIndex="1" prefWidth="220" />
+
+			<Label text="Transmission:" GridPane.rowIndex="9" />
+			<ComboBox fx:id="cbTrans" GridPane.rowIndex="9"
+				GridPane.columnIndex="1" prefWidth="220" />
+
+		</GridPane>
+
+		<!-- Right -->
+		<GridPane layoutX="420" layoutY="70" hgap="14" vgap="12">
+
+			<Label text="Pallet Capacity:" />
+			<Spinner fx:id="spPallets" GridPane.columnIndex="1"
+				prefWidth="140" />
+
+			<Label text="Max Load (kg):" GridPane.rowIndex="1" />
+			<Spinner fx:id="spMaxLoad" GridPane.rowIndex="1"
+				GridPane.columnIndex="1" prefWidth="140" />
+
+			<Label text="Purchase Date:" GridPane.rowIndex="2" />
+			<DatePicker fx:id="dpPurchase" GridPane.rowIndex="2"
+				GridPane.columnIndex="1" />
+
+			<Label text="Last Service:" GridPane.rowIndex="3" />
+			<DatePicker fx:id="dpLastService" GridPane.rowIndex="3"
+				GridPane.columnIndex="1" />
+
+			<Label text="Insurance Expiry:" GridPane.rowIndex="4" />
+			<DatePicker fx:id="dpInsurance" GridPane.rowIndex="4"
+				GridPane.columnIndex="1" />
+
+			<Label text="Photo:" GridPane.rowIndex="5" />
+			<HBox GridPane.rowIndex="5" GridPane.columnIndex="1"
+				spacing="10">
+				<Button text="Choose…" onAction="#chooseImage"
+					style="-fx-background-color:#f7931e; -fx-text-fill:white;" />
+				<Label fx:id="lblImg" text="(optional)"
+					style="-fx-text-fill:#777;" />
+			</HBox>
+
+			<StackPane GridPane.rowIndex="6" GridPane.columnIndex="1"
+				prefWidth="160" prefHeight="160"
+				style="-fx-border-color:#ddd; -fx-border-radius:12; -fx-background-radius:12;">
+				<ImageView fx:id="imgPreview" fitWidth="160"
+					fitHeight="160" preserveRatio="true" />
+			</StackPane>
+
+			<Label text="Notes:" GridPane.rowIndex="7" />
+			<TextArea fx:id="txtNotes" GridPane.rowIndex="7"
+				GridPane.columnIndex="1" prefWidth="280" prefHeight="90" />
+
+		</GridPane>
+
+		<HBox layoutX="20" layoutY="500" spacing="12">
+			<Button text="Save" onAction="#onSave"
+				style="-fx-background-color:#2E7D32; -fx-text-fill:white; -fx-pref-width:110;" />
+			<Button text="Cancel" onAction="#onCancel"
+				style="-fx-background-color:#C62828; -fx-text-fill:white; -fx-pref-width:110;" />
+		</HBox>
+
+	</AnchorPane>
+</AnchorPane>

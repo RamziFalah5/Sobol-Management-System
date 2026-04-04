@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="640.0" prefWidth="497.0" style="-fx-background-color: linear-gradient(to bottom right, #f7f8fb, #eef2ff);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller1">
+
+	<children>
+
+		<VBox alignment="TOP_CENTER" layoutX="14.0" layoutY="10.0" prefHeight="620.0" prefWidth="448.0" spacing="14.0" style="                     -fx-background-color: linear-gradient(to bottom, #ff8a00, #f56b00);                     -fx-background-radius: 20;                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 22, 0.28, 0, 9);               ">
+
+			<padding>
+				<Insets bottom="16.0" left="18.0" right="18.0" top="18.0" />
+			</padding>
+
+			<children>
+
+				<!-- Header (مختصر) -->
+				<VBox alignment="CENTER" spacing="4">
+					<Label style="-fx-font-weight: 900;" text="Register" textFill="white">
+						<font>
+							<Font size="34.0" />
+						</font>
+					</Label>
+					<Label style="-fx-text-fill: rgba(255,255,255,0.88); -fx-font-weight: 700;" text="Let's get Started">
+						<font>
+							<Font size="14.0" />
+						</font>
+					</Label>
+				</VBox>
+
+				<!-- Form (أقصر) -->
+				<VBox prefWidth="400" spacing="10" style="                             -fx-background-color: rgba(255,255,255,0.16);                             -fx-background-radius: 16;                             -fx-padding: 14 12 14 12;                             -fx-border-color: rgba(255,255,255,0.22);                             -fx-border-radius: 16;                             -fx-border-width: 1;                       ">
+
+					<children>
+
+						<!-- Name -->
+						<HBox alignment="CENTER_LEFT" spacing="10">
+							<Label prefWidth="92" style="-fx-text-fill: rgba(255,255,255,0.95); -fx-font-weight: 800;" text="Name">
+								<font>
+									<Font size="14.0" />
+								</font>
+							</Label>
+							<TextField fx:id="name" prefWidth="290" promptText="Full name" style="                                             -fx-background-color: rgba(255,255,255,0.96);                                             -fx-text-fill: #222;                                             -fx-prompt-text-fill: rgba(0,0,0,0.45);                                             -fx-background-radius: 14;                                             -fx-padding: 9 12 9 12;                                             -fx-font-size: 13px;                                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0.2, 0, 4);                                        " />
+						</HBox>
+
+						<!-- Email -->
+						<HBox alignment="CENTER_LEFT" spacing="10">
+							<Label prefWidth="92" style="-fx-text-fill: rgba(255,255,255,0.95); -fx-font-weight: 800;" text="Email">
+								<font>
+									<Font size="14.0" />
+								</font>
+							</Label>
+							<TextField fx:id="email" prefWidth="290" promptText="yourname@gmail.com" style="                                             -fx-background-color: rgba(255,255,255,0.96);                                             -fx-text-fill: #222;                                             -fx-prompt-text-fill: rgba(0,0,0,0.45);                                             -fx-background-radius: 14;                                             -fx-padding: 9 12 9 12;                                             -fx-font-size: 13px;                                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0.2, 0, 4);                                        " />
+						</HBox>
+
+						<!-- Phone -->
+						<HBox alignment="CENTER_LEFT" spacing="10">
+							<Label prefWidth="92" style="-fx-text-fill: rgba(255,255,255,0.95); -fx-font-weight: 800;" text="Phone">
+								<font>
+									<Font size="14.0" />
+								</font>
+							</Label>
+							<TextField fx:id="phone" prefWidth="290" promptText="05X XXX XXXX" style="                                             -fx-background-color: rgba(255,255,255,0.96);                                             -fx-text-fill: #222;                                             -fx-prompt-text-fill: rgba(0,0,0,0.45);                                             -fx-background-radius: 14;                                             -fx-padding: 9 12 9 12;                                             -fx-font-size: 13px;                                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0.2, 0, 4);                                        " />
+						</HBox>
+
+						<!-- Password -->
+						<HBox alignment="CENTER_LEFT" spacing="10">
+							<Label prefWidth="92" style="-fx-text-fill: rgba(255,255,255,0.95); -fx-font-weight: 800;" text="Password">
+								<font>
+									<Font size="14.0" />
+								</font>
+							</Label>
+							<TextField fx:id="password" prefWidth="290" promptText="••••••••" style="                                             -fx-background-color: rgba(255,255,255,0.96);                                             -fx-text-fill: #222;                                             -fx-prompt-text-fill: rgba(0,0,0,0.45);                                             -fx-background-radius: 14;                                             -fx-padding: 9 12 9 12;                                             -fx-font-size: 13px;                                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0.2, 0, 4);                                        " />
+						</HBox>
+
+						<!-- Terms -->
+						<RadioButton style="-fx-font-size: 12.5px; -fx-font-weight: 700;" text="I Accept terms and privacy policy" textFill="white">
+							<padding>
+								<Insets top="2.0" />
+							</padding>
+						</RadioButton>
+
+					</children>
+				</VBox>
+
+				<!-- Register button -->
+				<Button fx:id="register" onAction="#onRegister" prefHeight="44" prefWidth="360" style="                             -fx-background-color: white;                             -fx-text-fill: #f56b00;                             -fx-font-weight: 900;                             -fx-font-size: 16px;                             -fx-background-radius: 16;                             -fx-cursor: hand;                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 16, 0.25, 0, 7);                         " text="Register" />
+
+				<!-- Login row -->
+				<HBox alignment="CENTER" spacing="8">
+					<Label style="-fx-text-fill: rgba(255,255,255,0.92);" text="Already have an account ?">
+						<font>
+							<Font size="13.5" />
+						</font>
+					</Label>
+					<Button onAction="#switchToScene2" prefHeight="34.0" prefWidth="86.0" style="                                 -fx-background-color: rgba(255,255,255,0.92);                                 -fx-text-fill: #f56b00;                                 -fx-background-radius: 14;                                 -fx-font-weight: 900;                                 -fx-cursor: hand;                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 12, 0.25, 0, 5);                             " text="Login" />
+				</HBox>
+
+				<!-- Divider + Social (مختصر) -->
+				<VBox alignment="CENTER" prefWidth="380" spacing="8" style="-fx-padding: 2 0 0 0;">
+					<Line endX="150" startX="-150" style="-fx-stroke: rgba(255,255,255,0.65); -fx-stroke-width:2;" />
+					<Label style="-fx-text-fill: rgba(255,255,255,0.90); -fx-font-weight: 800;" text="Login with social media">
+						<font>
+							<Font size="13.5" />
+						</font>
+					</Label>
+				</VBox>
+
+				<HBox alignment="CENTER" spacing="10">
+					<Button prefHeight="38" prefWidth="118" style="-fx-text-fill:white; -fx-background-radius:14; -fx-background-color:#1877F2; -fx-font-weight:900; -fx-cursor:hand;" text="Facebook" />
+					<Button prefHeight="38" prefWidth="56" style="-fx-text-fill:white; -fx-background-radius:14; -fx-background-color:#000000; -fx-font-weight:900; -fx-cursor:hand;" text="X" />
+					<Button prefHeight="38" prefWidth="118" style="-fx-text-fill:white; -fx-background-radius:14; -fx-background-color:#DB4437; -fx-font-weight:900; -fx-cursor:hand;" text="Google" />
+				</HBox>
+
+			</children>
+		</VBox>
+
+	</children>
+</AnchorPane>

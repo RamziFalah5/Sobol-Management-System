@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="900" prefHeight="600"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.AddWarehouseController"
+	style="-fx-background-color: white;">
+
+	<Label layoutX="30" layoutY="25" text="Add Warehouse"
+		style="-fx-font-size:22px;
+                  -fx-text-fill:#f7931e;
+                  -fx-font-weight:bold;" />
+
+	<GridPane layoutX="250" layoutY="150" hgap="15" vgap="15">
+
+		<Label text="Warehouse Name:" />
+		<TextField fx:id="txtName" GridPane.columnIndex="1" />
+
+		<Label text="Pallet Capacity:" GridPane.rowIndex="1" />
+		<TextField fx:id="txtCapacity" GridPane.rowIndex="1"
+			GridPane.columnIndex="1" promptText="Number of pallets" />
+
+	</GridPane>
+
+	<HBox layoutX="360" layoutY="350" spacing="15">
+
+		<Button text="Add" onAction="#onAdd"
+			style="-fx-background-color:#2E7D32;
+                       -fx-text-fill:white;" />
+
+		<Button text="Cancel" onAction="#onCancel"
+			style="-fx-background-color:#C62828;
+                       -fx-text-fill:white;" />
+	</HBox>
+
+</AnchorPane>
