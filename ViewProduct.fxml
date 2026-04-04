@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="631.0" prefWidth="910"
+	style="-fx-background-color: linear-gradient(to bottom, #f7f8fb, #eef1f7);"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.ViewProductController">
+
+	<children>
+
+		<!-- Title -->
+		<Label layoutX="28" layoutY="18"
+			style="-fx-font-size:28px; -fx-text-fill:#f7931e; -fx-font-weight:900;"
+			text="View Product" />
+
+		<!-- underline -->
+		<Region layoutX="28" layoutY="56" prefWidth="854"
+			prefHeight="2"
+			style="-fx-background-color: rgba(247,147,30,0.22); -fx-background-radius: 10;" />
+
+		<!-- Main Card -->
+		<AnchorPane layoutX="28" layoutY="70" prefWidth="854"
+			prefHeight="520"
+			style="
+                -fx-background-color: white;
+                -fx-background-radius: 18;
+                -fx-padding: 18;
+                -fx-border-color: rgba(0,0,0,0.05);
+                -fx-border-radius: 18;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);
+            ">
+
+			<Label layoutX="18" layoutY="14"
+				style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#222;"
+				text="Product Details" />
+
+			<Label layoutX="18" layoutY="34"
+				style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;"
+				text="Preview product information, pricing, and stock thresholds" />
+
+			<!-- Status badge -->
+			<HBox layoutX="726" layoutY="16" spacing="8"
+				style="
+                    -fx-background-color: #f7f8fb;
+                    -fx-background-radius: 14;
+                    -fx-padding: 6 10;
+                    -fx-border-color: #e8e8e8;
+                    -fx-border-radius: 14;
+                ">
+				<Circle fx:id="statusCircle" radius="7" />
+				<Label text="Status"
+					style="-fx-font-size:12px; -fx-text-fill:#666; -fx-font-weight:800;" />
+			</HBox>
+
+			<Separator layoutX="18" layoutY="60" prefWidth="818"
+				style="-fx-opacity:0.55;" />
+
+			<!-- Body -->
+			<HBox layoutX="18" layoutY="78" spacing="16" prefWidth="818"
+				prefHeight="360">
+
+				<!-- Image Card -->
+				<VBox spacing="10" prefWidth="210"
+					style="
+                        -fx-background-color: #f7f8fb;
+                        -fx-background-radius: 16;
+                        -fx-padding: 14;
+                        -fx-border-color: #e8e8e8;
+                        -fx-border-radius: 16;
+                    ">
+
+					<Label text="Product Image"
+						style="-fx-font-size:13px; -fx-text-fill:#333; -fx-font-weight:900;" />
+
+					<StackPane prefWidth="182" prefHeight="180"
+						style="
+                            -fx-background-color: white;
+                            -fx-background-radius: 14;
+                            -fx-border-color: rgba(0,0,0,0.08);
+                            -fx-border-radius: 14;
+                            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.18, 0, 5);
+                        ">
+						<ImageView fx:id="imgPreview" fitWidth="160"
+							fitHeight="160" preserveRatio="true" />
+					</StackPane>
+
+					<!-- Keep lblId for controller (as small chip) -->
+					<Label fx:id="lblId"
+						style="
+                            -fx-background-color: rgba(247,147,30,0.10);
+                            -fx-text-fill: #b35c00;
+                            -fx-font-weight: 900;
+                            -fx-padding: 6 10;
+                            -fx-background-radius: 12;
+                        "
+						text="ID:" />
+
+					<Label
+						text="Tip: Check image, stock, and prices before saving edits."
+						wrapText="true" style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" />
+
+				</VBox>
+
+				<!-- Details Card -->
+				<VBox spacing="10" prefWidth="592"
+					style="
+                        -fx-background-color: #f7f8fb;
+                        -fx-background-radius: 16;
+                        -fx-padding: 14;
+                        -fx-border-color: #e8e8e8;
+                        -fx-border-radius: 16;
+                    ">
+
+					<Label text="Information"
+						style="-fx-font-size:13px; -fx-text-fill:#333; -fx-font-weight:900;" />
+
+					<ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+						vbarPolicy="AS_NEEDED" prefHeight="292"
+						style="-fx-background-color: transparent; -fx-border-color: transparent;">
+						<content>
+							<VBox spacing="10"
+								style="-fx-background-color: transparent;">
+
+								<GridPane hgap="14" vgap="10">
+									<columnConstraints>
+										<ColumnConstraints prefWidth="160" />
+										<ColumnConstraints prefWidth="400" />
+									</columnConstraints>
+
+									<Label text="Name" GridPane.rowIndex="0"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<Label fx:id="lblName" GridPane.columnIndex="1"
+										GridPane.rowIndex="0"
+										style="-fx-text-fill:#111; -fx-font-weight:900;" />
+
+									<Label text="Branch" GridPane.rowIndex="1"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<Label fx:id="lblBranch" GridPane.columnIndex="1"
+										GridPane.rowIndex="1"
+										style="-fx-text-fill:#111; -fx-font-weight:900;" />
+
+									<Label text="Warehouse" GridPane.rowIndex="2"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<Label fx:id="lblWarehouse" GridPane.columnIndex="1"
+										GridPane.rowIndex="2"
+										style="-fx-text-fill:#111; -fx-font-weight:900;" />
+
+									<Separator GridPane.columnSpan="2"
+										GridPane.rowIndex="3" style="-fx-opacity:0.45;" />
+
+									<Label text="Base Unit" GridPane.rowIndex="4"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<Label fx:id="lblUnit" GridPane.columnIndex="1"
+										GridPane.rowIndex="4" style="-fx-text-fill:#111;" />
+
+									<Label text="Cartons/Pallet" GridPane.rowIndex="5"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<Label fx:id="lblPallet" GridPane.columnIndex="1"
+										GridPane.rowIndex="5" style="-fx-text-fill:#111;" />
+
+									<Label text="Quantity" GridPane.rowIndex="6"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<Label fx:id="lblQty" GridPane.columnIndex="1"
+										GridPane.rowIndex="6" style="-fx-text-fill:#111;" />
+
+									<Label text="Min / Max" GridPane.rowIndex="7"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<HBox spacing="10" GridPane.columnIndex="1"
+										GridPane.rowIndex="7">
+										<Label fx:id="lblMin" style="-fx-text-fill:#111;"
+											text="Min:" />
+										<Label text="|"
+											style="-fx-text-fill:#b0b0b0; -fx-font-weight:900;" />
+										<Label fx:id="lblMax" style="-fx-text-fill:#111;"
+											text="Max:" />
+									</HBox>
+
+									<Separator GridPane.columnSpan="2"
+										GridPane.rowIndex="8" style="-fx-opacity:0.45;" />
+
+									<Label text="Cost Price" GridPane.rowIndex="9"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<Label fx:id="lblCost" GridPane.columnIndex="1"
+										GridPane.rowIndex="9" style="-fx-text-fill:#111;" />
+
+									<Label text="Selling Price" GridPane.rowIndex="10"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<Label fx:id="lblSell" GridPane.columnIndex="1"
+										GridPane.rowIndex="10"
+										style="-fx-text-fill:#111; -fx-font-weight:900;" />
+
+									<Label text="Description" GridPane.rowIndex="11"
+										style="-fx-text-fill:#666; -fx-font-weight:800;" />
+									<Label fx:id="lblDesc" GridPane.columnIndex="1"
+										GridPane.rowIndex="11" wrapText="true"
+										style="-fx-text-fill:#111;" />
+
+									<rowConstraints>
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+									</rowConstraints>
+								</GridPane>
+
+								<Region prefHeight="6" />
+							</VBox>
+						</content>
+					</ScrollPane>
+
+					<!-- footer hint -->
+					<HBox spacing="8"
+						style="
+                            -fx-background-color: white;
+                            -fx-background-radius: 14;
+                            -fx-padding: 10 12;
+                            -fx-border-color: rgba(0,0,0,0.06);
+                            -fx-border-radius: 14;
+                        ">
+						<Label text="Note:"
+							style="-fx-font-weight:900; -fx-text-fill:#333;" />
+						<Label text="Branch/Warehouse shown by name (no IDs)."
+							style="-fx-text-fill:#777;" />
+					</HBox>
+
+				</VBox>
+
+			</HBox>
+
+			<!-- Back -->
+			<Button layoutX="18" layoutY="452" onAction="#onBack"
+				text="Back"
+				style="
+                    -fx-background-color: linear-gradient(to bottom right, #1E88E5, #1565C0);
+                    -fx-text-fill: white;
+                    -fx-font-weight: 900;
+                    -fx-background-radius: 14;
+                    -fx-pref-width: 120;
+                    -fx-pref-height: 42;
+                    -fx-cursor: hand;
+                    -fx-effect: dropshadow(gaussian, rgba(21,101,192,0.22), 18, 0.25, 0, 6);
+                " />
+
+		</AnchorPane>
+
+	</children>
+</AnchorPane>

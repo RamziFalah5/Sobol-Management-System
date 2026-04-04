@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+
+<AnchorPane prefHeight="684" prefWidth="910"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.WarehousesController"
+	style="-fx-background-color: linear-gradient(to bottom, #ffffff, #fff6ec);">
+
+	<!-- Top Bar -->
+	<AnchorPane layoutX="18" layoutY="18" prefHeight="60"
+		prefWidth="874"
+		style="-fx-background-color: white;
+                       -fx-background-radius: 14;
+                       -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.25, 0, 6);">
+
+		<Label layoutX="18" layoutY="14" text="Warehouses"
+			style="-fx-font-size:22px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" />
+
+		<Label fx:id="lblStats" layoutX="160" layoutY="20"
+			text="0 warehouses"
+			style="-fx-font-size:13px; -fx-text-fill:#546E7A;" />
+
+		<!-- Search -->
+		<TextField fx:id="txtSearch" layoutX="604" layoutY="14"
+			promptText="Search warehouse..."
+			style="-fx-background-radius:12;
+                          -fx-background-color:#f7931e;
+                          -fx-text-fill:white;
+                          -fx-prompt-text-fill:rgba(255,255,255,0.85);
+                          -fx-padding:9 12;
+                          -fx-font-size:13px;
+                          -fx-pref-width:240;" />
+	</AnchorPane>
+
+	<!-- Content Card -->
+	<AnchorPane layoutX="18" layoutY="92" prefHeight="520"
+		prefWidth="874"
+		style="-fx-background-color: rgba(255,255,255,0.95);
+                       -fx-background-radius: 16;
+                       -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 18, 0.22, 0, 6);">
+
+		<Label layoutX="18" layoutY="14"
+			text="Double-click = view • Right-click = select for edit"
+			style="-fx-font-size:13px; -fx-text-fill:#607D8B;" />
+
+		<ScrollPane fx:id="scrollWarehouses" layoutX="12"
+			layoutY="44" prefHeight="462" prefWidth="850" fitToWidth="true"
+			hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+			style="-fx-background-color: transparent; -fx-background: transparent;">
+
+			<content>
+				<GridPane fx:id="gridWarehouses" hgap="16" vgap="16"
+					style="-fx-padding: 14 14 18 14;">
+					<!-- Cards injected from controller -->
+				</GridPane>
+			</content>
+		</ScrollPane>
+
+		<Label fx:id="lblEmpty" layoutX="0" layoutY="235"
+			prefWidth="874" alignment="CENTER" text="No warehouses found."
+			visible="false"
+			style="-fx-font-size:16px; -fx-text-fill:#90A4AE; -fx-font-weight:bold;" />
+	</AnchorPane>
+
+	<!-- Bottom Buttons -->
+	<HBox layoutX="18" layoutY="628" spacing="10">
+
+		<Button text="Add" onAction="#addWarehouse"
+			style="-fx-background-color:#43A047;
+                       -fx-text-fill:white;
+                       -fx-background-radius:12;
+                       -fx-padding:10 18;
+                       -fx-font-size:14px;
+                       -fx-font-weight:bold;
+                       -fx-effect:dropshadow(gaussian, rgba(67,160,71,0.35), 14, 0.25, 0, 6);" />
+
+		<Button text="Edit" onAction="#editWarehouse"
+			style="-fx-background-color:#f7931e;
+                       -fx-text-fill:white;
+                       -fx-background-radius:12;
+                       -fx-padding:10 18;
+                       -fx-font-size:14px;
+                       -fx-font-weight:bold;
+                       -fx-effect:dropshadow(gaussian, rgba(247,147,30,0.35), 14, 0.25, 0, 6);" />
+
+		<Region prefWidth="580" />
+
+		<Label fx:id="lblSelected" text="Selected: none"
+			style="-fx-font-size:13px; -fx-text-fill:#607D8B;" />
+
+	</HBox>
+
+</AnchorPane>
