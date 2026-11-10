@@ -1,11 +1,24 @@
 package application;
 
+import com.sobol.category.application.CategoryException;
+import com.sobol.category.application.CategoryService;
+import java.util.Objects;
 import javafx.fxml.*;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 
 public class EditCategoryController {
+
+    private final CategoryService service;
+
+    public EditCategoryController() {
+        this(CategoryModule.service());
+    }
+
+    EditCategoryController(CategoryService service) {
+        this.service = Objects.requireNonNull(service);
+    }
 
     @FXML private Label lblCategoryId;
     @FXML private TextField txtName;
@@ -27,43 +40,23 @@ public class EditCategoryController {
     @FXML
     private void onSave() {
 
-        if (categoryId <= 0) {
-            showAlert("Validation", "Please select a category before editing.");
-            return;
-        }
-
-        String name = txtName.getText().trim();
-        String desc = txtDescription.getText().trim();
-
-        if (name.isEmpty()) {
-            showAlert("Validation", "Category name is required.");
-            return;
-        }
-
-        if (nameExistsForEdit(name, categoryId)) {
-            showAlert("Duplicate",
-                    "Another category already uses this name.");
-            return;
-        }
-
-        if (updateCategory(categoryId, name, desc)) {
+        try {
+            service.updateCategory(categoryId, txtName.getText(), txtDescription.getText());
             goBack();
-        } else {
-            showAlert("Error", "Failed to update category.");
+        } catch (CategoryException failure) {
+            String title = switch (failure.reason()) {
+                case INVALID_NAME, INVALID_ID -> "Validation";
+                case DUPLICATE_NAME -> "Duplicate";
+                case NOT_FOUND -> "Not Found";
+                case STORAGE_FAILURE -> "Error";
+            };
+            showAlert(title, failure.getMessage());
         }
     }
 
     @FXML
     private void onCancel() {
         goBack();
-    }
-
-    boolean nameExistsForEdit(String name, int currentId) {
-        return CategoryDAO.categoryNameExistsForEdit(name, currentId);
-    }
-
-    boolean updateCategory(int id, String name, String description) {
-        return CategoryDAO.updateCategory(id, name, description);
     }
 
     void goBack() {

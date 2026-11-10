@@ -1,5 +1,8 @@
 package application;
 
+import com.sobol.category.application.CategoryException;
+import com.sobol.category.application.CategoryRepository;
+import com.sobol.category.application.CategoryService;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
@@ -114,12 +117,13 @@ class ControllerRepairsDesktopTest {
         assertEquals("42", id.getText()); assertEquals("Synthetic category", name.getText());
         assertEquals("Original description", description.getText());
         CategorySession.setSelectedCategory(99, "Unrelated synthetic category");
-        selected.idProperty().set(99); id.setText("99");
+        controller.editor.initialSelection.idProperty().set(99); id.setText("99");
         name.setText("  Updated category  "); description.setText("  Updated description  ");
         button(editorLoader.getRoot(), "Save").fire();
-        assertEquals(42, controller.editor.checkedId); assertEquals(42, controller.editor.updatedId);
-        assertEquals("Updated category", controller.editor.updatedName);
-        assertEquals("Updated description", controller.editor.updatedDescription);
+        assertEquals(42, controller.repository.updatedId);
+        assertEquals("Updated category", controller.repository.updatedName);
+        assertEquals("Updated description", controller.repository.updatedDescription);
+        assertEquals("Updated category", controller.repository.rows.get(42).name());
         assertEquals(1, controller.editor.backCalls);
     }); }
 
@@ -138,12 +142,11 @@ class ControllerRepairsDesktopTest {
         var controller = new EditorStub(); var loader = load("EditCategory.fxml", controller);
         ((TextField) node(loader, "txtName")).setText("Synthetic");
         button(loader.getRoot(), "Save").fire();
-        assertEquals("Validation", controller.alertTitle); assertEquals(0, controller.checkCalls);
-        assertEquals(0, controller.updateCalls);
+        assertEquals("Validation", controller.alertTitle); assertEquals(0, controller.repository.updateCalls);
         controller.setCategory(new Category(42, "Synthetic", ""));
         assertThrows(IllegalArgumentException.class, () -> controller.setCategory(null));
         button(loader.getRoot(), "Save").fire();
-        assertEquals(0, controller.updateCalls);
+        assertEquals(0, controller.repository.updateCalls);
         assertThrows(IllegalArgumentException.class, () -> controller.setCategory(new Category(0, "Invalid", "")));
     }); }
 
@@ -153,22 +156,96 @@ class ControllerRepairsDesktopTest {
         assertEquals("", ((TextArea) node(loader, "txtDescription")).getText());
         TextField name = node(loader, "txtName"); name.setText("   ");
         button(loader.getRoot(), "Save").fire();
-        assertEquals("Validation", controller.alertTitle); assertEquals(0, controller.checkCalls);
-        controller.duplicate = true; name.setText(" Duplicate ");
+        assertEquals("Validation", controller.alertTitle); assertEquals(0, controller.repository.updateCalls);
+        controller.repository.rows.put(99, new com.sobol.category.domain.Category(99, "Duplicate", "Other"));
+        name.setText(" Duplicate ");
         button(loader.getRoot(), "Save").fire();
-        assertEquals("Duplicate", controller.alertTitle); assertEquals(42, controller.checkedId);
-        assertEquals(0, controller.updateCalls); assertEquals(0, controller.backCalls);
+        assertEquals("Duplicate", controller.alertTitle); assertEquals(42, controller.repository.updatedId);
+        assertEquals("Synthetic", controller.repository.rows.get(42).name());
+        assertEquals("Duplicate", controller.repository.rows.get(99).name());
+        assertEquals(0, controller.backCalls);
     }); }
 
     @Test void categoryUpdateFailureDoesNotNavigateOrChangeItsTarget() throws Exception { onFx(() -> {
-        var controller = new EditorStub(); controller.updateResult = false;
+        var controller = new EditorStub(); controller.repository.writeFailure = CategoryException.Reason.STORAGE_FAILURE;
         var loader = load("EditCategory.fxml", controller); controller.setCategory(new Category(42, "Synthetic", ""));
         button(loader.getRoot(), "Save").fire();
-        assertEquals(42, controller.updatedId); assertEquals("Error", controller.alertTitle);
+        assertEquals(42, controller.repository.updatedId); assertEquals("Error", controller.alertTitle);
+        assertEquals("Synthetic", controller.repository.rows.get(42).name());
         assertEquals(0, controller.backCalls);
         button(loader.getRoot(), "Cancel").fire();
-        assertEquals(1, controller.backCalls); assertEquals(1, controller.updateCalls);
+        assertEquals(1, controller.backCalls); assertEquals(1, controller.repository.updateCalls);
     }); }
+
+    @Test void categoryDeletedAfterOpeningReportsNotFoundWithoutNavigation() throws Exception { onFx(() -> {
+        var controller = new EditorStub(); var loader = load("EditCategory.fxml", controller);
+        controller.setCategory(new Category(42, "Synthetic", "")); controller.repository.rows.remove(42);
+        button(loader.getRoot(), "Save").fire();
+        assertEquals("Not Found", controller.alertTitle); assertEquals(0, controller.backCalls);
+        assertTrue(controller.repository.rows.isEmpty());
+    }); }
+
+    @Test void unchangedCategoryValuesRemainASuccessfulSave() throws Exception { onFx(() -> {
+        var controller = new EditorStub(); var loader = load("EditCategory.fxml", controller);
+        controller.setCategory(new Category(42, "Synthetic", ""));
+        button(loader.getRoot(), "Save").fire();
+        assertEquals(1, controller.backCalls); assertNull(controller.alertTitle);
+        assertEquals(new com.sobol.category.domain.Category(42, "Synthetic", ""), controller.repository.rows.get(42));
+    }); }
+
+    @Test void addCategoryNavigationDelegatesCreationToTheRealService() throws Exception { onFx(() -> {
+        var controller = new CategoriesStub(List.of(new Category(42, "Synthetic", "")));
+        var loader = load("Category.fxml", controller);
+        StackPane content = attachCategoryScene(loader);
+        button(loader.getRoot(), "Add").fire();
+        assertSame(controller.addLoader.getRoot(), content.getChildren().getFirst());
+        ((TextField) node(controller.addLoader, "txtName")).setText("  New synthetic category  ");
+        ((TextArea) node(controller.addLoader, "txtDescription")).setText("  Description  ");
+        button(controller.addLoader.getRoot(), "Add").fire();
+        assertEquals(1, controller.repository.insertCalls); assertEquals(1, controller.add.backCalls);
+        assertTrue(controller.repository.rows.values().stream().anyMatch(c -> c.name().equals("New synthetic category") && c.description().equals("Description")));
+    }); }
+
+    @Test void categoryCreationValidationDuplicateAndStorageFailureAreDistinct() throws Exception { onFx(() -> {
+        var repository = new CategoryRepositoryStub(List.of(new Category(42, "Synthetic", "")));
+        var controller = new AddStub(repository); var loader = load("AddCategory.fxml", controller);
+        TextField name = node(loader, "txtName"); name.setText("   "); button(loader.getRoot(), "Add").fire();
+        assertEquals("Validation", controller.alertTitle); assertEquals(0, repository.insertCalls);
+        name.setText("Synthetic"); button(loader.getRoot(), "Add").fire();
+        assertEquals("Duplicate", controller.alertTitle); assertEquals(1, repository.rows.size());
+        repository.writeFailure = CategoryException.Reason.STORAGE_FAILURE;
+        name.setText("Other"); button(loader.getRoot(), "Add").fire();
+        assertEquals("Error", controller.alertTitle); assertEquals(0, controller.backCalls); assertEquals(1, repository.rows.size());
+        int calls = repository.insertCalls; button(loader.getRoot(), "Cancel").fire();
+        assertEquals(1, controller.backCalls); assertEquals(calls, repository.insertCalls);
+    }); }
+
+    @Test void categorySearchAndProductNavigationPreservePresentationSessionOnly() throws Exception { onFx(() -> {
+        var controller = new CategoriesStub(List.of(new Category(42, "Synthetic A", "First"), new Category(99, "Synthetic B", "Second")));
+        var loader = load("Category.fxml", controller); StackPane content = attachCategoryScene(loader);
+        TextField search = node(loader, "txtSearch"); search.setText("Second");
+        var grid = (javafx.scene.layout.GridPane) loader.getNamespace().get("categoryGrid");
+        assertEquals(1, grid.getChildren().size());
+        ((Button) grid.getChildren().getFirst()).fire();
+        assertEquals(99, CategorySession.getSelectedCategoryId()); assertEquals("Synthetic B", CategorySession.getSelectedCategoryName());
+        assertSame(controller.productsLoader.getRoot(), content.getChildren().getFirst());
+        assertEquals(0, controller.repository.insertCalls); assertEquals(0, controller.repository.updateCalls);
+    }); }
+
+    @Test void categoryLoadFailureIsVisibleAndCannotRestoreAStaleSessionTarget() throws Exception { onFx(() -> {
+        CategorySession.setSelectedCategory(42, "Synthetic");
+        var controller = new CategoriesStub(List.of(new Category(42, "Synthetic", ""))); controller.repository.failRead = true;
+        var loader = load("Category.fxml", controller);
+        assertEquals("Error", controller.alertTitle);
+        button(loader.getRoot(), "Edit").fire(); assertNull(controller.editorLoader);
+        assertEquals("Edit Category", controller.alertTitle);
+    }); }
+
+    private StackPane attachCategoryScene(FXMLLoader loader) {
+        StackPane content = new StackPane((Parent) loader.getRoot()); content.setId("contentArea");
+        Scene scene = new Scene(content); content.applyCss(); content.layout();
+        assertSame(scene, ((Node) node(loader, "categoryGrid")).getScene()); return content;
+    }
 
     @Test void firstProductBranchLoadsAndSelectsItsFirstWarehouseImmediately() throws Exception { onFx(() -> {
         var controller = new ProductStub(); var loader = load("AddProduct.fxml", controller);
@@ -255,27 +332,71 @@ class ControllerRepairsDesktopTest {
     }
 
     private static class CategoriesStub extends CategoryController {
-        final List<Category> categories; final EditorStub editor = new EditorStub();
-        String alertTitle; FXMLLoader editorLoader;
-        CategoriesStub(List<Category> categories) { this.categories = categories; }
-        @Override List<Category> getCategories() { return categories; }
+        final CategoryRepositoryStub repository; final EditorStub editor; final AddStub add;
+        String alertTitle; FXMLLoader editorLoader, addLoader, productsLoader;
+        CategoriesStub(List<Category> categories) { this(new CategoryRepositoryStub(categories)); }
+        CategoriesStub(CategoryRepositoryStub repository) {
+            super(new CategoryService(repository)); this.repository = repository;
+            editor = new EditorStub(repository); add = new AddStub(repository);
+        }
         @Override FXMLLoader createViewLoader(String fxml) {
-            assertEquals("EditCategory.fxml", fxml);
-            editorLoader = new FXMLLoader(getClass().getResource("/application/" + fxml));
-            editorLoader.setControllerFactory(type -> editor); return editorLoader;
+            var loader = new FXMLLoader(getClass().getResource("/application/" + fxml));
+            switch (fxml) {
+                case "EditCategory.fxml" -> { editorLoader = loader; loader.setControllerFactory(type -> editor); }
+                case "AddCategory.fxml" -> { addLoader = loader; loader.setControllerFactory(type -> add); }
+                case "Products.fxml" -> { productsLoader = loader; loader.setControllerFactory(type -> new ProductsController() {
+                    @Override public void initialize() { } // Test the navigation boundary without invoking the legacy product DAO.
+                }); }
+                default -> fail("Unexpected category navigation target");
+            }
+            return loader;
         }
         @Override void showInfo(String title, String message) { alertTitle = title; }
     }
 
     private static class EditorStub extends EditCategoryController {
-        int checkedId, updatedId, checkCalls, updateCalls, backCalls;
-        boolean duplicate, updateResult = true; String updatedName, updatedDescription, alertTitle;
-        @Override boolean nameExistsForEdit(String name, int id) { checkCalls++; checkedId = id; return duplicate; }
-        @Override boolean updateCategory(int id, String name, String description) {
-            updateCalls++; updatedId = id; updatedName = name; updatedDescription = description; return updateResult;
-        }
+        final CategoryRepositoryStub repository; int backCalls; String alertTitle; Category initialSelection;
+        EditorStub() { this(new CategoryRepositoryStub(List.of(new Category(42, "Synthetic", "")))); }
+        EditorStub(CategoryRepositoryStub repository) { super(new CategoryService(repository)); this.repository = repository; }
+        @Override public void setCategory(Category category) { initialSelection = category; super.setCategory(category); }
         @Override void goBack() { backCalls++; }
         @Override void showAlert(String title, String message) { alertTitle = title; }
+    }
+
+    private static class AddStub extends AddCategoryController {
+        int backCalls; String alertTitle;
+        AddStub(CategoryRepositoryStub repository) { super(new CategoryService(repository)); }
+        @Override void goBack() { backCalls++; }
+        @Override void showAlert(String title, String message) { alertTitle = title; }
+    }
+
+    private static class CategoryRepositoryStub implements CategoryRepository {
+        final Map<Integer, com.sobol.category.domain.Category> rows = new LinkedHashMap<>();
+        int insertCalls, updateCalls, updatedId, sequence = 100;
+        String updatedName, updatedDescription; CategoryException.Reason writeFailure; boolean failRead;
+        CategoryRepositoryStub(List<Category> categories) {
+            for (Category c : categories) rows.put(c.getId(), new com.sobol.category.domain.Category(c.getId(), c.nameProperty().get(), c.descriptionProperty().get()));
+        }
+        public List<com.sobol.category.domain.Category> findAll() {
+            if (failRead) throw new CategoryException(CategoryException.Reason.STORAGE_FAILURE);
+            return new ArrayList<>(rows.values());
+        }
+        private void canWrite(String name, int id) {
+            if (writeFailure != null) throw new CategoryException(writeFailure);
+            if (rows.values().stream().anyMatch(c -> c.id() != id && c.name().equalsIgnoreCase(name)))
+                throw new CategoryException(CategoryException.Reason.DUPLICATE_NAME);
+        }
+        public com.sobol.category.domain.Category insert(String name, String description) {
+            insertCalls++; canWrite(name, 0);
+            var created = new com.sobol.category.domain.Category(++sequence, name, description); rows.put(created.id(), created); return created;
+        }
+        public Optional<com.sobol.category.domain.Category> update(int id, String name, String description) {
+            updateCalls++; updatedId = id; updatedName = name; updatedDescription = description;
+            if (writeFailure != null) throw new CategoryException(writeFailure);
+            if (!rows.containsKey(id)) return Optional.empty();
+            canWrite(name, id); var updated = new com.sobol.category.domain.Category(id, name, description); rows.put(id, updated);
+            return Optional.of(updated);
+        }
     }
 
     private static class ProductStub extends AddProductController {

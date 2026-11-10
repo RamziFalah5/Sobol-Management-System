@@ -1,6 +1,7 @@
 package application;
 
 import org.junit.jupiter.api.*;
+import com.sobol.category.application.CategoryException;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
@@ -188,8 +189,35 @@ class CorePersistenceIT {
         assertEquals(1, f.integer("SELECT COUNT(*) FROM user_database WHERE user_id=?", f.user));
     }
 
-    @Test @Tag("original-defect") void nonexistentCategoryUpdateMustReportFailure() {
-        assertFalse(CategoryDAO.updateCategory(-1, f.prefix + "_absent", "Synthetic"), "No row was updated.");
+    @Test @Tag("original-defect") void nonexistentCategoryUpdateMustReportFailure() throws Exception {
+        int removed = f.insert("category", "name,description", f.prefix + "_removed", "Synthetic");
+        try {
+            f.update("DELETE FROM category WHERE category_id=?", removed);
+            var failure = assertThrows(CategoryException.class,
+                    () -> CategoryModule.service().updateCategory(removed, f.prefix + "_absent", "Synthetic"));
+            assertEquals(CategoryException.Reason.NOT_FOUND, failure.reason());
+        } finally { f.update("DELETE FROM category WHERE category_id=?", removed); }
+    }
+
+    @Test void unchangedExistingCategoryUpdateSucceeds() {
+        var service = CategoryModule.service();
+        var category = service.listCategories().stream().filter(c -> c.id() == f.category).findFirst().orElseThrow();
+        assertEquals(category, service.updateCategory(category.id(), category.name(), category.description()));
+    }
+
+    @Test void categoryCreationAndUniqueConflictsUseTheNewRepository() throws Exception {
+        var service = CategoryModule.service();
+        var created = service.createCategory(f.prefix + "_created", "Synthetic");
+        try {
+            var duplicate = assertThrows(CategoryException.class,
+                    () -> service.createCategory(created.name(), "Synthetic"));
+            assertEquals(CategoryException.Reason.DUPLICATE_NAME, duplicate.reason());
+            var existing = service.listCategories().stream().filter(c -> c.id() == f.category).findFirst().orElseThrow();
+            var conflict = assertThrows(CategoryException.class,
+                    () -> service.updateCategory(created.id(), existing.name(), "Synthetic"));
+            assertEquals(CategoryException.Reason.DUPLICATE_NAME, conflict.reason());
+            assertEquals(created, service.listCategories().stream().filter(c -> c.id() == created.id()).findFirst().orElseThrow());
+        } finally { f.update("DELETE FROM category WHERE category_id=?", created.id()); }
     }
 
     @Test @Tag("original-defect") void concurrentSalesMustNotOversellTheSameStock() throws Exception {

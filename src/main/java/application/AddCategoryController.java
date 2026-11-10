@@ -1,5 +1,8 @@
 package application;
 
+import com.sobol.category.application.CategoryException;
+import com.sobol.category.application.CategoryService;
+import java.util.Objects;
 import javafx.fxml.*;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -7,32 +10,33 @@ import javafx.scene.layout.StackPane;
 
 public class AddCategoryController {
 
+    private final CategoryService service;
+
+    public AddCategoryController() {
+        this(CategoryModule.service());
+    }
+
+    AddCategoryController(CategoryService service) {
+        this.service = Objects.requireNonNull(service);
+    }
+
     @FXML private TextField txtName;
     @FXML private TextArea txtDescription;
 
     @FXML
     private void onAdd() {
 
-        String name = txtName.getText().trim();
-        String desc = txtDescription.getText().trim();
-
-        if (name.isEmpty()) {
-            showAlert("Validation", "Category name is required.");
-            return;
-        }
-
-        // 🔒 duplicate check
-        if (CategoryDAO.categoryNameExists(name)) {
-            showAlert("Duplicate",
-                    "Category name already exists. Please choose another name.");
-            return;
-        }
-
-        // ✅ insert
-        if (CategoryDAO.insertCategory(name, desc)) {
+        try {
+            service.createCategory(txtName.getText(), txtDescription.getText());
             goBack();
-        } else {
-            showAlert("Error", "Failed to add category.");
+        } catch (CategoryException failure) {
+            String title = switch (failure.reason()) {
+                case INVALID_NAME, INVALID_ID -> "Validation";
+                case DUPLICATE_NAME -> "Duplicate";
+                case NOT_FOUND -> "Not Found";
+                case STORAGE_FAILURE -> "Error";
+            };
+            showAlert(title, failure.getMessage());
         }
     }
 
@@ -41,7 +45,7 @@ public class AddCategoryController {
         goBack();
     }
 
-    private void goBack() {
+    void goBack() {
         try {
             Parent view = FXMLLoader.load(getClass().getResource("Category.fxml"));
             StackPane contentArea =
@@ -52,7 +56,7 @@ public class AddCategoryController {
         }
     }
 
-    private void showAlert(String title, String msg) {
+    void showAlert(String title, String msg) {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setTitle(title);
         a.setHeaderText(null);

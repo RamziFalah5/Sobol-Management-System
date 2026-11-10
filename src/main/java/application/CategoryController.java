@@ -1,6 +1,9 @@
 package application;
 
 import java.util.List;
+import java.util.Objects;
+import com.sobol.category.application.CategoryService;
+import com.sobol.category.application.CategoryException;
 
 import javafx.animation.ScaleTransition;
 import javafx.collections.FXCollections;
@@ -19,6 +22,16 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class CategoryController {
+
+	private final CategoryService service;
+
+	public CategoryController() {
+		this(CategoryModule.service());
+	}
+
+	CategoryController(CategoryService service) {
+		this.service = Objects.requireNonNull(service);
+	}
 
 	@FXML
 	private GridPane categoryGrid;
@@ -51,7 +64,12 @@ public class CategoryController {
 
 	// ================= LOAD =================
 	private void loadCategories() {
-		categoryList.setAll(getCategories());
+		try {
+			categoryList.setAll(service.listCategories().stream().map(Category::fromDomain).toList());
+		} catch (CategoryException failure) {
+			categoryList.clear();
+			showInfo("Error", failure.getMessage());
+		}
 
 		lblStats.setText(categoryList.size() + " categories");
 		lblEmpty.setVisible(categoryList.isEmpty());
@@ -283,10 +301,6 @@ public class CategoryController {
 		}
 	}
 
-	List<Category> getCategories() {
-		return CategoryDAO.getAllCategories();
-	}
-
 	FXMLLoader createViewLoader(String fxml) {
 		return new FXMLLoader(getClass().getResource(fxml));
 	}
@@ -297,7 +311,7 @@ public class CategoryController {
 
 	private void loadView(String fxml) {
 		try {
-			Parent view = FXMLLoader.load(getClass().getResource(fxml));
+			Parent view = createViewLoader(fxml).load();
 			StackPane contentArea = (StackPane) categoryGrid.getScene().getRoot().lookup("#contentArea");
 			contentArea.getChildren().setAll(view);
 		} catch (Exception e) {
