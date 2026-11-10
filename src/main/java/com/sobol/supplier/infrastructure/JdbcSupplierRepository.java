@@ -33,7 +33,7 @@ public final class JdbcSupplierRepository implements SupplierRepository {
                 Supplier created;
                 try (PreparedStatement p = c.prepareStatement("INSERT INTO supplier(name, phone, email, city, address, contact_person, notes) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                     bind(p, details);
-                    if (p.executeUpdate() != 1) throw storage();
+                    if (executeWrite(p) != 1) throw storage();
                     try (ResultSet keys = p.getGeneratedKeys()) {
                         if (!keys.next()) throw storage();
                         created = new Supplier(keys.getInt(1), details);
@@ -42,7 +42,8 @@ public final class JdbcSupplierRepository implements SupplierRepository {
                 c.commit();
                 return created;
             } catch (SQLException | RuntimeException failure) { throw rollback(c, failure); }
-        } catch (SQLException failure) { throw storage(); }
+        } catch (SupplierException failure) { throw sanitized(failure); }
+        catch (SQLException failure) { throw storage(); }
     }
 
     @Override public Optional<Supplier> update(int id, Supplier.Details details) {
@@ -58,14 +59,15 @@ public final class JdbcSupplierRepository implements SupplierRepository {
                 Supplier updated = new Supplier(id, details);
                 try (PreparedStatement p = c.prepareStatement("UPDATE supplier SET name=?, phone=?, email=?, city=?, address=?, contact_person=?, notes=? WHERE supplier_id=?")) {
                     bind(p, details); p.setInt(8, id);
-                    int count = p.executeUpdate();
+                    int count = executeWrite(p);
                     // Existence is locked: both matched-row (1) and unchanged-row (0) modes succeed.
                     if (count != 0 && count != 1) throw storage();
                 }
                 c.commit();
                 return Optional.of(updated);
             } catch (SQLException | RuntimeException failure) { throw rollback(c, failure); }
-        } catch (SQLException failure) { throw storage(); }
+        } catch (SupplierException failure) { throw sanitized(failure); }
+        catch (SQLException failure) { throw storage(); }
     }
 
     private void bind(PreparedStatement p, Supplier.Details d) throws SQLException {
@@ -80,8 +82,23 @@ public final class JdbcSupplierRepository implements SupplierRepository {
     private SupplierException rollback(Connection c, Exception failure) {
         try { c.rollback(); }
         catch (SQLException rollbackFailure) { return storage(); }
-        if (failure instanceof SQLException sql && sql.getErrorCode() == 1062) return new SupplierException(DUPLICATE_NAME);
+        if (failure instanceof SupplierException supplier) return supplier;
         return storage();
     }
+    private int executeWrite(PreparedStatement p) throws SQLException {
+        try { return p.executeUpdate(); }
+        catch (SQLException failure) {
+            // Only the actual INSERT/UPDATE may report a name conflict.
+            // Commit/read/close failures remain unconfirmed storage failures.
+            if (failure.getErrorCode() == 1062) throw new SupplierException(DUPLICATE_NAME);
+            throw failure;
+        }
+    }
+
+    private SupplierException sanitized(SupplierException failure) {
+        // Recreate the safe outcome after JDBC scopes close; never retain suppressed driver diagnostics.
+        return new SupplierException(failure.getSuppressed().length == 0 ? failure.reason() : STORAGE_FAILURE);
+    }
+
     private SupplierException storage() { return new SupplierException(STORAGE_FAILURE); }
 }

@@ -149,6 +149,83 @@ class JdbcSupplierRepositoryTest {
         jdbc.finished(); assertTrue(jdbc.rolledBack); assertFalse(jdbc.committed);
     }
 
+
+    @Test void conflictWithConnectionCloseFailureDoesNotLeakSuppressedDiagnostics() {
+        for (boolean update : List.of(false, true)) {
+            var jdbc = new Script(); if (update) jdbc.query(LOCK, List.of(row("supplier_id", 42)));
+            jdbc.fail(update ? UPDATE : INSERT, new SQLException("private synthetic duplicate", "23000", 1062));
+            jdbc.failConnectionClose = true;
+            var failure = assertThrows(SupplierException.class, () -> { if (update) jdbc.repository().update(42, details("Synthetic")); else jdbc.repository().insert(details("Synthetic")); });
+            assertSanitized(failure); assertEquals(STORAGE_FAILURE, failure.reason());
+            jdbc.finished(); assertTrue(jdbc.rolledBack); assertFalse(jdbc.committed);
+        }
+    }
+
+    @Test void rollbackAndCloseFailuresCannotRetainDriverDiagnostics() {
+        var jdbc = new Script(); jdbc.fail(INSERT, new SQLException("private synthetic duplicate", "23000", 1062));
+        jdbc.failRollback = true; jdbc.failConnectionClose = true;
+        var failure = assertReason(STORAGE_FAILURE, () -> jdbc.repository().insert(details("Synthetic")));
+        assertSanitized(failure); jdbc.finished(); assertFalse(jdbc.committed);
+    }
+
+    @Test void readAndReadCloseErrorsRemainStorageFailures() {
+        var read = new Script(); read.fail("SELECT supplier_id, name, phone, email, city, address, contact_person, notes FROM supplier ORDER BY supplier_id DESC", new SQLException("private synthetic read", "23000", 1062));
+        assertSanitized(assertReason(STORAGE_FAILURE, read.repository()::findAll)); read.finished();
+        var close = new Script(); close.query("SELECT supplier_id, name, phone, email, city, address, contact_person, notes FROM supplier ORDER BY supplier_id DESC", List.of()); close.failConnectionClose = true;
+        assertSanitized(assertReason(STORAGE_FAILURE, close.repository()::findAll)); close.finished();
+    }
+
+    @Test void closeFailureAfterCommitIsUnconfirmedRatherThanDuplicateOrSuccess() {
+        for (boolean update : List.of(false, true)) {
+            var jdbc = new Script(); if (update) { jdbc.query(LOCK, List.of(row("supplier_id", 42))); jdbc.write(UPDATE, 1); }
+            else jdbc.insert(1, List.of(row("1", 42)));
+            jdbc.failConnectionClose = true;
+            var failure = assertReason(STORAGE_FAILURE, () -> { if (update) jdbc.repository().update(42, details("Synthetic")); else jdbc.repository().insert(details("Synthetic")); });
+            assertSanitized(failure); jdbc.finished(); assertTrue(jdbc.committed); assertFalse(jdbc.rolledBack);
+        }
+    }
+
+    @Test void commitFailureBeforeOrAfterRecordingCommitIsAlwaysUnconfirmed() {
+        for (boolean update : List.of(false, true)) for (boolean committed : List.of(false, true)) {
+            var jdbc = new Script(); if (update) { jdbc.query(LOCK, List.of(row("supplier_id", 42))); jdbc.write(UPDATE, 1); }
+            else jdbc.insert(1, List.of(row("1", 42)));
+            jdbc.commitFailure = new SQLException("private synthetic lost commit response", "23000", 1062);
+            jdbc.recordCommitBeforeFailure = committed;
+            var failure = assertReason(STORAGE_FAILURE, () -> { if (update) jdbc.repository().update(42, details("Synthetic")); else jdbc.repository().insert(details("Synthetic")); });
+            assertSanitized(failure); assertTrue(failure.getMessage().contains("could not be confirmed"));
+            jdbc.finished(); assertEquals(committed, jdbc.committed); assertTrue(jdbc.rolledBack);
+            assertEquals(1, Collections.frequency(jdbc.events, "write")); // No automatic retry.
+        }
+    }
+
+    @Test void statementCloseErrorsAreNotMisclassifiedAsWriteConflicts() {
+        for (boolean update : List.of(false, true)) {
+            var jdbc = new Script(); if (update) { jdbc.query(LOCK, List.of(row("supplier_id", 42))); jdbc.write(UPDATE, 1); }
+            else jdbc.insert(1, List.of(row("1", 42)));
+            jdbc.failStatementClose = true;
+            assertSanitized(assertReason(STORAGE_FAILURE, () -> { if (update) jdbc.repository().update(42, details("Synthetic")); else jdbc.repository().insert(details("Synthetic")); }));
+            jdbc.finished(); assertTrue(jdbc.rolledBack); assertFalse(jdbc.committed);
+        }
+    }
+
+    @Test void generatedKeyCloseFailureCannotConfirmCreation() {
+        var jdbc = new Script(); jdbc.insert(1, List.of(row("1", 42))); jdbc.failResultClose = true;
+        assertSanitized(assertReason(STORAGE_FAILURE, () -> jdbc.repository().insert(details("Synthetic"))));
+        jdbc.finished(); assertTrue(jdbc.rolledBack); assertFalse(jdbc.committed);
+    }
+
+    @Test void missingRowReadCloseFailureDoesNotBecomeMissingOrConflict() {
+        var jdbc = new Script(); jdbc.query(LOCK, List.of()); jdbc.failResultClose = true;
+        assertSanitized(assertReason(STORAGE_FAILURE, () -> jdbc.repository().update(42, details("Synthetic"))));
+        jdbc.finished(); assertTrue(jdbc.rolledBack); assertFalse(jdbc.committed);
+        assertFalse(jdbc.events.contains("write"));
+    }
+
+    private void assertSanitized(SupplierException failure) {
+        assertNull(failure.getCause()); assertEquals(0, failure.getSuppressed().length);
+        assertFalse(failure.getMessage().contains("private synthetic"));
+    }
+
     private SupplierException assertReason(SupplierException.Reason reason, org.junit.jupiter.api.function.Executable action) {
         var failure = assertThrows(SupplierException.class, action); assertEquals(reason, failure.reason()); return failure;
     }
@@ -167,6 +244,8 @@ class JdbcSupplierRepositoryTest {
         final List<String> events = new ArrayList<>();
         boolean committed, rolledBack, closed, failCommit, failRollback, transaction;
         int closedStatements, closedResults;
+        boolean failConnectionClose, failStatementClose, failResultClose, recordCommitBeforeFailure;
+        SQLException commitFailure;
         void query(String sql, List<Map<String, Object>> rows) { steps.add(new Step(sql, rows, 0, List.of(), null)); }
         void write(String sql, int count) { steps.add(new Step(sql, List.of(), count, List.of(), null)); }
         void insert(int count, List<Map<String, Object>> keys) { steps.add(new Step(INSERT, List.of(), count, keys, null)); }
@@ -185,6 +264,9 @@ class JdbcSupplierRepositoryTest {
                 }
                 case "commit" -> {
                     assertTrue(transaction); events.add("commit");
+                    if (commitFailure != null) {
+                        committed = recordCommitBeforeFailure; throw commitFailure;
+                    }
                     if (failCommit) throw new SQLException("synthetic commit failure");
                     committed = true; yield null;
                 }
@@ -193,7 +275,11 @@ class JdbcSupplierRepositoryTest {
                     if (failRollback) throw new SQLException("synthetic rollback failure");
                     rolledBack = true; yield null;
                 }
-                case "close" -> { closed = true; events.add("close"); yield null; }
+                case "close" -> {
+                    closed = true; events.add("close");
+                    if (failConnectionClose) throw new SQLException("private synthetic connection-close", "23000", 1062);
+                    yield null;
+                }
                 default -> throw new AssertionError("Unexpected connection call: " + method.getName());
             });
         }
@@ -210,7 +296,11 @@ class JdbcSupplierRepositoryTest {
                     yield query ? result(step.rows()) : step.affected();
                 }
                 case "getGeneratedKeys" -> result(step.keys());
-                case "close" -> { closedStatements++; yield null; }
+                case "close" -> {
+                    closedStatements++;
+                    if (failStatementClose && !step.sql().equals(LOCK)) throw new SQLException("private synthetic statement-close", "23000", 1062);
+                    yield null;
+                }
                 default -> throw new AssertionError("Unexpected statement call: " + method.getName());
             });
         }
@@ -221,7 +311,11 @@ class JdbcSupplierRepositoryTest {
                 case "next" -> ++cursor[0] < rows.size();
                 case "getInt" -> ((Number) rows.get(cursor[0]).get(String.valueOf(args[0]))).intValue();
                 case "getString" -> (String) rows.get(cursor[0]).get(String.valueOf(args[0]));
-                case "close" -> { closedResults++; yield null; }
+                case "close" -> {
+                    closedResults++;
+                    if (failResultClose) throw new SQLException("private synthetic result-close", "23000", 1062);
+                    yield null;
+                }
                 default -> throw new AssertionError("Unexpected result call: " + method.getName());
             });
         }
