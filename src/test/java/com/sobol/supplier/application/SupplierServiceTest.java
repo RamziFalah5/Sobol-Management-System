@@ -13,7 +13,7 @@ class SupplierServiceTest {
         SupplierException failure;
         private void available() { if (failure != null) throw failure; }
         private void unique(Supplier.Details d, int id) {
-            if (rows.values().stream().anyMatch(s -> s.id() != id && s.details().name().equalsIgnoreCase(d.name())))
+            if (rows.values().stream().anyMatch(s -> s.id() != id && s.details().name().equals(d.name())))
                 throw new SupplierException(DUPLICATE_NAME);
         }
         public List<Supplier> findAll() { available(); return new ArrayList<>(rows.values()); }
@@ -92,7 +92,7 @@ class SupplierServiceTest {
         var r = new Memory(); var s = new SupplierService(r);
         var first = s.createSupplier("First", "000", null, null, null, null, null);
         var second = s.createSupplier("Second", "000", null, null, null, null, null);
-        reason(DUPLICATE_NAME, () -> s.createSupplier("first", "000", null, null, null, null, null));
+        reason(DUPLICATE_NAME, () -> s.createSupplier("First", "000", null, null, null, null, null));
         reason(DUPLICATE_NAME, () -> s.updateSupplier(second.id(), "First", "000", null, null, null, null, null));
         assertEquals(List.of(first, second), s.listSuppliers());
     }
@@ -117,6 +117,13 @@ class SupplierServiceTest {
         assertThrows(IllegalArgumentException.class, () -> new Supplier(0, details));
         assertThrows(NullPointerException.class, () -> new Supplier(1, null));
         assertThrows(Supplier.InvalidField.class, () -> new Supplier.Details("", "000", null, null, null, null, null));
+    }
+
+    @Test void exactNameRuleAllowsDistinctCaseVariants() {
+        var service = new SupplierService(new Memory());
+        var first = service.createSupplier("Case", "000", null, null, null, null, null);
+        var second = service.createSupplier("case", "000", null, null, null, null, null);
+        assertNotEquals(first.id(), second.id()); assertEquals(2, service.listSuppliers().size());
     }
 
     private Supplier create(SupplierService s, String[] v) { return s.createSupplier(v[0], v[1], v[2], v[3], v[4], v[5], v[6]); }

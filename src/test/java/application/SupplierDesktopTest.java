@@ -163,8 +163,12 @@ class SupplierDesktopTest {
         var r = new Memory(); var c = new ListController(r); var l = load("Suppliers.fxml", c); var content = attach(l);
         TableView<Supplier> suppliers = node(l, "table"); suppliers.getSelectionModel().selectFirst();
         c.view.duringRead = () -> suppliers.getItems().getFirst().setSupplierId(99);
-        button(l, "View").fire(); var view = c.destination;
-        assertSame(view.getRoot(), content.getChildren().getFirst());
+        button(l, "View").fire(); assertNull(c.destination); assertEquals("PostgreSQL transition", c.title);
+        assertSame(l.getRoot(), content.getChildren().getFirst());
+        // Retain the isolated legacy view's identity/mapping contract without routing PostgreSQL IDs into it.
+        var selected = Supplier.fromDomain(r.rows.get(42));
+        var view = load("ViewSupplierShipments.fxml", c.view); content.getChildren().setAll((Parent) view.getRoot());
+        c.view.setSupplier(selected);
         assertEquals("Supplier Shipments - First", ((Label) node(view, "lblTitle")).getText());
         assertEquals(List.of(42), c.view.rowIds); assertEquals(List.of(42), c.view.totalIds);
         assertEquals("Shipments: 1", ((Label) node(view, "lblCount")).getText());
@@ -215,7 +219,7 @@ class SupplierDesktopTest {
         }
         private void available() { if (failure != null) throw new SupplierException(failure); }
         private void unique(Details d, int id) {
-            if (rows.values().stream().anyMatch(s -> s.id() != id && s.details().name().equalsIgnoreCase(d.name()))) throw new SupplierException(DUPLICATE_NAME);
+            if (rows.values().stream().anyMatch(s -> s.id() != id && s.details().name().equals(d.name()))) throw new SupplierException(DUPLICATE_NAME);
         }
         public List<com.sobol.supplier.domain.Supplier> findAll() { available(); return new ArrayList<>(rows.values()); }
         public com.sobol.supplier.domain.Supplier insert(Details d) {

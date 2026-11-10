@@ -4,6 +4,7 @@ import com.sobol.supplier.application.SupplierException;
 import com.sobol.supplier.application.SupplierRepository;
 import com.sobol.supplier.domain.Supplier;
 import java.sql.*;
+import com.sobol.database.PostgresErrors;
 import java.util.*;
 import static com.sobol.supplier.application.SupplierException.Reason.*;
 
@@ -15,7 +16,7 @@ public final class JdbcSupplierRepository implements SupplierRepository {
 
     @Override public List<Supplier> findAll() {
         try (Connection c = connections.open();
-             PreparedStatement p = c.prepareStatement("SELECT supplier_id, name, phone, email, city, address, contact_person, notes FROM supplier ORDER BY supplier_id DESC");
+             PreparedStatement p = c.prepareStatement("SELECT supplier_id, name, phone, email, city, address, contact_person, notes FROM sobol.supplier ORDER BY supplier_id DESC");
              ResultSet r = p.executeQuery()) {
             List<Supplier> rows = new ArrayList<>();
             while (r.next()) rows.add(new Supplier(r.getInt("supplier_id"), new Supplier.Details(
@@ -31,7 +32,7 @@ public final class JdbcSupplierRepository implements SupplierRepository {
             c.setAutoCommit(false);
             try {
                 Supplier created;
-                try (PreparedStatement p = c.prepareStatement("INSERT INTO supplier(name, phone, email, city, address, contact_person, notes) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                try (PreparedStatement p = c.prepareStatement("INSERT INTO sobol.supplier(name, phone, email, city, address, contact_person, notes) VALUES (?, ?, ?, ?, ?, ?, ?)", new String[]{"supplier_id"})) {
                     bind(p, details);
                     if (executeWrite(p) != 1) throw storage();
                     try (ResultSet keys = p.getGeneratedKeys()) {
@@ -51,17 +52,17 @@ public final class JdbcSupplierRepository implements SupplierRepository {
             c.setAutoCommit(false);
             try {
                 boolean exists;
-                try (PreparedStatement p = c.prepareStatement("SELECT supplier_id FROM supplier WHERE supplier_id=? FOR UPDATE")) {
+                try (PreparedStatement p = c.prepareStatement("SELECT supplier_id FROM sobol.supplier WHERE supplier_id=? FOR UPDATE")) {
                     p.setInt(1, id);
                     try (ResultSet r = p.executeQuery()) { exists = r.next(); }
                 }
                 if (!exists) { c.rollback(); return Optional.empty(); }
                 Supplier updated = new Supplier(id, details);
-                try (PreparedStatement p = c.prepareStatement("UPDATE supplier SET name=?, phone=?, email=?, city=?, address=?, contact_person=?, notes=? WHERE supplier_id=?")) {
+                try (PreparedStatement p = c.prepareStatement("UPDATE sobol.supplier SET name=?, phone=?, email=?, city=?, address=?, contact_person=?, notes=? WHERE supplier_id=?")) {
                     bind(p, details); p.setInt(8, id);
                     int count = executeWrite(p);
-                    // Existence is locked: both matched-row (1) and unchanged-row (0) modes succeed.
-                    if (count != 0 && count != 1) throw storage();
+                    // PostgreSQL counts unchanged matched rows too; a locked existing row must match once.
+                    if (count != 1) throw storage();
                 }
                 c.commit();
                 return Optional.of(updated);
@@ -90,7 +91,7 @@ public final class JdbcSupplierRepository implements SupplierRepository {
         catch (SQLException failure) {
             // Only the actual INSERT/UPDATE may report a name conflict.
             // Commit/read/close failures remain unconfirmed storage failures.
-            if (failure.getErrorCode() == 1062) throw new SupplierException(DUPLICATE_NAME);
+            if (PostgresErrors.unique(failure, "supplier", "uq_supplier_name")) throw new SupplierException(DUPLICATE_NAME);
             throw failure;
         }
     }

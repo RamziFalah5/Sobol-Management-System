@@ -26,7 +26,7 @@ class SupplierArchitectureTest {
             assertTrue(source.contains("SupplierService")); assertTrue(source.contains("SupplierModule.service()"));
         }
         String root = Files.readString(Path.of("src/main/java/application/SupplierModule.java"));
-        assertTrue(root.contains("new SupplierService(new JdbcSupplierRepository(DBAuth::get))"));
+        assertTrue(root.contains("new SupplierService(new JdbcSupplierRepository(PostgresDatabase::get))"));
         String jdbc = Files.readString(Path.of("src/main/java/com/sobol/supplier/infrastructure/JdbcSupplierRepository.java"));
         assertFalse(jdbc.contains("javafx.")); assertFalse(jdbc.contains("import application."));
         assertFalse(Files.exists(Path.of("src/main/java/application/SupplierDAO.java")));
@@ -39,6 +39,14 @@ class SupplierArchitectureTest {
         String add = Files.readString(Path.of("src/main/java/application/AddShipmentController.java"));
         assertTrue(add.contains("loadSuppliers();")); assertTrue(add.contains("d.supplierId = sup.getSupplierId();"));
         assertTrue(add.contains("ShipmentDAO.addShipment(d)"));
+    }
+
+    @Test void postgresCompositionAndUnmigratedReceivingBoundaryAreExplicit() throws Exception {
+        String source = Files.readString(Path.of("src/main/java/com/sobol/supplier/infrastructure/JdbcSupplierRepository.java"));
+        assertTrue(source.contains("sobol.supplier")); assertTrue(source.contains("PostgresErrors.unique")); assertFalse(source.contains("1062"));
+        String ui = Files.readString(Path.of("src/main/java/application/SuppliersController.java"));
+        assertTrue(ui.contains("until receiving and inventory migrate together"));
+        assertFalse(ui.contains("ViewSupplierShipments.fxml"));
     }
 
     @Test void viewMappingIsDetachedAndPreservesAllContactsAndIdentity() {

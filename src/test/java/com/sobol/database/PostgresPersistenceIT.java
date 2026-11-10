@@ -2,6 +2,8 @@ package com.sobol.database;
 
 import com.sobol.category.application.*;
 import com.sobol.category.infrastructure.JdbcCategoryRepository;
+import com.sobol.supplier.application.*;
+import com.sobol.supplier.infrastructure.JdbcSupplierRepository;
 import java.sql.*;
 import java.util.*;
 import org.junit.jupiter.api.*;
@@ -90,5 +92,37 @@ class PostgresPersistenceIT {
         } catch (SQLException failure) { throw PostgresDatabase.unavailable(); }
         assertEquals(CategoryException.Reason.NOT_FOUND,
                 assertThrows(CategoryException.class, () -> categories().updateCategory(value.id(), unique(), "")).reason());
+    }
+    private SupplierService suppliers() { return new SupplierService(new JdbcSupplierRepository(PostgresPersistenceIT::connection)); }
+    private com.sobol.supplier.domain.Supplier supplier(String name) {
+        var value = suppliers().createSupplier(name, "000", null, null, null, null, null);
+        return remember("supplier", value.id(), value);
+    }
+    @Test void supplierCrudUnchangedAndNullFieldsUseTheRealRepository() {
+        var value = supplier(unique());
+        assertTrue(suppliers().listSuppliers().contains(value)); assertNull(value.details().email());
+        assertEquals(value, suppliers().updateSupplier(value.id(), value.details().name(), "000", null, null, null, null, null));
+        var updated = suppliers().updateSupplier(value.id(), unique(), "111", "synthetic@example.invalid", "City", "Address", "Contact", "Notes");
+        assertTrue(suppliers().listSuppliers().contains(updated)); assertEquals(value.id(), updated.id());
+    }
+    @Test void supplierUniqueNameRejectsConflictsWithoutAddingContactUniqueness() {
+        String name = unique(); var first = supplier(name); var second = supplier(name.toLowerCase(Locale.ROOT));
+        assertNotEquals(first.id(), second.id());
+        assertEquals(SupplierException.Reason.DUPLICATE_NAME,
+                assertThrows(SupplierException.class, () -> suppliers().createSupplier(name, "000", null, null, null, null, null)).reason());
+        assertEquals(SupplierException.Reason.DUPLICATE_NAME,
+                assertThrows(SupplierException.class, () -> suppliers().updateSupplier(second.id(), name, "000", null, null, null, null, null)).reason());
+        assertTrue(suppliers().listSuppliers().contains(second));
+        var sharedEmail = unique().toLowerCase(Locale.ROOT) + "@example.invalid";
+        suppliers().updateSupplier(first.id(), name, "000", sharedEmail, null, null, null, null);
+        suppliers().updateSupplier(second.id(), second.details().name(), "000", sharedEmail, null, null, null, null);
+    }
+    @Test void deletedSupplierUpdateReportsMissing() throws SQLException {
+        var value = supplier(unique());
+        try (Connection c = connection(); PreparedStatement p = c.prepareStatement("DELETE FROM sobol.supplier WHERE supplier_id=?")) {
+            p.setInt(1, value.id()); assertEquals(1, p.executeUpdate());
+        } catch (SQLException failure) { throw PostgresDatabase.unavailable(); }
+        assertEquals(SupplierException.Reason.NOT_FOUND,
+                assertThrows(SupplierException.class, () -> suppliers().updateSupplier(value.id(), unique(), "000", null, null, null, null, null)).reason());
     }
 }

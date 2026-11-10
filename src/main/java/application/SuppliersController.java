@@ -124,19 +124,7 @@ public class SuppliersController {
 		if (sel == null)
 			return;
 
-		try {
-			FXMLLoader loader = createViewLoader("ViewSupplierShipments.fxml");
-			Parent view = loader.load();
-
-			ViewSupplierShipmentsController c = loader.getController();
-			c.setSupplier(sel);
-
-			StackPane content = (StackPane) table.getScene().getRoot().lookup("#contentArea");
-			content.getChildren().setAll(view);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		alert("PostgreSQL transition", "Supplier shipments are unavailable until receiving and inventory migrate together.");
 	}
 
 	private void go(String fxml) {
