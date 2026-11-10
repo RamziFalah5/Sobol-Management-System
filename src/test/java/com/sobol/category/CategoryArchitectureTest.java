@@ -28,6 +28,13 @@ class CategoryArchitectureTest {
         }
     }
 
+    @Test void compositionAndSqlUseOnlyThePostgresSlice() throws Exception {
+        String root = Files.readString(Path.of("src/main/java/application/CategoryModule.java"));
+        assertTrue(root.contains("PostgresDatabase::get")); assertFalse(root.contains("DBAuth"));
+        String jdbc = Files.readString(Path.of("src/main/java/com/sobol/category/infrastructure/JdbcCategoryRepository.java"));
+        assertTrue(jdbc.contains("sobol.category")); assertTrue(jdbc.contains("PostgresErrors.unique")); assertFalse(jdbc.contains("1062"));
+    }
+
     @Test void javaFxViewStateCannotMutateTheImmutableDomainObject() {
         var domain = new com.sobol.category.domain.Category(42, "Synthetic", "Description");
         var view = application.Category.fromDomain(domain);

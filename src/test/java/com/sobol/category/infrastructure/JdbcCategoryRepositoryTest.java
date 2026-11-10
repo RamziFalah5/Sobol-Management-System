@@ -3,21 +3,22 @@ package com.sobol.category.infrastructure;
 import com.sobol.category.application.CategoryException;
 import com.sobol.category.domain.Category;
 import org.junit.jupiter.api.Test;
+import static com.sobol.database.PostgresErrorsTest.conflict;
 import java.lang.reflect.*;
 import java.sql.*;
 import java.util.*;
 import static com.sobol.category.application.CategoryException.Reason.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-/** Scripted JDBC contracts, not a SQL engine or evidence of live MySQL execution. */
+/** Scripted JDBC contracts, not a SQL engine or evidence of live PostgreSQL execution. */
 class JdbcCategoryRepositoryTest {
-    private static final String LOCK = "SELECT category_id FROM category WHERE category_id=? FOR UPDATE";
-    private static final String UPDATE = "UPDATE category SET name=?, description=? WHERE category_id=?";
-    private static final String INSERT = "INSERT INTO category(name, description) VALUES (?, ?)";
+    private static final String LOCK = "SELECT category_id FROM sobol.category WHERE category_id=? FOR UPDATE";
+    private static final String UPDATE = "UPDATE sobol.category SET name=?, description=? WHERE category_id=?";
+    private static final String INSERT = "INSERT INTO sobol.category(name, description) VALUES (?, ?)";
 
     @Test void listsDomainValuesAndClosesReadResources() {
         var jdbc = new Script();
-        jdbc.query("SELECT category_id, name, description FROM category", List.of(row("category_id", 42, "name", "Synthetic", "description", null)));
+        jdbc.query("SELECT category_id, name, description FROM sobol.category ORDER BY category_id", List.of(row("category_id", 42, "name", "Synthetic", "description", null)));
         assertEquals(List.of(new Category(42, "Synthetic", "")), jdbc.repository().findAll());
         jdbc.finished(); assertEquals(1, jdbc.closedResults); assertEquals(1, jdbc.closedStatements);
     }
@@ -42,11 +43,11 @@ class JdbcCategoryRepositoryTest {
         assertEquals(List.of(Map.of(1, 42)), jdbc.bindings);
     }
 
-    @Test void zeroChangedRowsOnALockedExistingTargetStillSucceeds() {
+    @Test void zeroRowsAfterLockIsAnUnexpectedPostgresFailure() {
         var jdbc = new Script(); jdbc.query(LOCK, List.of(row("category_id", 42))); jdbc.write(UPDATE, 0);
-        assertEquals(Optional.of(new Category(42, "Synthetic", "Description")), jdbc.repository().update(42, "Synthetic", "Description"));
-        jdbc.finished(); assertTrue(jdbc.committed); assertFalse(jdbc.rolledBack);
-        assertEquals(List.of("begin", "query", "write", "commit", "close"), jdbc.events);
+        assertReason(STORAGE_FAILURE, () -> jdbc.repository().update(42, "Synthetic", "Description"));
+        jdbc.finished(); assertFalse(jdbc.committed); assertTrue(jdbc.rolledBack);
+        assertEquals(List.of("begin", "query", "write", "rollback", "close"), jdbc.events);
     }
 
     @Test void oneMatchedOrChangedRowSucceedsAndBindsTheRequestedId() {
@@ -58,14 +59,14 @@ class JdbcCategoryRepositoryTest {
 
     @Test void duplicateUpdateIsRolledBackAndTranslatedWithoutDriverDiagnostics() {
         var jdbc = new Script(); jdbc.query(LOCK, List.of(row("category_id", 42)));
-        jdbc.fail(UPDATE, new SQLException("private synthetic diagnostic", "23000", 1062));
+        jdbc.fail(UPDATE, conflict("sobol", "category", "uq_category_name", "23505"));
         CategoryException failure = assertReason(DUPLICATE_NAME, () -> jdbc.repository().update(42, "Duplicate", ""));
         assertNull(failure.getCause()); assertFalse(failure.getMessage().contains("private synthetic"));
         jdbc.finished(); assertTrue(jdbc.rolledBack); assertFalse(jdbc.committed);
     }
 
     @Test void duplicateInsertIsNotReportedAsAnInfrastructureOutage() {
-        var jdbc = new Script(); jdbc.fail(INSERT, new SQLException("synthetic conflict", "23000", 1062));
+        var jdbc = new Script(); jdbc.fail(INSERT, conflict("sobol", "category", "uq_category_name", "23505"));
         assertReason(DUPLICATE_NAME, () -> jdbc.repository().insert("Duplicate", ""));
         jdbc.finished(); assertTrue(jdbc.rolledBack);
     }
@@ -86,7 +87,7 @@ class JdbcCategoryRepositoryTest {
 
     @Test void rollbackFailureOverridesAConflictWithAnInfrastructureFailure() {
         var jdbc = new Script(); jdbc.query(LOCK, List.of(row("category_id", 42)));
-        jdbc.fail(UPDATE, new SQLException("synthetic conflict", "23000", 1062)); jdbc.failRollback = true;
+        jdbc.fail(UPDATE, conflict("sobol", "category", "uq_category_name", "23505")); jdbc.failRollback = true;
         assertReason(STORAGE_FAILURE, () -> jdbc.repository().update(42, "Synthetic", ""));
         jdbc.finished(); assertFalse(jdbc.committed);
     }
@@ -96,7 +97,7 @@ class JdbcCategoryRepositoryTest {
         assertReason(STORAGE_FAILURE, () -> jdbc.repository().update(42, "Synthetic", ""));
         jdbc.finished(); assertTrue(jdbc.rolledBack);
         var corrupt = new Script();
-        corrupt.query("SELECT category_id, name, description FROM category", List.of(row("category_id", 0, "name", "Synthetic", "description", "")));
+        corrupt.query("SELECT category_id, name, description FROM sobol.category ORDER BY category_id", List.of(row("category_id", 0, "name", "Synthetic", "description", "")));
         assertReason(STORAGE_FAILURE, () -> corrupt.repository().findAll()); corrupt.finished();
     }
 
@@ -104,7 +105,7 @@ class JdbcCategoryRepositoryTest {
     @Test void conflictWithConnectionCloseFailureDoesNotLeakSuppressedDiagnostics() {
         for (boolean update : List.of(false, true)) {
             var jdbc = new Script(); if (update) jdbc.query(LOCK, List.of(row("category_id", 42)));
-            jdbc.fail(update ? UPDATE : INSERT, new SQLException("private synthetic duplicate", "23000", 1062));
+            jdbc.fail(update ? UPDATE : INSERT, conflict("sobol", "category", "uq_category_name", "23505"));
             jdbc.failConnectionClose = true;
             var failure = assertThrows(CategoryException.class, () -> { if (update) jdbc.repository().update(42, "Synthetic", ""); else jdbc.repository().insert("Synthetic", ""); });
             assertSanitized(failure); assertEquals(STORAGE_FAILURE, failure.reason());
@@ -113,16 +114,16 @@ class JdbcCategoryRepositoryTest {
     }
 
     @Test void rollbackAndCloseFailuresCannotRetainDriverDiagnostics() {
-        var jdbc = new Script(); jdbc.fail(INSERT, new SQLException("private synthetic duplicate", "23000", 1062));
+        var jdbc = new Script(); jdbc.fail(INSERT, conflict("sobol", "category", "uq_category_name", "23505"));
         jdbc.failRollback = true; jdbc.failConnectionClose = true;
         var failure = assertReason(STORAGE_FAILURE, () -> jdbc.repository().insert("Synthetic", ""));
         assertSanitized(failure); jdbc.finished(); assertFalse(jdbc.committed);
     }
 
     @Test void readAndReadCloseErrorsRemainStorageFailures() {
-        var read = new Script(); read.fail("SELECT category_id, name, description FROM category", new SQLException("private synthetic read", "23000", 1062));
+        var read = new Script(); read.fail("SELECT category_id, name, description FROM sobol.category ORDER BY category_id", conflict("sobol", "category", "uq_category_name", "23505"));
         assertSanitized(assertReason(STORAGE_FAILURE, read.repository()::findAll)); read.finished();
-        var close = new Script(); close.query("SELECT category_id, name, description FROM category", List.of()); close.failConnectionClose = true;
+        var close = new Script(); close.query("SELECT category_id, name, description FROM sobol.category ORDER BY category_id", List.of()); close.failConnectionClose = true;
         assertSanitized(assertReason(STORAGE_FAILURE, close.repository()::findAll)); close.finished();
     }
 
@@ -140,7 +141,7 @@ class JdbcCategoryRepositoryTest {
         for (boolean update : List.of(false, true)) for (boolean committed : List.of(false, true)) {
             var jdbc = new Script(); if (update) { jdbc.query(LOCK, List.of(row("category_id", 42))); jdbc.write(UPDATE, 1); }
             else jdbc.insert(1, List.of(row("1", 42)));
-            jdbc.commitFailure = new SQLException("private synthetic lost commit response", "23000", 1062);
+            jdbc.commitFailure = conflict("sobol", "category", "uq_category_name", "23505");
             jdbc.recordCommitBeforeFailure = committed;
             var failure = assertReason(STORAGE_FAILURE, () -> { if (update) jdbc.repository().update(42, "Synthetic", ""); else jdbc.repository().insert("Synthetic", ""); });
             assertSanitized(failure); assertTrue(failure.getMessage().contains("could not be confirmed"));
@@ -170,6 +171,18 @@ class JdbcCategoryRepositoryTest {
         assertSanitized(assertReason(STORAGE_FAILURE, () -> jdbc.repository().update(42, "Synthetic", "")));
         jdbc.finished(); assertTrue(jdbc.rolledBack); assertFalse(jdbc.committed);
         assertFalse(jdbc.events.contains("write"));
+    }
+
+    @Test void unknownOrWrongTableUniqueViolationsNeverGuessANameConflict() {
+        for (SQLException failure : List.of(conflict("sobol", "category", "unknown", "23505"),
+                conflict("sobol", "supplier", "uq_category_name", "23505"),
+                conflict("other", "category", "uq_category_name", "23505"),
+                conflict("sobol", "category", "uq_category_name", "23503"),
+                new SQLException("uq_category_name", "23505"), new SQLException("synthetic", "23000", 1062))) {
+            var jdbc = new Script(); jdbc.fail(INSERT, failure);
+            assertSanitized(assertReason(STORAGE_FAILURE, () -> jdbc.repository().insert("Synthetic", "")));
+            jdbc.finished(); assertTrue(jdbc.rolledBack);
+        }
     }
 
     private void assertSanitized(CategoryException failure) {
@@ -208,7 +221,10 @@ class JdbcCategoryRepositoryTest {
             return proxy(Connection.class, (object, method, args) -> switch (method.getName()) {
                 case "setAutoCommit" -> { assertEquals(false, args[0]); transaction = true; events.add("begin"); yield null; }
                 case "prepareStatement" -> {
-                    Step step = steps.remove(); assertEquals(step.sql(), args[0]); yield statement(step);
+                    Step step = steps.remove(); assertEquals(step.sql(), args[0]);
+                    if (step.sql().equals(INSERT)) assertArrayEquals(new String[]{"category_id"}, (String[]) args[1]);
+                    else assertEquals(1, args.length);
+                    yield statement(step);
                 }
                 case "commit" -> {
                     assertTrue(transaction); events.add("commit");
@@ -225,7 +241,7 @@ class JdbcCategoryRepositoryTest {
                 }
                 case "close" -> {
                     closed = true; events.add("close");
-                    if (failConnectionClose) throw new SQLException("private synthetic connection-close", "23000", 1062);
+                    if (failConnectionClose) throw conflict("sobol", "category", "uq_category_name", "23505");
                     yield null;
                 }
                 default -> throw new AssertionError("Unexpected connection call: " + method.getName());
@@ -245,7 +261,7 @@ class JdbcCategoryRepositoryTest {
                 case "getGeneratedKeys" -> result(step.keys());
                 case "close" -> {
                     closedStatements++;
-                    if (failStatementClose && !step.sql().equals(LOCK)) throw new SQLException("private synthetic statement-close", "23000", 1062);
+                    if (failStatementClose && !step.sql().equals(LOCK)) throw conflict("sobol", "category", "uq_category_name", "23505");
                     yield null;
                 }
                 default -> throw new AssertionError("Unexpected statement call: " + method.getName());
@@ -260,7 +276,7 @@ class JdbcCategoryRepositoryTest {
                 case "getString" -> (String) rows.get(cursor[0]).get(String.valueOf(args[0]));
                 case "close" -> {
                     closedResults++;
-                    if (failResultClose) throw new SQLException("private synthetic result-close", "23000", 1062);
+                    if (failResultClose) throw conflict("sobol", "category", "uq_category_name", "23505");
                     yield null;
                 }
                 default -> throw new AssertionError("Unexpected result call: " + method.getName());

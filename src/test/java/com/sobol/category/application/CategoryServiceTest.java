@@ -13,7 +13,7 @@ class CategoryServiceTest {
         CategoryException failure;
         private void available() { if (failure != null) throw failure; }
         private void unique(String name, int currentId) {
-            if (rows.values().stream().anyMatch(c -> c.id() != currentId && c.name().equalsIgnoreCase(name)))
+            if (rows.values().stream().anyMatch(c -> c.id() != currentId && c.name().equals(name)))
                 throw new CategoryException(DUPLICATE_NAME);
         }
         public List<Category> findAll() { available(); return new ArrayList<>(rows.values()); }
@@ -63,7 +63,7 @@ class CategoryServiceTest {
     @Test void duplicateCreationAndUpdateRemainDistinctFromMissingAndStorageFailure() {
         var repo = new MemoryRepository(); var service = new CategoryService(repo);
         service.createCategory("First", ""); var second = service.createCategory("Second", "");
-        assertReason(DUPLICATE_NAME, () -> service.createCategory("first", ""));
+        assertReason(DUPLICATE_NAME, () -> service.createCategory("First", ""));
         assertReason(DUPLICATE_NAME, () -> service.updateCategory(second.id(), "First", ""));
         assertEquals("Second", repo.rows.get(second.id()).name());
     }
@@ -95,6 +95,14 @@ class CategoryServiceTest {
         assertThrows(IllegalArgumentException.class, () -> new Category(0, "Synthetic", ""));
         assertThrows(IllegalArgumentException.class, () -> new Category(1, "", ""));
         assertEquals("", new Category(1, "Synthetic", null).description());
+    }
+
+    @Test void exactNameRuleAllowsDistinctCaseVariants() {
+        var service = new CategoryService(new MemoryRepository());
+        var first = service.createCategory("Case", "");
+        var second = service.createCategory("case", "");
+        assertNotEquals(first.id(), second.id());
+        assertEquals(2, service.listCategories().size());
     }
 
     private void assertReason(CategoryException.Reason reason, org.junit.jupiter.api.function.Executable action) {

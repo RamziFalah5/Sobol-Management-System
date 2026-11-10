@@ -306,7 +306,7 @@ public class CategoryController {
 	}
 
 	private void openProducts() {
-		loadView("Products.fxml");
+		showInfo("PostgreSQL transition", "Products and inventory are unavailable until their complete PostgreSQL migration.");
 	}
 
 	private void loadView(String fxml) {

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.postgresql.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class PostgresErrorsTest {
+public class PostgresErrorsTest {
     public static PSQLException conflict(String schema, String table, String constraint, String state) {
         return new PSQLException(new ServerErrorMessage("SERROR\0C" + state + "\0s" + schema + "\0t" + table
                 + "\0n" + constraint + "\0Mprivate synthetic localized diagnostic\0Dprivate synthetic duplicate value\0\0"));

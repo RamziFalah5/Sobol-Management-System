@@ -220,7 +220,7 @@ class ControllerRepairsDesktopTest {
         assertEquals(1, controller.backCalls); assertEquals(calls, repository.insertCalls);
     }); }
 
-    @Test void categorySearchAndProductNavigationPreservePresentationSessionOnly() throws Exception { onFx(() -> {
+    @Test void categorySearchPreservesSelectionButBlocksUnmigratedInventoryNavigation() throws Exception { onFx(() -> {
         var controller = new CategoriesStub(List.of(new Category(42, "Synthetic A", "First"), new Category(99, "Synthetic B", "Second")));
         var loader = load("Category.fxml", controller); StackPane content = attachCategoryScene(loader);
         TextField search = node(loader, "txtSearch"); search.setText("Second");
@@ -228,7 +228,8 @@ class ControllerRepairsDesktopTest {
         assertEquals(1, grid.getChildren().size());
         ((Button) grid.getChildren().getFirst()).fire();
         assertEquals(99, CategorySession.getSelectedCategoryId()); assertEquals("Synthetic B", CategorySession.getSelectedCategoryName());
-        assertSame(controller.productsLoader.getRoot(), content.getChildren().getFirst());
+        assertNull(controller.productsLoader); assertSame(loader.getRoot(), content.getChildren().getFirst());
+        assertEquals("PostgreSQL transition", controller.alertTitle);
         assertEquals(0, controller.repository.insertCalls); assertEquals(0, controller.repository.updateCalls);
     }); }
 
@@ -383,7 +384,7 @@ class ControllerRepairsDesktopTest {
         }
         private void canWrite(String name, int id) {
             if (writeFailure != null) throw new CategoryException(writeFailure);
-            if (rows.values().stream().anyMatch(c -> c.id() != id && c.name().equalsIgnoreCase(name)))
+            if (rows.values().stream().anyMatch(c -> c.id() != id && c.name().equals(name)))
                 throw new CategoryException(CategoryException.Reason.DUPLICATE_NAME);
         }
         public com.sobol.category.domain.Category insert(String name, String description) {

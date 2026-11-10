@@ -4,10 +4,11 @@ import com.sobol.category.application.CategoryException;
 import com.sobol.category.application.CategoryRepository;
 import com.sobol.category.domain.Category;
 import java.sql.*;
+import com.sobol.database.PostgresErrors;
 import java.util.*;
 import static com.sobol.category.application.CategoryException.Reason.*;
 
-/** Owns each supplied connection/transaction. Production wiring supplies the existing guarded DBAuth. */
+/** Owns each supplied connection/transaction. Production wiring supplies the guarded PostgreSQL boundary. */
 public final class JdbcCategoryRepository implements CategoryRepository {
     @FunctionalInterface public interface Connections { Connection open() throws SQLException; }
     private final Connections connections;
@@ -16,7 +17,7 @@ public final class JdbcCategoryRepository implements CategoryRepository {
 
     @Override public List<Category> findAll() {
         try (Connection c = connections.open();
-             PreparedStatement p = c.prepareStatement("SELECT category_id, name, description FROM category");
+             PreparedStatement p = c.prepareStatement("SELECT category_id, name, description FROM sobol.category ORDER BY category_id");
              ResultSet r = p.executeQuery()) {
             List<Category> categories = new ArrayList<>();
             while (r.next()) categories.add(new Category(r.getInt("category_id"), r.getString("name"), r.getString("description")));
@@ -31,7 +32,7 @@ public final class JdbcCategoryRepository implements CategoryRepository {
             try {
                 Category created;
                 try (PreparedStatement p = c.prepareStatement(
-                        "INSERT INTO category(name, description) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                        "INSERT INTO sobol.category(name, description) VALUES (?, ?)", new String[]{"category_id"})) {
                     p.setString(1, name); p.setString(2, description);
                     if (executeWrite(p) != 1) throw new CategoryException(STORAGE_FAILURE);
                     try (ResultSet keys = p.getGeneratedKeys()) {
@@ -50,10 +51,10 @@ public final class JdbcCategoryRepository implements CategoryRepository {
         try (Connection c = connections.open()) {
             c.setAutoCommit(false);
             try {
-                // A locking existence read distinguishes missing from an unchanged-row count of zero.
+                // A locking existence read distinguishes missing before a PostgreSQL matched-row update.
                 // The row cannot be deleted between this check and UPDATE within this transaction.
                 boolean exists;
-                try (PreparedStatement p = c.prepareStatement("SELECT category_id FROM category WHERE category_id=? FOR UPDATE")) {
+                try (PreparedStatement p = c.prepareStatement("SELECT category_id FROM sobol.category WHERE category_id=? FOR UPDATE")) {
                     p.setInt(1, id);
                     try (ResultSet r = p.executeQuery()) { exists = r.next(); }
                 }
@@ -62,11 +63,11 @@ public final class JdbcCategoryRepository implements CategoryRepository {
                     return Optional.empty();
                 }
                 Category updated = new Category(id, name, description);
-                try (PreparedStatement p = c.prepareStatement("UPDATE category SET name=?, description=? WHERE category_id=?")) {
+                try (PreparedStatement p = c.prepareStatement("UPDATE sobol.category SET name=?, description=? WHERE category_id=?")) {
                     p.setString(1, updated.name()); p.setString(2, updated.description()); p.setInt(3, id);
                     int rows = executeWrite(p);
-                    // Connector/J may report matched rows (1) or changed rows (0 for an unchanged row).
-                    if (rows != 0 && rows != 1) throw new CategoryException(STORAGE_FAILURE);
+                    // PostgreSQL counts matched rows, including unchanged values; zero after the lock is unexpected.
+                    if (rows != 1) throw new CategoryException(STORAGE_FAILURE);
                 }
                 c.commit();
                 return Optional.of(updated);
@@ -87,7 +88,7 @@ public final class JdbcCategoryRepository implements CategoryRepository {
         catch (SQLException failure) {
             // Only the actual INSERT/UPDATE may report a name conflict.
             // Commit/read/close failures remain unconfirmed storage failures.
-            if (failure.getErrorCode() == 1062) throw new CategoryException(DUPLICATE_NAME);
+            if (PostgresErrors.unique(failure, "category", "uq_category_name")) throw new CategoryException(DUPLICATE_NAME);
             throw failure;
         }
     }
