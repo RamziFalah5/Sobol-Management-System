@@ -52,6 +52,25 @@
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>mysql-it</id>
+      <build><plugins><plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-failsafe-plugin</artifactId><version>3.2.5</version>
+        <configuration><useModulePath>false</useModulePath><failIfNoTests>true</failIfNoTests>
+          <includes><include>**/*IT.java</include></includes>
+          <systemPropertyVariables><junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled></systemPropertyVariables>
+          <forkCount>1</forkCount><reuseForks>true</reuseForks>
+        </configuration>
+        <executions><execution><goals><goal>integration-test</goal><goal>verify</goal></goals></execution></executions>
+      </plugin></plugins></build>
+    </profile>
+    <profile>
+      <id>db-setup</id>
+      <build><plugins><plugin>
+        <groupId>org.codehaus.mojo</groupId><artifactId>exec-maven-plugin</artifactId><version>3.5.0</version>
+        <configuration><mainClass>application.DevDatabase</mainClass><classpathScope>test</classpathScope></configuration>
+      </plugin></plugins></build>
+    </profile>
     <profile><id>desktop-smoke</id><properties><desktop.test.exclude>**/NoTestsExcluded.java</desktop.test.exclude></properties></profile>
   </profiles>
 </project>

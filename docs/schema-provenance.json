@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "resource": "db/migration/V001__historical_schema.sql",
+  "sha256": "dc319a6dfd220626b82ca8bb0c1dfdeb1b94b68a12362956efa045a89ba8d113",
+  "normalization": "Only schema qualification, FK creation order, and removal of table AUTO_INCREMENT counters. Column definitions, indexes, constraints and table options unchanged.",
+  "tables": {
+    "branch": "c7f0d8eb96f9a0d6dd4dd221dd26b5135a879ec45f8b8dbbd754e15a4f013b4e",
+    "category": "5f7f8c41b3ad27723ddc0559b8dacb413dc11909b2db0a29e076b5f0a8be5bf4",
+    "customer": "05075c90fb9d84e64c027adccedd13f1c774feb06bf5cd77fe76d881c08900c8",
+    "supplier": "151bde271909415f52f99ac7f9f625f751a6adf86b9cc7c4995f7211030205bc",
+    "user_account": "f627ced47e0dddb641b1f1dbade4e4a62725d694a223b3a74f658b08c62e5043",
+    "user_database": "9f9dc29c5b4bb8b5a22f96608464ca3ec8fc6d1af3e3ad25842c3dec58d9d32b",
+    "vehicle": "238eaf4a3e6e3b3f0c1dc6155318df20e5e1b3bf8aca0bbce70b0e93f16cb181",
+    "warehouse": "704756822e24019ba89dd4aa622eb54dfc3c387d8a0daede3388936ad931be30",
+    "employee": "6143962547b5aa65ab3f92f981d79e065bf6dfb22cf70aaae6b2935804336d81",
+    "product": "bdc779d813baf19ef2bdbe6aa00fa7ad86353cd55b281fac76473deb66d10b7b",
+    "attendance": "f50313e09f1fccef5eaf62aba4988f7bbd337929b2a8ccb73b0c09a6285630e1",
+    "import_shipment": "fb92a4aa68f962706742e1af549624660b2f61abe04644f5233c0d6b91d8a46d",
+    "sales_order": "b159d3f527fd47f03a5e342234248c096dde7d24389563e0396e3470663eb8ff",
+    "sales_order_item": "01ca0a3f1732469a68774e604e9bc098b3ae89743cccf997288d7f699920138c"
+  }
+}

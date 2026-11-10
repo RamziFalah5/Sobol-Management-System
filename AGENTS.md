@@ -12,6 +12,7 @@
 - Prepare `.gitignore` before staging. Review the complete staged snapshot, not just the diff, using `tools/review_staged.py` and manual review.
 - Database access is disabled by default. Recovery is restricted to loopback `sobol_dev`; never connect to or modify the original `accounts` database.
 - Use synthetic fixtures for tests. Never log connection credentials or private configuration.
+- The only SQL file permitted in Git is the reviewed schema-only V001 under `src/test/resources/db/migration`, checked against `docs/schema-provenance.json`. Dumps and historical INSERT records remain prohibited. Database setup and integration tests require separate explicit environment confirmations; see `docs/DEVELOPMENT-DATABASE.md`.
 - An ignore file does not protect already tracked secrets. Stop and remove secrets from the proposed tree before committing.
 
 ## Verification

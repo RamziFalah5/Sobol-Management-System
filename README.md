@@ -21,9 +21,9 @@ Database access is **disabled by default**. The sign-in window can open without 
 
 ## Development database boundary
 
-No database is created or imported by this repository or its tests. Only loopback MySQL and the isolated schema **`sobol_dev`** are accepted. The original schema is rejected. See `config/development.env.example` for environment variable names; it contains no credentials and is not auto-loaded.
+Ordinary builds never create or connect to a database. Explicit opt-in tooling can initialize only **`sobol_dev`**, from a sanitized historical schema with no historical records. Setup and Integration Tests require numeric loopback `127.0.0.1`, separate limited application credentials and safety confirmations. The original schema is rejected. See [development database instructions](docs/DEVELOPMENT-DATABASE.md) and `config/development.env.example`; neither contains credentials or is auto-loaded.
 
-Supply credentials privately through the process environment only after preparing an isolated database and least-privilege user. Set `SOBOL_DB_ENABLED=true` explicitly to opt in. Never commit local configuration or paste credentials into commands, reports, logs, issues, or pull requests. Tests force database access off.
+Supply credentials privately through the process environment only after preparing an isolated database and least-privilege user. Set `SOBOL_DB_ENABLED=true` explicitly to opt in. Never commit local configuration or paste credentials into commands, reports, logs, issues, or pull requests. Surefire unit/contract tests force database access off. Failsafe Integration Tests run only with `-Pmysql-it verify` after the documented preflight; they never create schemas and fail clearly if setup is unavailable.
 
 Existing GitHub history previously contained embedded database credentials. Removing them from this tree does not revoke them or remove old commits. The owner must rotate/revoke the historical credentials. Shared history has not been rewritten.
 

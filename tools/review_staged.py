@@ -31,7 +31,11 @@ if args.original_auth:
         sys.exit('Unable to privately identify the historical credential; review stopped.')
     known_secret = match.group(1).encode('utf-8')
 
-binary_assets = json.loads((root / 'docs/resource-provenance.json').read_text(encoding='utf-8'))
+binary_assets = json.loads(git('show', ':docs/resource-provenance.json'))
+schema_manifest = json.loads(git('show', ':docs/schema-provenance.json'))
+schema_path = 'src/test/resources/' + schema_manifest['resource']
+if schema_path != 'src/test/resources/db/migration/V001__historical_schema.sql':
+    sys.exit('Unexpected sanitized schema path; review stopped.')
 patterns = [
     ('private key', re.compile(rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----')),
     ('GitHub token', re.compile(rb'(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})')),
@@ -48,10 +52,20 @@ for path in paths:
     data = git('show', ':' + path)
     lower = path.lower()
     if (any(part in lower.split('/') for part in ['target', 'bin', 'backups', 'private', 'dumps', 'uploads', '.metadata'])
-            or lower.endswith(('.sql', '.dump', '.zip', '.jar', '.class', '.key', '.pem'))
+            or (lower.endswith('.sql') and path != schema_path)
+            or lower.endswith(('.dump', '.zip', '.jar', '.class', '.key', '.pem'))
             or (Path(path).name.startswith('.env') and not path.endswith('.example'))
             or (lower.startswith('config/') and not path.endswith('.example'))):
         findings.append((path, 'private/generated material is staged'))
+    if path == schema_path:
+        if hashlib.sha256(data).hexdigest() != schema_manifest['sha256']:
+            findings.append((path, 'schema differs from reviewed provenance'))
+        ddl = re.sub(rb'(?m)^--[^\r\n]*', b'', data)
+        statements = [s.strip() for s in ddl.split(b';') if s.strip()]
+        if (len(statements) != 14 or any(not re.match(rb'CREATE TABLE `sobol_dev`\.`[a-z_]+` \(', s) for s in statements)
+                or re.search(rb'\b(?:INSERT|TRUNCATE|DROP|USE|GRANT|REVOKE|CALL|LOAD)\b', ddl, re.I)
+                or re.search(rb'\baccounts\b', ddl, re.I)):
+            findings.append((path, 'only the 14 sanitized development CREATE TABLE statements are allowed'))
     if known_secret and known_secret in data:
         findings.append((path, 'historical database credential is present'))
     if b'\0' in data or lower.endswith(('.png', '.jpg', '.jpeg', '.gif', '.ico')):

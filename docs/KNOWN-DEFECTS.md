@@ -22,3 +22,16 @@ These defects exist in the original source; recovery does not silently repair th
 | View/social actions | Multiple worker View actions are placeholders; social buttons have no handlers | Do not present these as completed features. |
 
 Recovery-only resource substitutions are listed in RECOVERY.md and the provenance manifest. They are not business fixes. Database-backed runtime behavior remains unverified until a separately authorized isolated schema and synthetic fixtures are prepared.
+
+## Phase 2 database investigation (static evidence; no live defect reproduction)
+
+The owner has not prepared isolated database accounts. Integration infrastructure is compiled, but its preflight stops before connecting. The following findings are source/schema conclusions, not observed MySQL test failures. No original application source was changed.
+
+| Severity | Evidence | Impact / remediation direction for a separately approved phase |
+| --- | --- | --- |
+| High | ShipmentDAO.addShipment() computes currentQty + d.quantity without a positive-quantity check; inserts d.totalCost and caller branch/warehouse directly. V001 has independent FKs and no CHECK constraints. | Negative receipts, mismatched totals and inconsistent branch/warehouse location are not rejected at this persistence boundary. Validate centrally and define location/total invariants before changing behavior. UI validation alone does not establish the DAO invariant. |
+| High | SalesDAO.createOrder(), ShipmentDAO.addShipment(): nonlocking SELECT then absolute stock UPDATE; ProductDAO.canFitInWarehouse() is separate from insertProduct()/updateProduct(). | Lost update/overselling/capacity race risks. Real concurrency tests are prepared, unexecuted. Define atomic stock/capacity operations and locking strategy; do not claim existing transactions resolve these races. |
+| Medium | SalesDAO/ShipmentDAO/WarehouseDAO outer catch blocks are outside try-with-resources connection scope and contain no explicit rollback; AttendanceDAO batch methods explicitly rollback. | Failure-path consistency depends on connector close behavior for some operations. Verify injected connection/commit failures and make transaction failure handling explicit in Phase 3. This is not a claim that close currently commits partial work. |
+| Medium | V001: product.branch_id and product.warehouse_id have separate FKs; employee.managed_branch_id has no FK; user_database.user_id has no FK. | FK-valid rows can still violate intended cross-field/domain consistency; orphan metadata is structurally permitted. Preserve historical DDL now; agree on intended invariants before adding constraints. |
+
+The known empty-warehouse COUNT(*) and nonexistent-category update defects have correct-behavior Integration Tests tagged `original-defect`; they remain enabled. See DEVELOPMENT-DATABASE.md for coverage, unexecuted scenarios and setup prerequisites. No new runtime pass/fail claim is made for these defects.
