@@ -6,7 +6,7 @@ Recovered JavaFX desktop application for inventory, sales, purchasing, branches,
 
 - JDK **22** (historical runtime compatibility); source/target **21**.
 - Maven Wrapper **3.9.14**.
-- JavaFX **24.0.1**, MySQL Connector/J **9.3.0**.
+- JavaFX **24.0.1**, PostgreSQL JDBC **42.7.14**; test-scoped Flyway **13.12.1**.
 - Windows graphical session for the optional desktop smoke test. Maven resolves platform-specific JavaFX artifacts.
 
 ```powershell
@@ -17,13 +17,13 @@ Recovered JavaFX desktop application for inventory, sales, purchasing, branches,
 
 On Linux/macOS use `./mvnw`. The JAR is a thin artifact: use the Maven JavaFX launcher with resolved dependencies, not `java -jar`.
 
-Database access is **disabled by default**. The sign-in window can open without a database. Login, registration, dashboards, and CRUD require an independently prepared development database. Do not enable them against historical/production data.
+Database access is **disabled by default**. The sign-in window opens offline. PostgreSQL transition is partial: authentication, inventory, sales, procurement, HR, fleet, dashboard and reporting remain legacy and unavailable. There is no new login bypass and no claim of full production startup/CRUD readiness.
 
 ## Development database boundary
 
-Ordinary builds never create or connect to a database. Explicit opt-in tooling can initialize only **`sobol_dev`**, from a sanitized historical schema with no historical records. Setup and Integration Tests require numeric loopback `127.0.0.1`, separate limited application credentials and safety confirmations. The original schema is rejected. See [development database instructions](docs/DEVELOPMENT-DATABASE.md) and `config/development.env.example`; neither contains credentials or is auto-loaded.
+The owner's PostgreSQL decision supersedes MySQL setup. Only explicit numeric loopback `127.0.0.1:<port>/sobol_dev`, schema `sobol`, dedicated roles and verified TLS are permitted. No database/schema creation, migration or live test is executed without separate explicit approval. Ordinary verification disables both database boundaries.
 
-Supply credentials privately through the process environment only after preparing an isolated database and least-privilege user. Set `SOBOL_DB_ENABLED=true` explicitly to opt in. Never commit local configuration or paste credentials into commands, reports, logs, issues, or pull requests. Surefire unit/contract tests force database access off. Failsafe Integration Tests run only with `-Pmysql-it verify` after the documented preflight; they never create schemas and fail clearly if setup is unavailable.
+See [target model and ERD](docs/POSTGRESQL-MODEL.md), [setup and approval gates](docs/POSTGRESQL-SETUP.md), and config/development.env.example. The example has no credentials and is not auto-loaded. New opt-in profiles are postgres-migrate and postgres-it; do not run them before approval. The MySQL driver/profiles/custom runner are retired. Historical schema/test source remains non-executable reference, not the canonical design.
 
 Existing GitHub history previously contained embedded database credentials. Removing them from this tree does not revoke them or remove old commits. The owner must rotate/revoke the historical credentials. Shared history has not been rewritten.
 

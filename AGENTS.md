@@ -10,13 +10,13 @@
 ## Data and security
 - Never stage or commit credentials, tokens, password hashes, personal/customer records, private SQL dumps, personal images, or local secrets.
 - Prepare `.gitignore` before staging. Review the complete staged snapshot, not just the diff, using `tools/review_staged.py` and manual review.
-- Database access is disabled by default. Recovery is restricted to loopback `sobol_dev`; never connect to or modify the original `accounts` database.
+- Database access is disabled by default. PostgreSQL development is restricted to numeric loopback `127.0.0.1`, database `sobol_dev`, schema `sobol`; legacy MySQL connections are retired; never connect to or modify the original `accounts` database.
 - Use synthetic fixtures for tests. Never log connection credentials or private configuration.
-- The only SQL file permitted in Git is the reviewed schema-only V001 under `src/test/resources/db/migration`, checked against `docs/schema-provenance.json`. Dumps and historical INSERT records remain prohibited. Database setup and integration tests require separate explicit environment confirmations; see `docs/DEVELOPMENT-DATABASE.md`.
+- Phase 6A authorizes reviewed PostgreSQL migrations under `src/test/resources/db/postgresql`, allowlisted by `docs/postgresql-migrations.json` and `tools/review_staged.py`. Historical MySQL V001 is non-executable reference under `docs/reference/mysql`, checked against unchanged historical digests in `docs/schema-provenance.json`. Dumps and personal records remain prohibited. Database/schema creation, migrations and live tests require separate explicit owner approval; see `docs/POSTGRESQL-SETUP.md`. No startup migration or automatic schema repair/clean.
 - An ignore file does not protect already tracked secrets. Stop and remove secrets from the proposed tree before committing.
 
 ## Verification
-- JDK 22 runs this baseline; compile with release 21. JavaFX 24.0.1 and Connector/J 9.3.0 are historical compatibility versions.
+- JDK 22 runs this baseline; compile with release 21. JavaFX 24.0.1 remains the recovered UI version. PostgreSQL JDBC and test-scoped Flyway versions are pinned in pom.xml; Connector/J is retired.
 - Run `mvnw.cmd clean verify` on Windows (or `./mvnw clean verify`). Desktop smoke: add `-Pdesktop-smoke` on a machine with a graphical session.
 - Run verification appropriate to each logical change before its commit. Do not claim functionality or a push that was not verified.
 - Keep original defects distinct from recovery changes. Do not fix unrelated business defects in recovery commits.

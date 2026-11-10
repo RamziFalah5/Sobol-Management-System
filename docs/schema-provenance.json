@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "resource": "db/migration/V001__historical_schema.sql",
+  "resource": "docs/reference/mysql/V001__historical_schema.sql.txt",
   "sha256": "dc319a6dfd220626b82ca8bb0c1dfdeb1b94b68a12362956efa045a89ba8d113",
   "normalization": "Only schema qualification, FK creation order, and removal of table AUTO_INCREMENT counters. Column definitions, indexes, constraints and table options unchanged.",
   "tables": {

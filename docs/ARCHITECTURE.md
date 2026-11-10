@@ -1,3 +1,15 @@
+# Current direction ? PostgreSQL transition, Phase 6A
+
+The owner's Phase 6A decision supersedes the MySQL-specific architecture descriptions below. This section describes the current foundation; lower Phase 4 sections are retained historical design records, not current database setup instructions.
+
+PostgreSQL JDBC is the sole production database driver. PostgresDatabase is an explicit numeric-loopback/sobol_dev/sobol boundary, with verified TLS and dedicated identity/privilege checks. Retired DBAuth.get always throws before opening a connection. All legacy DAO/UI source is retained for coherent future migration; it cannot reach MySQL or borrow PostgreSQL connections. Existing login is not migrated and no bypass is added; this is not a production-ready functional cutover.
+
+Test-scoped PostgresMigrations delegates version/checksum/locking/DDL execution to Flyway only after a separate explicit migration approval. The owner creates the dedicated empty database/schema/roles only after a separately reviewed approval; no setup runs on startup or ordinary verify. V1 contains only three independent master-data tables. At this foundation commit, the three repository composition roots still await their individually tested PostgreSQL migrations; no production slice acceptance is claimed.
+
+See [POSTGRESQL-MODEL.md](POSTGRESQL-MODEL.md) for implemented-vs-deferred schema/ERD, design assumptions and full dependency closures; [POSTGRESQL-SETUP.md](POSTGRESQL-SETUP.md) for safety and owner preparation. Historical MySQL SQL/test machinery is non-executable reference under reference/mysql. Original business SQL is not mechanically translated to a redesigned stock schema.
+
+---
+
 # Implemented architecture — Category (4A), Supplier (4B), Customer (4C)
 
 ## Scope and rationale

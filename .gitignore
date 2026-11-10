@@ -26,7 +26,8 @@ config/*local*
 /private/
 /dumps/
 *.sql
-!/src/test/resources/db/migration/V001__historical_schema.sql
+!/src/test/resources/db/postgresql/
+!/src/test/resources/db/postgresql/V1__reference_data.sql
 *.sql.gz
 *.dump
 *.zip
