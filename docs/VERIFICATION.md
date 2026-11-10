@@ -158,3 +158,21 @@ Both repositories now recreate only safe typed outcomes after the outer connecti
 | Database boundary | All verification forks keep SOBOL_DB_ENABLED=false. The 25 live IT methods compile unchanged and were not invoked. No database connection, DDL/import or real data was used. |
 
 Existing JavaFX unnamed-module warnings and the synthetic warehouse lookup failure diagnostic remain expected. Architecture documentation is unchanged because the layer/package/dependency structure did not change. Live database activation/acceptance status is a separate documentation unit, not a consequence of these offline passes.
+
+## Phase 5A — activation readiness and live acceptance deferred, 2026-11-10
+
+The independently verified hardening was committed/pushed as d4365a9f2b72dbfe5583f0f39701f1e63aa9dcb0 and matched against remote main after full indexed review (226 files) and whitespace/owner-identity checks. This documentation unit records actual environment observations and the owner-controlled boundary; it does not claim completed database activation.
+
+| Observation | Measured status / classification |
+| --- | --- |
+| Git baseline | Started on clean main c1a4d33b9ed04599e237b2099249a88926d8ace4 matching remote; no published history rewrite. |
+| Rotation/accounts | Owner explicitly answered: rotation unconfirmed; development accounts not ready. Environment/readiness blocker, not an application test failure. No confirmation was set and no account/password was changed. |
+| Service/tooling | MySQL93 reports Running. Known-path mysql.exe --no-defaults --version reports client 9.3.0. Workbench executable exists. mysql/mysqlsh were not found on PATH. This command opened no SQL connection and read no default client options. |
+| TCP endpoint | Get-NetTCPConnection queries for 3306/3307/33060 and the MySQL93 service PID returned no listener. Port/transport is unverified; this does not establish a server SQL/configuration defect. No setting/service change or permission bypass was attempted. |
+| Process environment | SOBOL_DB_ENABLED, URL, USER, PASSWORD, SETUP_USER, SETUP_PASSWORD, ROTATION_CONFIRMED, SETUP_CONFIRM and IT_CONFIRM were all absent. Only presence booleans were output; no environment secret/value was read into the report. |
+| Schema/TLS/grants | NOT INSPECTED: no SQL login occurred. sobol_dev existence/version/emptiness, effective application identity, grant scope and encrypted session remain unknown. The historical accounts database was not connected to or inspected. |
+| Setup and live IT | Neither db-setup nor mysql-it was invoked. All 25 CorePersistenceIT method bodies remain NOT EXECUTED; no fixtures or cleanup ran. No live pass/fail result, migration failure or stock/concurrency reproduction is available. |
+| Offline baseline | 129 normal and 181 desktop tests pass with 0 failures/errors/skips. All 25 IT methods compile unchanged. Compiled jdeps checks pass for Category/Supplier/Customer; FXML checks pass with documented original gaps. JAR inspection confirms 53 FXML/16 approved PNGs and no SQL/test tooling/private environment files. |
+| Scope | Compared with the Phase 4C baseline, DBAuth, all development tooling/fixtures/IT assertions, business DAOs, UI/resources, Customer core, build/dependencies, V001 and recovery/provenance are unchanged. No architecture modification, inventory/sales refactoring or historical backup access occurred. |
+
+DEVELOPMENT-DATABASE.md now records NOT EXECUTED on every one of the 25 IT rows and separates their intended evidence from measured results. The next owner action is private historical-credential rotation/revocation, followed by separate loopback accounts/new distinct credentials and least-privilege schema grants, with no historical default schema selected. Configure only a private process and require encrypted 127.0.0.1 transport; never paste secrets into chat. Schema-state/grant/TLS review and explicit approval for the existing 14-table V001 + tooling history operation must precede the setup confirmation. Partial/unknown destinations cannot be reset automatically. Phase 5A is stopped at that boundary; real MySQL acceptance remains incomplete.

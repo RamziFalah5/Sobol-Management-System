@@ -2,7 +2,9 @@
 
 ## Observed status, 2026-11-10
 
-The local Windows service `MySQL93` is running and MySQL Server 9.3 is installed. A running service does not prove TCP access, usable credentials or permissions. No MySQL login, server configuration change, schema creation, historical import or database-backed DAO execution was performed in this phase. The owner confirmed that the development accounts/environment are not prepared and requested tooling/instructions only. Old credential rotation is **unverified and outstanding**. Do not set the rotation confirmation until the owner has actually rotated/revoked the compromised historical credentials.
+The local Windows service `MySQL93` reports Running. Phase 5A confirmed the installed client reports MySQL 9.3.0 and Workbench exists at its known installation location; neither mysql nor mysqlsh resolves on PATH. Listener queries for ports 3306/3307/33060 and the service PID returned no TCP endpoints; the effective port/transport remains unverified. This is not a verified server SQL/version/TLS result. No MySQL login, server setting change, schema creation, historical import or database-backed DAO execution occurred.
+
+In Phase 5A the owner explicitly confirmed: **rotation is unconfirmed; development accounts are not ready**. All nine required/enabling SOBOL process settings checked were absent (only presence booleans were inspected, never values). Rotation/revocation, dedicated accounts/least-privilege grants, encrypted numeric-loopback transport, target state and explicit schema-operation approval remain outstanding. Do not set the rotation confirmation until the owner genuinely completes rotation/revocation. No credential/account change was attempted on the owner's behalf.
 
 The implemented foundation compiles and has offline tests. Live DDL execution, grant compatibility, fixture creation/cleanup and all **25 current Integration Test methods** remain unverified (17 original cases plus 2 Category cases added in Phase 4A and 3 Supplier cases in Phase 4B, plus 3 Customer cases in Phase 4C). Phase 2's live acceptance criteria are incomplete. Never interpret the expected preflight failure or later offline Category/Supplier/Customer tests as successful persistence testing.
 
@@ -64,14 +66,19 @@ Set-SobolPrivateEnvironment 'SOBOL_DB_PASSWORD'
 Set-SobolPrivateEnvironment 'SOBOL_DB_SETUP_PASSWORD'
 # Only AFTER the owner confirms actual rotation/revocation:
 $env:SOBOL_CREDENTIAL_ROTATION_CONFIRMED = 'true'
-$env:SOBOL_DB_SETUP_CONFIRM = 'sobol_dev'
+# Leave SOBOL_DB_SETUP_CONFIRM unset until the separate schema-operation approval below.
 ```
 
 Do not pass passwords as Maven properties/CLI arguments. Do not use Maven debug output, environment dumps or print configuration objects. The example requires the server's existing TLS support, which remains unverified. If unavailable, stop and record that setup blocker; do not change server configuration or enable public-key retrieval/unsafe URL hooks to make authentication pass. New caching_sha2_password accounts may require a secure transport for initial authentication. `REQUIRED` provides encryption, not full certificate/hostname verification; this numeric-loopback development configuration is not an enterprise TLS deployment. Environment values exist as plaintext in the process as required by JDBC; this is development configuration, not an enterprise secret manager.
 
-6. Review V001, ensure the target is empty or already installed by this runner, then explicitly run:
+6. Before requesting the schema-operation approval, use a private administration connection on the verified numeric loopback endpoint with **no default schema**. Do not select/browse the historical database. Inspect only metadata explicitly filtered to sobol_dev, confirm its destination is empty or already correctly versioned, and review the new accounts' identities/grants and negotiated encryption privately. If tables are unknown/partial, stop; do not reset them. Do not relax TLS or change server settings to proceed. No such connection or inspection has been executed in Phase 5A.
+
+Review the concrete plan: the existing DevDatabase runner takes its development lock, creates sobol_dev only if needed, executes the 14 schema-only V001 table definitions in FK order, creates one tooling history table and inserts one version/checksum row, verifies the installed version and dedicated application grants. For an already correctly versioned destination it verifies instead of recreating. DDL is not one rollbackable transaction; partial failure requires a separately reviewed recovery. No historical dump, account administration, reset, DROP or TRUNCATE is part of this operation.
+
+Only after the security preparation and destination checks are complete, obtain **explicit owner approval for this schema-creation/initialization operation**. Then set the confirmation and invoke the existing profile in that private process:
 
 ```powershell
+$env:SOBOL_DB_SETUP_CONFIRM = 'sobol_dev'
 .\mvnw.cmd -B -ntp -Pdb-setup test-compile exec:java
 ```
 
@@ -101,35 +108,39 @@ Before fixture writes, the invalid-ID rejection-test sentinels are checked for a
 
 All current methods below are compiled but **NOT EXECUTED against MySQL**. The suite includes the retained Phase 2 cases and the Phase 4A Category, Phase 4B Supplier and Phase 4C Customer additions:
 
-| Methods in CorePersistenceIT | Intended evidence |
-| --- | --- |
-| dedicatedConnectionAndHistoricalSchemaAreAvailable | Effective application identity/grants, V001, 15 total tables, 15 FKs |
-| branchCreationWarehouseUpdatesAndAggregatesPersist | Original BranchDAO/WarehouseDAO insert/read/update/delete and branch aggregates |
-| productDaoPreservesRelationsPricesAndThresholds | ProductDAO insert/read/update/delete; relationships, prices, min/max |
-| capacityUsesRoundedPalletsAndExcludesCurrentProduct | Pallet rounding, capacity limits, low/zero stock buckets |
-| emptyWarehouseHasZeroProducts | Correct expected result for known COUNT(*) defect |
-| supplierAndCustomerDaoRoundTripsAndUniqueEmail | Supplier/Customer service round trips; typed Customer duplicate-email rejection and unchanged-data verification |
-| unchangedExistingCustomerUpdateSucceeds | Customer service accepts identical existing values and self-owned name/email |
-| customerCreationNullsAndUniqueConstraintsUseNewRepository | Customer generated create/read, null email versus empty contact fields, separate name/email conflicts on create/update, no overwrite after rejection |
-| deletedCustomerUpdateReportsNotFound | Valid owned Customer ID deleted before save -> NOT_FOUND |
-| unchangedExistingSupplierUpdateSucceeds | Supplier service accepts existing identical contact details |
-| supplierCreationNullMappingAndUniqueConflictsUseTheNewRepository | Supplier create/read, SQL NULL optional fields, duplicate create/update, no overwrite after conflict |
-| deletedSupplierUpdateReportsNotFound | Valid fixture-owned ID deleted before update -> NOT_FOUND |
-| shipmentCommitsHeaderAndInventoryTogether | ShipmentDAO insertion, stock increment, supplier totals |
-| shipmentRejectsOverflowAndInvalidForeignKeyWithoutChanges | Capacity rejection and failed-FK path; stock/header unchanged |
-| multiItemSaleUsesCurrentPricesAndDeductsStock | SalesDAO order/items, stored DECIMAL totals, stock deductions |
-| failedSecondSalesItemRollsBackFirstItemHeaderAndStock | Failure after first item changed stock; header/items/stock atomicity, invalid quantity |
-| employeeInsertionDriverAssignmentAndSoftDeletePersist | EmployeeDAO creation, Worker/GeneralWorker/TruckDriver retrieval, VehicleDAO availability, SalesRepDAO deactivation |
-| dailyHourlyAndDriverAttendanceUpsertWithoutDuplicates | AttendanceDAO daily/hourly/driver round trips and unique-day upsert |
-| attendanceBatchRollsBackWhenSecondEmployeeDoesNotExist | Batch rollback on invalid second FK |
-| databaseEnforcesUniqueKeysAndForeignKeys | Duplicate branch/vehicle assignment, invalid FK, RESTRICT/CASCADE, synthetic account mapping |
-| nonexistentCategoryUpdateMustReportFailure | New CategoryService/JdbcCategoryRepository returns NOT_FOUND for a valid, owned ID removed before saving |
-| unchangedExistingCategoryUpdateSucceeds | New Category implementation accepts an existing target with identical values |
-| categoryCreationAndUniqueConflictsUseTheNewRepository | Category create/read, duplicate insert/update and unchanged data after conflict |
-| concurrentSalesMustNotOversellTheSameStock | Two actual SalesDAO calls synchronized after buffered nonlocking product SELECT; only one sale of 8 may consume stock of 10 |
-| concurrentCapacityChecksMustNotAllowWarehouseOverflow | Two real capacity-check/insert callers approve 2 pallets against the same capacity of 3 |
+| Methods in CorePersistenceIT | Intended evidence | Phase 5A actual result |
+| --- | --- | --- |
+| dedicatedConnectionAndHistoricalSchemaAreAvailable | Effective application identity/grants, V001, 15 total tables, 15 FKs | NOT EXECUTED: owner prerequisites incomplete |
+| branchCreationWarehouseUpdatesAndAggregatesPersist | Original BranchDAO/WarehouseDAO insert/read/update/delete and branch aggregates | NOT EXECUTED: owner prerequisites incomplete |
+| productDaoPreservesRelationsPricesAndThresholds | ProductDAO insert/read/update/delete; relationships, prices, min/max | NOT EXECUTED: owner prerequisites incomplete |
+| capacityUsesRoundedPalletsAndExcludesCurrentProduct | Pallet rounding, capacity limits, low/zero stock buckets | NOT EXECUTED: owner prerequisites incomplete |
+| emptyWarehouseHasZeroProducts | Correct expected result for known COUNT(*) defect | NOT EXECUTED: owner prerequisites incomplete |
+| supplierAndCustomerDaoRoundTripsAndUniqueEmail | Supplier/Customer service round trips; typed Customer duplicate-email rejection and unchanged-data verification | NOT EXECUTED: owner prerequisites incomplete |
+| unchangedExistingCustomerUpdateSucceeds | Customer service accepts identical existing values and self-owned name/email | NOT EXECUTED: owner prerequisites incomplete |
+| customerCreationNullsAndUniqueConstraintsUseNewRepository | Customer generated create/read, null email versus empty contact fields, separate name/email conflicts on create/update, no overwrite after rejection | NOT EXECUTED: owner prerequisites incomplete |
+| deletedCustomerUpdateReportsNotFound | Valid owned Customer ID deleted before save -> NOT_FOUND | NOT EXECUTED: owner prerequisites incomplete |
+| unchangedExistingSupplierUpdateSucceeds | Supplier service accepts existing identical contact details | NOT EXECUTED: owner prerequisites incomplete |
+| supplierCreationNullMappingAndUniqueConflictsUseTheNewRepository | Supplier create/read, SQL NULL optional fields, duplicate create/update, no overwrite after conflict | NOT EXECUTED: owner prerequisites incomplete |
+| deletedSupplierUpdateReportsNotFound | Valid fixture-owned ID deleted before update -> NOT_FOUND | NOT EXECUTED: owner prerequisites incomplete |
+| shipmentCommitsHeaderAndInventoryTogether | ShipmentDAO insertion, stock increment, supplier totals | NOT EXECUTED: owner prerequisites incomplete |
+| shipmentRejectsOverflowAndInvalidForeignKeyWithoutChanges | Capacity rejection and failed-FK path; stock/header unchanged | NOT EXECUTED: owner prerequisites incomplete |
+| multiItemSaleUsesCurrentPricesAndDeductsStock | SalesDAO order/items, stored DECIMAL totals, stock deductions | NOT EXECUTED: owner prerequisites incomplete |
+| failedSecondSalesItemRollsBackFirstItemHeaderAndStock | Failure after first item changed stock; header/items/stock atomicity, invalid quantity | NOT EXECUTED: owner prerequisites incomplete |
+| employeeInsertionDriverAssignmentAndSoftDeletePersist | EmployeeDAO creation, Worker/GeneralWorker/TruckDriver retrieval, VehicleDAO availability, SalesRepDAO deactivation | NOT EXECUTED: owner prerequisites incomplete |
+| dailyHourlyAndDriverAttendanceUpsertWithoutDuplicates | AttendanceDAO daily/hourly/driver round trips and unique-day upsert | NOT EXECUTED: owner prerequisites incomplete |
+| attendanceBatchRollsBackWhenSecondEmployeeDoesNotExist | Batch rollback on invalid second FK | NOT EXECUTED: owner prerequisites incomplete |
+| databaseEnforcesUniqueKeysAndForeignKeys | Duplicate branch/vehicle assignment, invalid FK, RESTRICT/CASCADE, synthetic account mapping | NOT EXECUTED: owner prerequisites incomplete |
+| nonexistentCategoryUpdateMustReportFailure | New CategoryService/JdbcCategoryRepository returns NOT_FOUND for a valid, owned ID removed before saving | NOT EXECUTED: owner prerequisites incomplete |
+| unchangedExistingCategoryUpdateSucceeds | New Category implementation accepts an existing target with identical values | NOT EXECUTED: owner prerequisites incomplete |
+| categoryCreationAndUniqueConflictsUseTheNewRepository | Category create/read, duplicate insert/update and unchanged data after conflict | NOT EXECUTED: owner prerequisites incomplete |
+| concurrentSalesMustNotOversellTheSameStock | Two actual SalesDAO calls synchronized after buffered nonlocking product SELECT; only one sale of 8 may consume stock of 10 | NOT EXECUTED: owner prerequisites incomplete |
+| concurrentCapacityChecksMustNotAllowWarehouseOverflow | Two real capacity-check/insert callers approve 2 pallets against the same capacity of 3 | NOT EXECUTED: owner prerequisites incomplete |
 
 There are 25 Integration Test methods. Their source presence and successful compilation do not establish execution or successful persistence.
+
+**Phase 5A measurement:** 0 live methods started, 0 measured live passes/failures, 0 fixture rows created/cleaned. Neither db-setup nor mysql-it was invoked because owner-controlled prerequisites are incomplete. NOT EXECUTED is a readiness status, not a JUnit skip or a test failure. Schema existence/version, SQL/grant compatibility, actual TLS, live uniqueness/row-count/rollback/commit behavior and both concurrency scenarios remain unverified. The offline repository security regressions pass separately; they are not SQL-engine acceptance.
+
+**Immediate owner action:** privately rotate/revoke the exposed historical credential using local account-administration controls without selecting the historical schema; confirm completion without sending any secret. Then prepare the two new accounts and private process settings in steps 2–5. The confirmed absence of accounts is not authorization for the agent to create them. Use the same private PowerShell process for its eventual Maven commands: variables set in another shell do not retroactively configure an already running agent process. The example file is not a secret loader. Share only sanitized readiness status; schema initialization still needs the separate approval in step 6.
 
 Correct-behavior tests with historical `original-defect` tags are **not excluded**. The missing-category case now uses the repaired Phase 4A implementation; empty-warehouse/concurrency defects remain original risks. A red test must be classified with evidence, not weakened or converted into a skip. Preflight failure prevents all method bodies from running; a JUnit class-initialization error is not 25 failed business scenarios.
 
