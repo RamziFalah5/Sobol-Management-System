@@ -2,7 +2,18 @@ package application;
 
 import javafx.beans.property.*;
 
+/** Detached mutable JavaFX view state; sales handoffs take an immutable snapshot. */
 public class Customer {
+
+	public static Customer fromDomain(com.sobol.customer.domain.Customer customer) {
+		var d = customer.details();
+		return new Customer(customer.id(), d.fullName(), d.phone(), d.email(), d.city(), d.address(), d.notes());
+	}
+
+	public com.sobol.customer.domain.Customer toDomain() {
+		return new com.sobol.customer.domain.Customer(getCustomerId(),
+				new com.sobol.customer.domain.Customer.Details(getFullName(), getPhone(), getEmail(), getCity(), getAddress(), getNotes()));
+	}
 
 	private final IntegerProperty customerId = new SimpleIntegerProperty();
 	private final StringProperty fullName = new SimpleStringProperty();

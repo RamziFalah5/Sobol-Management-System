@@ -1,6 +1,6 @@
 # Original defects and unavailable functionality
 
-Outstanding original defects are listed below. Verified Phase 3A/4A/4B changes are recorded separately with their verification boundaries.
+Outstanding original defects are listed below. Verified Phase 3A/4A/4B/4C changes are recorded separately with their verification boundaries.
 
 | Area | Original evidence | Impact / verification boundary |
 | --- | --- | --- |
@@ -58,3 +58,13 @@ Original SupplierDAO.getAllSuppliers() returned an empty/partial list after erro
 The production replacement uses SupplierService/JdbcSupplierRepository for all prior DAO consumers, including AddShipmentController lookup and the retained combined Supplier/Customer Integration Test. SupplierDAO is removed. Validation is centralized, preserves the historical email regex and optional-null behavior, and checks all schema lengths without new phone/email uniqueness rules. Locked existence verification distinguishes missing from unchanged updates; UNIQUE conflicts and storage failures produce distinct safe typed feedback. Selection IDs are captured independently of mutable display state. Evidence: 10 service/domain, 16 scripted JDBC, 4 architecture/mapping and 15 real-FXML tests pass. Existing Category tests remain unchanged and pass.
 
 These are offline-verified application/JDBC-call contracts, not live server results. Three additional Supplier IT cases compile; all 22 live methods remain unexecuted. Supplier rows with invalid historical contact data produce an explicit storage error and are not auto-repaired. No schema/data migration occurred. ViewSupplierShipmentsController still uses unchanged ShipmentDAO reads, whose silent failure/empty results and separate count/total snapshots remain legacy debt. AddShipment's missing payment/method controls and save defect remain outstanding; only Supplier lookup compatibility was migrated and tested. Stock/capacity, authentication and unrelated defects above are unchanged.
+
+## Phase 4C Customer replacement — implemented and verified offline
+
+Original CustomerDAO masked read/precheck failures as empty/false, collapsed name/email/storage write failures into booleans, and required positive update counts even for unchanged existing rows. Add/Edit repeated permissive email checks and omitted schema lengths. PickProductsForSaleController retained the picker Customer object directly, so later mutation of that view model could change the Customer ID eventually handed to SaleQuantities.
+
+CustomerService/JdbcCustomerRepository now serve all four production callers and the original IT caller; CustomerDAO is retired. Required/name/phone/email/length rules are centralized while preserving the historical email predicate and null/empty semantics. Locked existence checks distinguish missing from unchanged updates. The two database UNIQUE keys are classified separately from known write-error key tokens; unknown diagnostics fail closed rather than guessing. Driver diagnostics are not exposed in UI errors, causes or suppressed close exceptions. Picker snapshots before loading and product-picker immutable Customer state preserve selected identity independently of mutable source/display state.
+
+Evidence: 12 service/domain, 25 scripted JDBC, 5 architecture/mapping and 16 real-FXML tests pass. The suppressed-close regression was first reproduced and then fixed without weakening assertions. Three new IT cases compile; all 25 live methods remain unexecuted. Source/GUI claims do not prove actual MySQL SQL acceptance, collation, diagnostic format/localization, locking or cleanup. Legacy data outside form invariants may produce an explicit storage error and is not auto-repaired.
+
+Customers.fxml still has a disabled View action and no direct start-sale action. Existing Sales -> New Order -> Customer picker -> Product picker navigation is retained; no global Customer selection or new purchasing/sales feature was added. SaleQuantitiesController and SalesDAO calculations/transactions remain unchanged and unverified against a live database. Existing back-navigation state loss beyond the tested product/customer picker boundary remains legacy behavior. Synchronous UI I/O and older slices' resource-close exception coverage remain follow-up work, not completed fixes in Phase 4C.

@@ -42,7 +42,8 @@ public final class JdbcCustomerRepository implements CustomerRepository {
                 c.commit();
                 return created;
             } catch (SQLException | RuntimeException failure) { throw rollback(c, failure); }
-        } catch (SQLException failure) { throw storage(); }
+        } catch (CustomerException failure) { throw sanitized(failure); }
+        catch (SQLException failure) { throw storage(); }
     }
 
     @Override public Optional<Customer> update(int id, Customer.Details details) {
@@ -65,7 +66,8 @@ public final class JdbcCustomerRepository implements CustomerRepository {
                 c.commit();
                 return Optional.of(updated);
             } catch (SQLException | RuntimeException failure) { throw rollback(c, failure); }
-        } catch (SQLException failure) { throw storage(); }
+        } catch (CustomerException failure) { throw sanitized(failure); }
+        catch (SQLException failure) { throw storage(); }
     }
 
     private void bind(PreparedStatement p, Customer.Details d) throws SQLException {
@@ -97,6 +99,12 @@ public final class JdbcCustomerRepository implements CustomerRepository {
             }
             throw failure;
         }
+    }
+
+    private CustomerException sanitized(CustomerException failure) {
+        // Resource closure can attach raw SQL diagnostics as suppressed exceptions.
+        // Recreate only the safe reason after ALL JDBC resource scopes have closed.
+        return new CustomerException(failure.getSuppressed().length == 0 ? failure.reason() : STORAGE_FAILURE);
     }
 
     private CustomerException storage() { return new CustomerException(STORAGE_FAILURE); }

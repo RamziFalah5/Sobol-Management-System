@@ -1,5 +1,8 @@
 package application;
 
+import com.sobol.customer.application.CustomerService;
+import com.sobol.customer.application.CustomerException;
+import java.util.Objects;
 import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.Parent;
@@ -7,6 +10,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 
 public class PickCustomerForSaleController {
+
+	private final CustomerService service;
+	public PickCustomerForSaleController() { this(CustomerModule.service()); }
+	PickCustomerForSaleController(CustomerService service) { this.service = Objects.requireNonNull(service); }
 
 	@FXML
 	private TableView<Customer> table;
@@ -33,7 +40,12 @@ public class PickCustomerForSaleController {
 	}
 
 	private void load() {
-		list.setAll(CustomerDAO.getAllCustomers());
+		try {
+			list.setAll(service.listCustomers().stream().map(Customer::fromDomain).toList());
+		} catch (CustomerException failure) {
+			list.clear();
+			alert("Error", failure.getMessage());
+		}
 		table.setItems(list);
 	}
 
@@ -61,17 +73,18 @@ public class PickCustomerForSaleController {
 	@FXML
 	private void onSelectCustomer() {
 		Customer sel = table.getSelectionModel().getSelectedItem();
-		if (sel == null) {
+		if (sel == null || sel.getCustomerId() <= 0 || !list.contains(sel)) {
 			alert("Select Customer", "Please select a customer first.");
 			return;
 		}
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("PickProductsForSale.fxml"));
+			Customer snapshot = Customer.fromDomain(sel.toDomain());
+			FXMLLoader loader = createViewLoader("PickProductsForSale.fxml");
 			Parent view = loader.load();
 
 			PickProductsForSaleController c = loader.getController();
-			c.setCustomer(sel);
+			c.setCustomer(snapshot);
 
 			StackPane content = (StackPane) table.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
@@ -88,7 +101,7 @@ public class PickCustomerForSaleController {
 
 	private void go(String fxml) {
 		try {
-			Parent view = FXMLLoader.load(getClass().getResource(fxml));
+			Parent view = createViewLoader(fxml).load();
 			StackPane content = (StackPane) table.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
 		} catch (Exception e) {
@@ -96,7 +109,9 @@ public class PickCustomerForSaleController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	FXMLLoader createViewLoader(String fxml) { return new FXMLLoader(getClass().getResource(fxml)); }
+
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);

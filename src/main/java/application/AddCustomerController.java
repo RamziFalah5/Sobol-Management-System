@@ -1,11 +1,18 @@
 package application;
 
+import com.sobol.customer.application.CustomerService;
+import com.sobol.customer.application.CustomerException;
+import java.util.Objects;
 import javafx.fxml.*;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 
 public class AddCustomerController {
+
+	private final CustomerService service;
+	public AddCustomerController() { this(CustomerModule.service()); }
+	AddCustomerController(CustomerService service) { this.service = Objects.requireNonNull(service); }
 
 	@FXML
 	private TextField txtName, txtPhone, txtEmail, txtCity, txtAddress;
@@ -14,50 +21,18 @@ public class AddCustomerController {
 
 	@FXML
 	private void onAdd() {
-
-		String name = txtName.getText().trim();
-		String phone = txtPhone.getText().trim();
-		String email = txtEmail.getText().trim();
-		String city = txtCity.getText().trim();
-		String address = txtAddress.getText().trim();
-		String notes = txtNotes.getText().trim();
-
-		if (name.isEmpty()) {
-			alert("Validation", "Full name is required.");
-			return;
-		}
-		if (phone.isEmpty()) {
-			alert("Validation", "Phone is required.");
-			return;
-		}
-
-		if (!email.isEmpty() && !isValidEmail(email)) {
-			alert("Validation", "Email format is not valid.");
-			return;
-		}
-
-		if (CustomerDAO.nameExists(name)) {
-			alert("Duplicate", "Customer name already exists.");
-			return;
-		}
-
-		if (!email.isEmpty() && CustomerDAO.emailExists(email)) {
-			alert("Duplicate", "Email already exists.");
-			return;
-		}
-
-		CustomerDAO.CustomerFormData d = new CustomerDAO.CustomerFormData();
-		d.fullName = name;
-		d.phone = phone;
-		d.email = email;
-		d.city = city;
-		d.address = address;
-		d.notes = notes;
-
-		if (CustomerDAO.insertCustomer(d)) {
+		try {
+			service.createCustomer(txtName.getText(), txtPhone.getText(), txtEmail.getText(),
+					txtCity.getText(), txtAddress.getText(), txtNotes.getText());
 			goBack();
-		} else {
-			alert("Error", "Failed to add customer.");
+		} catch (CustomerException failure) {
+			String title = switch (failure.reason()) {
+				case DUPLICATE_NAME, DUPLICATE_EMAIL -> "Duplicate";
+				case NOT_FOUND -> "Not Found";
+				case STORAGE_FAILURE -> "Error";
+				default -> "Validation";
+			};
+			alert(title, failure.getMessage());
 		}
 	}
 
@@ -66,13 +41,9 @@ public class AddCustomerController {
 		goBack();
 	}
 
-	private boolean isValidEmail(String e) {
-		return e.contains("@") && e.contains(".") && e.indexOf("@") < e.lastIndexOf(".");
-	}
-
-	private void goBack() {
+	void goBack() {
 		try {
-			Parent view = FXMLLoader.load(getClass().getResource("Customers.fxml"));
+			Parent view = createViewLoader("Customers.fxml").load();
 			StackPane content = (StackPane) txtName.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
 		} catch (Exception ex) {
@@ -80,7 +51,9 @@ public class AddCustomerController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	FXMLLoader createViewLoader(String fxml) { return new FXMLLoader(getClass().getResource(fxml)); }
+
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);

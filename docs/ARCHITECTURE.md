@@ -1,10 +1,10 @@
-# Implemented architecture — Category (Phase 4A) and Supplier (Phase 4B)
+# Implemented architecture — Category (4A), Supplier (4B), Customer (4C)
 
 ## Scope and rationale
 
-Sobol remains one Maven-built JavaFX desktop application. Category was the first migrated vertical slice (list/search/select, create, edit and navigation to Products). Supplier is now the second (list/search/select, create/edit and supplier lookup), preserving its shipment-view integration. Other business modules retain their existing implementation. No backend, web client, framework, generic repository hierarchy or multi-module build was introduced.
+Sobol remains one Maven-built JavaFX desktop application. Category was the first migrated vertical slice (list/search/select, create, edit and navigation to Products); Supplier followed (CRUD and shipment supplier lookup). Customer is now the third (CRUD and customer lookup for sales), preserving the existing sales transaction boundary. Other business modules retain their existing implementation. No backend, web client, framework, generic repository hierarchy or multi-module build was introduced.
 
-The architecture below is **implemented** for Category and Supplier. Their domain/application/infrastructure packages are independent; neither core imports the other. Applying this direction to further modules requires separate approval.
+The architecture below is **implemented** for Category, Supplier and Customer. Their domain/application/infrastructure packages are independent; no core imports another slice. Applying this direction to further modules requires separate approval.
 
 ## Category before Phase 4A
 
@@ -49,6 +49,14 @@ src/main/java/
     SupplierModule.java                         Supplier composition, including shipment lookup
     AddShipmentController.java                  SupplierService lookup; other shipment code unchanged
     ViewSupplierShipmentsController.java        selected ID snapshot and legacy ShipmentDAO reads
+    Customer.java                               detached JavaFX mapping to/from immutable domain
+    CustomerModule.java                         Customer CRUD/sale-lookup composition
+    CustomersController.java                    Customer list/filter/select/edit navigation
+    AddCustomerController.java                  service-backed creation and feedback
+    EditCustomerController.java                 edit ID snapshot, prefill and service feedback
+    PickCustomerForSaleController.java          service-backed lookup and detached selected handoff
+    PickProductsForSaleController.java          immutable selected Customer; legacy product reads
+    SalesController.java                        unchanged sale entry with narrow navigation/read delegates
     DBAuth.java                                 unchanged legacy infrastructure boundary
     ...                                         remaining legacy modules unchanged
   com/sobol/category/
@@ -63,10 +71,19 @@ src/main/java/
     application/SupplierService.java            list/create/update use cases and typed validation
     application/SupplierException.java          safe typed outcomes
     infrastructure/JdbcSupplierRepository.java  prepared SQL, mapping, transactions and failures
+  com/sobol/customer/
+    domain/Customer.java                        immutable ID and nested Details value
+    application/CustomerRepository.java         persistence port with typed conflict semantics
+    application/CustomerService.java            list/create/update and centralized validation
+    application/CustomerException.java          safe name/email/validation/missing/storage outcomes
+    infrastructure/JdbcCustomerRepository.java  SQL, generated IDs, locks, constraint discrimination
 src/main/resources/application/
   Category.fxml, AddCategory.fxml, EditCategory.fxml   unchanged location/content/controllers
   Suppliers.fxml, AddSupplier.fxml, EditSupplier.fxml unchanged location/content/controllers
   ViewSupplierShipments.fxml, AddShipment.fxml        unchanged location/content/controllers
+  Customers.fxml, AddCustomer.fxml, EditCustomer.fxml unchanged location/content/controllers
+  PickCustomerForSale.fxml, PickProductsForSale.fxml  unchanged location/content/controllers
+  Sales.fxml, SaleQuantities.fxml                    unchanged location/content/controllers
 src/test/java/
   com/sobol/category/application/CategoryServiceTest.java
   com/sobol/category/infrastructure/JdbcCategoryRepositoryTest.java
@@ -77,6 +94,10 @@ src/test/java/
   com/sobol/supplier/infrastructure/JdbcSupplierRepositoryTest.java
   com/sobol/supplier/SupplierArchitectureTest.java
   application/SupplierDesktopTest.java
+  com/sobol/customer/application/CustomerServiceTest.java
+  com/sobol/customer/infrastructure/JdbcCustomerRepositoryTest.java
+  com/sobol/customer/CustomerArchitectureTest.java
+  application/CustomerDesktopTest.java
 ```
 
 No existing controller or FXML was moved. CategoryDAO was deleted after all production callers and its one Integration Test caller were migrated. Its unused delete/next-ID/preflight-check helpers had no active callers or UI action; no compatibility DAO is retained solely for an unused API. Git/provenance retain the original source evidence.
@@ -146,7 +167,7 @@ No schema, UNIQUE constraint, DBAuth setting, SalesDAO/ShipmentDAO or inventory 
 
 ## Compatibility boundaries and remaining debt
 
-The physical legacy application package still mixes presentation and other old infrastructure. Category and Supplier have clean core boundaries; their JavaFX controllers still live in that legacy package. `application.Category` remains the existing view model, not a second domain entity. CategorySession is deliberately retained because ProductsController and AddProductController consume its navigation selection; neither CategoryService nor the domain depends on it. Resource/navigation compatibility is not an endorsement of static global UI state for the eventual whole system.
+The physical legacy application package still mixes presentation and other old infrastructure. Category, Supplier and Customer have clean core boundaries; their JavaFX controllers still live in that legacy package. `application.Category` remains the existing view model, not a second domain entity. CategorySession is deliberately retained because ProductsController and AddProductController consume its navigation selection; neither CategoryService nor the domain depends on it. Customer introduces no global session/selection. Resource/navigation compatibility is not an endorsement of static global UI state for the eventual whole system.
 
 Other modules still use static DAOs and controller business logic. UI I/O remains synchronous on the JavaFX thread. There is no generalized transaction manager, pool, centralized authorization or enterprise exception/logging system. Live MySQL setup, credential rotation confirmation, collation, lock/commit semantics and Integration Tests remain outstanding. Authentication, stock/capacity races, shipment form defects and missing features remain in KNOWN-DEFECTS.md.
 
@@ -206,7 +227,7 @@ SupplierModule is the only Supplier production wiring location. It creates the r
 | EditSupplierController | Captured positive selected ID and null-safe optional prefill -> service.updateSupplier; missing/conflict/storage errors stay on form; subsequent display/model ID mutation cannot retarget the save. |
 | AddShipmentController | Only Supplier integration changed: service list -> existing ComboBox<Supplier>, preserve IDs/names and first selection; clear stale selection before loading; distinguish empty supplier list from storage failure. Existing branch/warehouse/product/payment/calculation/save logic is retained. |
 | ViewSupplierShipmentsController | Snapshot selected ID; original ShipmentDAO.getShipmentsBySupplier/getTotalCostBySupplier remain behind narrow package-visible test delegates. Existing table mappings/totals/Back navigation retained. This is a legacy Shipment integration, not a new Supplier persistence implementation. |
-| CorePersistenceIT | Original combined Supplier/Customer round trip now uses SupplierService, preserving CustomerDAO assertions. Three added Supplier cases cover create/null mapping/unique conflicts, unchanged and missing target. All 22 methods compile; none ran against MySQL. |
+| CorePersistenceIT | Supplier round trip uses SupplierService; Customer is also service-backed in Phase 4C. Three Supplier cases still cover create/null mapping/unique conflicts, unchanged and missing target. The current suite has 25 compiled methods, none run against MySQL. |
 
 DashboardDAO counts, ReportsDAO supplier-spend aggregations and ShipmentDAO joins still query the supplier table as legacy cross-module read models. They never called SupplierDAO or consumed Supplier domain objects. They are intentionally unchanged; migrating Supplier CRUD does not claim complete purchasing/reporting separation. ShipmentDAO.addShipment still receives the selected supplier ID through its original form data. Its FK/stock transaction is unchanged.
 
@@ -242,8 +263,101 @@ Supplier editing remains last-writer-wins. Live MySQL collation, locks, affected
 
 No files were moved. All FXML/CSS/icons, Category source/tests, pom.xml, DBAuth, SalesDAO, ShipmentDAO, ProductDAO, V001, recovery records and provenance manifests are unchanged in Phase 4B. No historical source/backup was touched, no dependency upgraded, and no database connected.
 
+## Customer before Phase 4C and full dependency closure
+
+```mermaid
+flowchart LR
+    Forms[Customers list and Add Edit forms] --> DAO[Static CustomerDAO]
+    Picker[PickCustomerForSaleController] --> DAO
+    DAO --> VM[Mutable JavaFX Customer]
+    DAO --> Guard[DBAuth]
+    Picker --> Products[PickProductsForSaleController]
+    Products --> Quantities[SaleQuantitiesController]
+    Products --> Alias[Shared mutable Customer reference]
+    Quantities --> Sales[Existing SalesDAO transaction]
+```
+
+Before editing callers, inspection established four production CustomerDAO consumers: CustomersController (DAO getAllCustomers); AddCustomerController (DAO nameExists/emailExists/insertCustomer); EditCustomerController (DAO nameExistsForEdit/emailExistsForEdit/updateCustomer); PickCustomerForSaleController (DAO getAllCustomers). CorePersistenceIT was the only test caller. The Customer view model additionally flowed into PickProductsForSaleController.setCustomer and SaleQuantitiesController.setData before SalesDAO.createOrder consumed its ID. CustomerDAO had no other required API consumers. All were migrated before deletion; no compatibility DAO is retained.
+
+ControllerSystem and Dashboard navigation remain unchanged. SalesController opens the picker from New Order. DashboardDAO/ReportsDAO customer counts and SalesDAO customer joins are independent legacy read models, not missed CustomerDAO consumers; they remain unchanged. SyntheticFixture seeds/cleans owned customer and sales IDs and remains unchanged. The existing disabled Customers View action and the picker double-click preview hint have no implementation; Phase 4C does not invent them.
+
+## Three implemented slices and Customer-to-Sales boundary
+
+```mermaid
+flowchart LR
+    CUI[Category UI] --> CS[CategoryService]
+    CS --> CP[CategoryRepository]
+    CJ[JdbcCategoryRepository] -. implements .-> CP
+    CR[CategoryModule] --> CS
+    CR --> CJ
+    CR --> Guard[Guarded DBAuth]
+    SUI[Supplier UI and shipment lookup] --> SS[SupplierService]
+    SS --> SP[SupplierRepository]
+    SJ[JdbcSupplierRepository] -. implements .-> SP
+    SR[SupplierModule] --> SS
+    SR --> SJ
+    SR --> Guard
+    UUI[Customers UI and sale customer picker] --> US[CustomerService]
+    US --> UP[CustomerRepository]
+    US --> UD[Immutable Customer domain]
+    UJ[JdbcCustomerRepository] -. implements .-> UP
+    UJ --> UD
+    UR[CustomerModule] --> US
+    UR --> UJ
+    UR --> Guard
+    UUI --> Map[Detached JavaFX Customer mapping]
+    Map --> ProductPicker[Product picker immutable Customer snapshot]
+    ProductPicker --> QuantityUI[Existing quantity screen receives detached Customer]
+    QuantityUI --> Sales[Unchanged SalesDAO]
+```
+
+Each slice has its own small root, port and domain rules. Roots inject DBAuth::get; no repository imports DBAuth or the legacy application package. Customer domain/application depend on java.base and their own inner types only; java.sql and diagnostic parsing are confined to Infrastructure. Five Customer architecture/mapping tests plus existing Category/Supplier tests and compiled jdeps checks verify these boundaries. This remains one artifact with test-enforced package boundaries, not JVM modules.
+
+CustomerModule wires the real service into all four no-argument FXML controllers; package-visible constructors accept the real service with a fake repository. application.Customer.fromDomain/toDomain map all seven fields into independent view/domain values. No second business validation implementation exists in forms; the immutable nested Details is shared by service validation and repository mapping. Controllers retain presentation filtering, FXML, selection, navigation and typed human feedback.
+
+## Customer rules and persistence semantics
+
+| Field | Implemented historical contract |
+| --- | --- |
+| customer_id | Positive persisted identity; invalid ID differs from missing valid target. |
+| full_name | Required trimmed nonblank, VARCHAR(150), uq_customer_name remains authoritative. |
+| phone | Required trimmed nonblank, VARCHAR(30), no new phone format/uniqueness rule. |
+| email | Optional VARCHAR(180), uq_customer_email; preserve the original predicate: contains @ and dot, with first @ before last dot. Unusual previously accepted strings remain accepted; no Supplier regex is substituted. |
+| city / address / notes | Optional VARCHAR(100) / VARCHAR(220) / VARCHAR(400). Trim non-null values; preserve null versus empty strings. Only blank email becomes SQL NULL, matching the original CustomerDAO. |
+
+Lengths count Unicode code points. Required whitespace-only values are rejected; optional non-email Unicode whitespace retains historical trim behavior. created_at remains the database default, absent from the original active model/forms. Invalid persisted data becomes an explicit storage failure; no automatic repair, SQL migration, phone uniqueness or historical data rewrite occurs. Persisted legacy email data outside the historical form predicate can prevent listing and requires separate review.
+
+findAll preserves customer_id DESC and maps all active columns using prepared SQL/resource ownership, with no explicit read transaction. Create owns a transaction: exactly one inserted row, a positive generated ID and successful mapping before commit. Update owns one connection/transaction for SELECT customer_id FOR UPDATE and UPDATE; absent target returns NOT_FOUND, while counts 0/1 on a locked existing target succeed. Unexpected counts fail closed. There is no check-then-write uniqueness assumption or extra availability transaction. Edits remain last-writer-wins.
+
+Unlike the single-UNIQUE Category/Supplier slices, Customer must distinguish name from non-null email conflicts. Only code 1062 from executeUpdate is classified, using the known final key token uq_customer_name/uq_customer_email (optionally customer/schema qualified). The duplicate value is never used to infer the field, including values containing misleading key text. Unknown/PRIMARY/other-table keys, absent/localized diagnostics, read/connection/commit errors map to STORAGE_FAILURE. This bounded parser follows the [MySQL error reference](https://dev.mysql.com/doc/mysql-errors/8.0/en/server-error-reference.html); actual Connector/J/server/localization compatibility is unverified. The database UNIQUE constraints remain the enforcement authority even when concurrent writers race; no diagnostic is displayed or retained as a cause.
+
+All write failures explicitly attempt rollback. Rollback failure and uncertain commit/connection-close outcomes return safe storage failure with no automatic retry. Typed errors are recreated after the outer connection scope closes so JDBC suppressed exceptions cannot escape through the application exception. Scripted tests cover that path as well as a close failure after a recorded successful commit; the latter is reported as unconfirmed, not falsely described as rolled back. Extending this resource-close failure coverage across older slices remains a follow-up, not a claim that it was performed here.
+
+## Actual Customer/Sales navigation and compatibility verification
+
+Customers.fxml has no direct start-sale action. The retained path is Customers management -> existing navigation to Sales -> New Order -> PickCustomerForSale -> Select Customer -> PickProductsForSale. The management-list selection is not global and does not silently preselect a sale customer. Tests first select an unrelated management row, open Sales in the same content area, and fire its actual New Order handler. The system-wide menu/Dashboard loaders are unchanged and are not dynamically exercised in this fixture.
+
+The picker requires a current positive selected row, snapshots Customer before destination loading, and passes it through the existing setCustomer API. The product picker converts it immediately to immutable domain state, displays that snapshot's name, and later gives SaleQuantities a new detached JavaFX Customer. Source row mutation during FXML loading, source selection changes, later mutation of the setter argument and stale management state cannot retarget this sale or change its displayed identity. Back returns to a fresh picker with no stale selection; the picker Back still opens Sales.
+
+Only compatibility/test seams changed in the Sales presentation: PickProductsForSaleController retains the immutable customer and delegates product reads/navigation; SalesController delegates its existing order read/navigation. Default delegates call the same SalesDAO methods/FXML. Product selection, quantity calculations, employee lookup, SaleQuantitiesController and SalesDAO are unchanged. Real FXML tests substitute only legacy order/product reads, modal feedback and the SaleQuantities.setData boundary; they do not execute sales persistence or financial calculations. Customer Add/Edit success and Cancel now have real return-to-list FXML regression coverage with synthetic repository reloads.
+
+## Phase 4C exact change inventory and limitations
+
+| Change | Exact repository-relative files |
+| --- | --- |
+| Added production | `src/main/java/com/sobol/customer/domain/Customer.java`; `src/main/java/com/sobol/customer/application/CustomerService.java`, `CustomerRepository.java`, `CustomerException.java`; `src/main/java/com/sobol/customer/infrastructure/JdbcCustomerRepository.java`; `src/main/java/application/CustomerModule.java` |
+| Modified production | `src/main/java/application/Customer.java`, `CustomersController.java`, `AddCustomerController.java`, `EditCustomerController.java`, `PickCustomerForSaleController.java`, `PickProductsForSaleController.java`, `SalesController.java` |
+| Removed production | `src/main/java/application/CustomerDAO.java` |
+| Added tests | `src/test/java/com/sobol/customer/application/CustomerServiceTest.java`; `src/test/java/com/sobol/customer/infrastructure/JdbcCustomerRepositoryTest.java`; `src/test/java/com/sobol/customer/CustomerArchitectureTest.java`; `src/test/java/application/CustomerDesktopTest.java` |
+| Modified tests | `src/test/java/application/CorePersistenceIT.java` |
+| Modified documentation | `README.md`; `docs/ARCHITECTURE.md`, `VERIFICATION.md`, `KNOWN-DEFECTS.md`, `DEVELOPMENT-DATABASE.md` |
+
+All previous 22 IT methods remain compiled; the original Customer round-trip and duplicate-email assertions now use typed service results and additionally verify unchanged persisted data after conflict. Three Customer methods add missing/unchanged updates and create/read/null/empty/name/email conflict acceptance. The current 25 live IT methods have not run. No original accounts database, private data or backup was accessed. All FXML/resources, Category/Supplier sources and tests, DBAuth, SalesDAO, ShipmentDAO, ProductDAO, SaleQuantitiesController, V001, build/dependency configuration and recovery/provenance files remain unchanged. Counts/results and known runtime limits are recorded in VERIFICATION.md.
+
+Remaining debt includes synchronous UI I/O, unmigrated static DAOs and mixed legacy packaging, mutable downstream Sales UI state, lack of whole-application authorization, last-writer edits, and unverified live SQL/diagnostic/locking behavior. No Branch, Inventory or Sales architectural migration has started.
+
 ## How later modules should follow this pattern (not implemented)
 
 Choose one bounded module, enumerate its actual consumers, introduce only its domain data/invariants and application port/use cases, implement its JDBC mapping with explicit write outcomes, then migrate UI callers using constructor injection plus a small composition root. Retain adapters only for concrete unmigrated consumers, with a named removal condition. Preserve FXML resource paths unless explicitly migrating every reference. Verify domain/use cases with fakes, JDBC failure/row-count contracts with scripted proxies, FXML behavior with real JavaFX controls, and real SQL separately in sobol_dev. Do not copy unused Category abstractions into other modules or reorganize the remaining sources wholesale.
 
-Customer is a reasonable next bounded candidate: its contact validation and CRUD can be separated while preserving Sales lookups and customer-email uniqueness. This is only a recommendation requiring later approval. Live secure database acceptance is still a prerequisite for claims about server persistence; inventory, sales and purchasing transactions should not be redesigned from offline evidence alone.
+The recommended next engineering phase is a controlled verification/security pass: extend resource-close sanitization contracts to older slices and prepare the documented secure sobol_dev acceptance environment with the owner. No such work starts automatically. Live acceptance is still required before claims about server persistence; inventory, sales and purchasing transactions should not be redesigned from offline evidence alone.

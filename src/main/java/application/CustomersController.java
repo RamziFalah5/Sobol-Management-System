@@ -1,5 +1,8 @@
 package application;
 
+import com.sobol.customer.application.CustomerService;
+import com.sobol.customer.application.CustomerException;
+import java.util.Objects;
 import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.Parent;
@@ -7,6 +10,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 
 public class CustomersController {
+
+	private final CustomerService service;
+	public CustomersController() { this(CustomerModule.service()); }
+	CustomersController(CustomerService service) { this.service = Objects.requireNonNull(service); }
 
 	@FXML
 	private TableView<Customer> table;
@@ -49,7 +56,12 @@ public class CustomersController {
 	}
 
 	private void load() {
-		list.setAll(CustomerDAO.getAllCustomers());
+		try {
+			list.setAll(service.listCustomers().stream().map(Customer::fromDomain).toList());
+		} catch (CustomerException failure) {
+			list.clear();
+			alert("Error", failure.getMessage());
+		}
 		table.setItems(list);
 	}
 
@@ -83,13 +95,13 @@ public class CustomersController {
 	@FXML
 	private void onEdit() {
 		Customer sel = table.getSelectionModel().getSelectedItem();
-		if (sel == null) {
+		if (sel == null || sel.getCustomerId() <= 0 || !list.contains(sel)) {
 			alert("Edit", "Please select a customer to edit.");
 			return;
 		}
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditCustomer.fxml"));
+			FXMLLoader loader = createViewLoader("EditCustomer.fxml");
 			Parent view = loader.load();
 
 			EditCustomerController c = loader.getController();
@@ -105,7 +117,7 @@ public class CustomersController {
 
 	private void go(String fxml) {
 		try {
-			Parent view = FXMLLoader.load(getClass().getResource(fxml));
+			Parent view = createViewLoader(fxml).load();
 			StackPane content = (StackPane) table.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
 		} catch (Exception e) {
@@ -113,7 +125,9 @@ public class CustomersController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	FXMLLoader createViewLoader(String fxml) { return new FXMLLoader(getClass().getResource(fxml)); }
+
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);

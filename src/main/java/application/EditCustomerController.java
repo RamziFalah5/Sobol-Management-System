@@ -1,11 +1,18 @@
 package application;
 
+import com.sobol.customer.application.CustomerService;
+import com.sobol.customer.application.CustomerException;
+import java.util.Objects;
 import javafx.fxml.*;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 
 public class EditCustomerController {
+
+	private final CustomerService service;
+	public EditCustomerController() { this(CustomerModule.service()); }
+	EditCustomerController(CustomerService service) { this.service = Objects.requireNonNull(service); }
 
 	@FXML
 	private Label lblId;
@@ -14,66 +21,36 @@ public class EditCustomerController {
 	@FXML
 	private TextArea txtNotes;
 
-	private int customerId;
+	private int customerId = -1;
 
 	public void setCustomer(Customer c) {
+		customerId = -1;
+		if (c == null || c.getCustomerId() <= 0) throw new IllegalArgumentException("A valid selected customer is required.");
 		customerId = c.getCustomerId();
 		lblId.setText("ID: " + customerId);
 
 		txtName.setText(c.getFullName());
 		txtPhone.setText(c.getPhone());
-		txtEmail.setText(c.getEmail());
-		txtCity.setText(c.getCity());
-		txtAddress.setText(c.getAddress());
-		txtNotes.setText(c.getNotes());
+		txtEmail.setText(c.getEmail() == null ? "" : c.getEmail());
+		txtCity.setText(c.getCity() == null ? "" : c.getCity());
+		txtAddress.setText(c.getAddress() == null ? "" : c.getAddress());
+		txtNotes.setText(c.getNotes() == null ? "" : c.getNotes());
 	}
 
 	@FXML
 	private void onSave() {
-
-		String name = txtName.getText().trim();
-		String phone = txtPhone.getText().trim();
-		String email = txtEmail.getText().trim();
-		String city = txtCity.getText().trim();
-		String address = txtAddress.getText().trim();
-		String notes = txtNotes.getText().trim();
-
-		if (name.isEmpty()) {
-			alert("Validation", "Full name is required.");
-			return;
-		}
-		if (phone.isEmpty()) {
-			alert("Validation", "Phone is required.");
-			return;
-		}
-
-		if (!email.isEmpty() && !isValidEmail(email)) {
-			alert("Validation", "Email format is not valid.");
-			return;
-		}
-
-		if (CustomerDAO.nameExistsForEdit(name, customerId)) {
-			alert("Duplicate", "Another customer already uses this name.");
-			return;
-		}
-
-		if (!email.isEmpty() && CustomerDAO.emailExistsForEdit(email, customerId)) {
-			alert("Duplicate", "Another customer already uses this email.");
-			return;
-		}
-
-		CustomerDAO.CustomerFormData d = new CustomerDAO.CustomerFormData();
-		d.fullName = name;
-		d.phone = phone;
-		d.email = email;
-		d.city = city;
-		d.address = address;
-		d.notes = notes;
-
-		if (CustomerDAO.updateCustomer(customerId, d)) {
+		try {
+			service.updateCustomer(customerId, txtName.getText(), txtPhone.getText(), txtEmail.getText(),
+					txtCity.getText(), txtAddress.getText(), txtNotes.getText());
 			goBack();
-		} else {
-			alert("Error", "Failed to update customer.");
+		} catch (CustomerException failure) {
+			String title = switch (failure.reason()) {
+				case DUPLICATE_NAME, DUPLICATE_EMAIL -> "Duplicate";
+				case NOT_FOUND -> "Not Found";
+				case STORAGE_FAILURE -> "Error";
+				default -> "Validation";
+			};
+			alert(title, failure.getMessage());
 		}
 	}
 
@@ -82,13 +59,9 @@ public class EditCustomerController {
 		goBack();
 	}
 
-	private boolean isValidEmail(String e) {
-		return e.contains("@") && e.contains(".") && e.indexOf("@") < e.lastIndexOf(".");
-	}
-
-	private void goBack() {
+	void goBack() {
 		try {
-			Parent view = FXMLLoader.load(getClass().getResource("Customers.fxml"));
+			Parent view = createViewLoader("Customers.fxml").load();
 			StackPane content = (StackPane) txtName.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
 		} catch (Exception ex) {
@@ -96,7 +69,9 @@ public class EditCustomerController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	FXMLLoader createViewLoader(String fxml) { return new FXMLLoader(getClass().getResource(fxml)); }
+
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);

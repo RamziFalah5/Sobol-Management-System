@@ -54,7 +54,7 @@ public class SalesController {
 	}
 
 	private void load() {
-		list.setAll(SalesDAO.getAllOrders());
+		list.setAll(loadOrders());
 		table.setItems(list);
 	}
 
@@ -88,7 +88,7 @@ public class SalesController {
 
 	private void go(String fxml) {
 		try {
-			Parent view = FXMLLoader.load(getClass().getResource(fxml));
+			Parent view = createViewLoader(fxml).load();
 			StackPane content = (StackPane) table.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
 		} catch (Exception e) {
@@ -103,4 +103,7 @@ public class SalesController {
 		a.setContentText(m);
 		a.showAndWait();
 	}
+
+	java.util.List<SalesOrder> loadOrders() { return SalesDAO.getAllOrders(); }
+	FXMLLoader createViewLoader(String fxml) { return new FXMLLoader(getClass().getResource(fxml)); }
 }

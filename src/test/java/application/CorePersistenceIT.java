@@ -3,6 +3,7 @@ package application;
 import org.junit.jupiter.api.*;
 import com.sobol.category.application.CategoryException;
 import com.sobol.supplier.application.SupplierException;
+import com.sobol.customer.application.CustomerException;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
@@ -94,14 +95,55 @@ class CorePersistenceIT {
                 supplierEmail, null, null, null, null);
         assertEquals(f.supplier, supplier.id());
         assertTrue(suppliers.listSuppliers().stream().anyMatch(s -> s.id() == f.supplier && supplierEmail.equals(s.details().email())));
-        var customer = new CustomerDAO.CustomerFormData();
-        customer.fullName = f.prefix + "_customer"; customer.phone = "0000000000";
-        customer.email = f.prefix + "_updated_customer@example.invalid";
-        assertTrue(CustomerDAO.updateCustomer(f.customer, customer));
-        assertTrue(CustomerDAO.getAllCustomers().stream().anyMatch(row -> row.getCustomerId() == f.customer && customer.email.equals(row.getEmail())));
-        customer.fullName = f.prefix + "_duplicate_email";
-        assertFalse(CustomerDAO.insertCustomer(customer));
-        assertTrue(CustomerDAO.emailExists(customer.email));
+        var customers = CustomerModule.service();
+        String customerEmail = f.prefix + "_updated_customer@example.invalid";
+        var customer = customers.updateCustomer(f.customer, f.prefix + "_customer", "0000000000", customerEmail, null, null, null);
+        assertEquals(f.customer, customer.id());
+        assertTrue(customers.listCustomers().stream().anyMatch(row -> row.id() == f.customer && customerEmail.equals(row.details().email())));
+        assertEquals(CustomerException.Reason.DUPLICATE_EMAIL, assertThrows(CustomerException.class,
+                () -> customers.createCustomer(f.prefix + "_duplicate_email", "0000000000", customerEmail, null, null, null)).reason());
+        assertTrue(customers.listCustomers().stream().anyMatch(row -> customerEmail.equals(row.details().email())));
+        assertEquals(customer, customers.listCustomers().stream().filter(row -> row.id() == f.customer).findFirst().orElseThrow());
+    }
+
+    @Test void unchangedExistingCustomerUpdateSucceeds() {
+        var service = CustomerModule.service();
+        var existing = service.listCustomers().stream().filter(row -> row.id() == f.customer).findFirst().orElseThrow();
+        var d = existing.details();
+        assertEquals(existing, service.updateCustomer(existing.id(), d.fullName(), d.phone(), d.email(), d.city(), d.address(), d.notes()));
+    }
+
+    @Test void customerCreationNullsAndUniqueConstraintsUseNewRepository() throws Exception {
+        var service = CustomerModule.service();
+        var first = service.createCustomer(f.prefix + "_customer_created", "000", f.prefix + "_created@example.invalid", null, null, null);
+        com.sobol.customer.domain.Customer second = null;
+        try {
+            second = service.createCustomer(f.prefix + "_customer_second", "000", " ", "", "", "");
+            var target = second;
+            assertEquals(first, service.listCustomers().stream().filter(row -> row.id() == first.id()).findFirst().orElseThrow());
+            assertEquals(1, f.integer("SELECT COUNT(*) FROM customer WHERE customer_id=? AND email IS NULL AND city='' AND address='' AND notes=''", second.id()));
+            assertEquals(CustomerException.Reason.DUPLICATE_NAME, assertThrows(CustomerException.class,
+                    () -> service.createCustomer(first.details().fullName(), "000", null, null, null, null)).reason());
+            assertEquals(CustomerException.Reason.DUPLICATE_EMAIL, assertThrows(CustomerException.class,
+                    () -> service.createCustomer(f.prefix + "_customer_conflict", "000", first.details().email(), null, null, null)).reason());
+            assertEquals(CustomerException.Reason.DUPLICATE_NAME, assertThrows(CustomerException.class,
+                    () -> service.updateCustomer(target.id(), first.details().fullName(), "000", null, null, null, null)).reason());
+            assertEquals(CustomerException.Reason.DUPLICATE_EMAIL, assertThrows(CustomerException.class,
+                    () -> service.updateCustomer(target.id(), target.details().fullName(), "000", first.details().email(), null, null, null)).reason());
+            assertEquals(target, service.listCustomers().stream().filter(row -> row.id() == target.id()).findFirst().orElseThrow());
+        } finally {
+            if (second != null) f.update("DELETE FROM customer WHERE customer_id=?", second.id());
+            f.update("DELETE FROM customer WHERE customer_id=?", first.id());
+        }
+    }
+
+    @Test void deletedCustomerUpdateReportsNotFound() throws Exception {
+        int removed = f.insert("customer", "full_name,phone", f.prefix + "_customer_removed", "000");
+        try {
+            f.update("DELETE FROM customer WHERE customer_id=?", removed);
+            assertEquals(CustomerException.Reason.NOT_FOUND, assertThrows(CustomerException.class,
+                    () -> CustomerModule.service().updateCustomer(removed, "Synthetic", "000", null, null, null, null)).reason());
+        } finally { f.update("DELETE FROM customer WHERE customer_id=?", removed); }
     }
 
     @Test void unchangedExistingSupplierUpdateSucceeds() {

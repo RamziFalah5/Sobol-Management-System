@@ -27,11 +27,13 @@ public class PickProductsForSaleController {
 
 	private final ObservableList<ProductSalePickRow> list = FXCollections.observableArrayList();
 
-	private Customer customer;
+	private com.sobol.customer.domain.Customer customer;
 
 	public void setCustomer(Customer c) {
-		this.customer = c;
-		lblTitle.setText("Pick Products - Customer: " + c.getFullName());
+		customer = null;
+		if (c == null) throw new IllegalArgumentException("A valid selected customer is required.");
+		customer = c.toDomain();
+		lblTitle.setText("Pick Products - Customer: " + customer.details().fullName());
 		load();
 	}
 
@@ -49,7 +51,7 @@ public class PickProductsForSaleController {
 	}
 
 	private void load() {
-		list.setAll(SalesDAO.getAllProductsForSale());
+		list.setAll(loadProducts());
 		table.setItems(list);
 	}
 
@@ -89,11 +91,11 @@ public class PickProductsForSaleController {
 		}
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("SaleQuantities.fxml"));
+			FXMLLoader loader = createViewLoader("SaleQuantities.fxml");
 			Parent view = loader.load();
 
 			SaleQuantitiesController c = loader.getController();
-			c.setData(customer, picked);
+			c.setData(Customer.fromDomain(customer), picked);
 
 			StackPane content = (StackPane) table.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
@@ -110,7 +112,7 @@ public class PickProductsForSaleController {
 
 	private void go(String fxml) {
 		try {
-			Parent view = FXMLLoader.load(getClass().getResource(fxml));
+			Parent view = createViewLoader(fxml).load();
 			StackPane content = (StackPane) table.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
 		} catch (Exception e) {
@@ -118,7 +120,10 @@ public class PickProductsForSaleController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	List<ProductSalePickRow> loadProducts() { return SalesDAO.getAllProductsForSale(); }
+	FXMLLoader createViewLoader(String fxml) { return new FXMLLoader(getClass().getResource(fxml)); }
+
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);

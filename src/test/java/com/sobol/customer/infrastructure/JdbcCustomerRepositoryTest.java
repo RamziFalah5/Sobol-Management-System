@@ -215,6 +215,28 @@ class JdbcCustomerRepositoryTest {
         assertEquals(expected, jdbc.bindings.getFirst()); jdbc.finished();
     }
 
+    @Test void duplicateDiagnosticsCannotEscapeThroughSuppressedCloseFailures() {
+        for (boolean update : List.of(false, true)) {
+            var jdbc = new Script();
+            if (update) jdbc.query(LOCK, List.of(row("customer_id", 42)));
+            jdbc.fail(update ? UPDATE : INSERT, new SQLException("Duplicate entry 'synthetic' for key 'uq_customer_email'", "23000", 1062));
+            jdbc.failStatementClose = true; jdbc.failConnectionClose = true;
+            var failure = assertReason(STORAGE_FAILURE, () -> {
+                if (update) jdbc.repository().update(42, details("Synthetic"));
+                else jdbc.repository().insert(details("Synthetic"));
+            });
+            assertNull(failure.getCause()); assertEquals(0, failure.getSuppressed().length);
+            jdbc.finished(); assertTrue(jdbc.rolledBack); assertFalse(jdbc.committed);
+        }
+    }
+
+    @Test void connectionCloseFailureAfterCommitIsUnconfirmedAndSanitized() {
+        var jdbc = new Script(); jdbc.insert(1, List.of(row("1", 42))); jdbc.failConnectionClose = true;
+        var failure = assertReason(STORAGE_FAILURE, () -> jdbc.repository().insert(details("Synthetic")));
+        assertNull(failure.getCause()); assertEquals(0, failure.getSuppressed().length);
+        assertFalse(failure.getMessage().contains("private")); jdbc.finished(); assertTrue(jdbc.committed);
+    }
+
     private CustomerException assertReason(CustomerException.Reason reason, org.junit.jupiter.api.function.Executable action) {
         var failure = assertThrows(CustomerException.class, action); assertEquals(reason, failure.reason()); return failure;
     }
@@ -232,6 +254,7 @@ class JdbcCustomerRepositoryTest {
         final List<Map<Integer, Object>> bindings = new ArrayList<>();
         final List<String> events = new ArrayList<>();
         boolean committed, rolledBack, closed, failCommit, failRollback, transaction;
+        boolean failStatementClose, failConnectionClose;
         int closedStatements, closedResults;
         SQLException commitFailure;
         void query(String sql, List<Map<String, Object>> rows) { steps.add(new Step(sql, rows, 0, List.of(), null)); }
@@ -261,7 +284,11 @@ class JdbcCustomerRepositoryTest {
                     if (failRollback) throw new SQLException("synthetic rollback failure");
                     rolledBack = true; yield null;
                 }
-                case "close" -> { closed = true; events.add("close"); yield null; }
+                case "close" -> {
+                    closed = true; events.add("close");
+                    if (failConnectionClose) throw new SQLException("private synthetic connection-close diagnostic");
+                    yield null;
+                }
                 default -> throw new AssertionError("Unexpected connection call: " + method.getName());
             });
         }
@@ -278,7 +305,11 @@ class JdbcCustomerRepositoryTest {
                     yield query ? result(step.rows()) : step.affected();
                 }
                 case "getGeneratedKeys" -> result(step.keys());
-                case "close" -> { closedStatements++; yield null; }
+                case "close" -> {
+                    closedStatements++;
+                    if (failStatementClose && !step.sql().equals(LOCK)) throw new SQLException("private synthetic statement-close diagnostic");
+                    yield null;
+                }
                 default -> throw new AssertionError("Unexpected statement call: " + method.getName());
             });
         }
