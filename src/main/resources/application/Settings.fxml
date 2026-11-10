@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane prefHeight="650.0" prefWidth="910.0"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	style="-fx-background-color:#f7f8fb;">
+
+	<!-- ===== Header ===== -->
+	<HBox layoutX="28.0" layoutY="18.0" spacing="14.0"
+		prefWidth="854.0" alignment="CENTER_LEFT">
+		<VBox spacing="2.0">
+			<Label text="Settings"
+				style="-fx-font-size:26px; -fx-font-weight:800; -fx-text-fill:#111827;" />
+			<Label
+				text="Customize your system experience • UI only (no backend)"
+				style="-fx-font-size:12.5px; -fx-text-fill:#6b7280;" />
+		</VBox>
+
+		<Region HBox.hgrow="ALWAYS" />
+
+		<HBox spacing="10" alignment="CENTER_RIGHT">
+			<StackPane prefWidth="170" prefHeight="36"
+				style="-fx-background-color:white; -fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#e5e7eb;">
+				<HBox spacing="8" alignment="CENTER_LEFT">
+					<padding>
+						<Insets top="0" right="10" bottom="0" left="10" />
+					</padding>
+					<Circle radius="5" style="-fx-fill:#22c55e;" />
+					<Label text="System: Online"
+						style="-fx-text-fill:#111827; -fx-font-weight:700;" />
+				</HBox>
+			</StackPane>
+
+			<Button text="Save"
+				style="-fx-background-color:#f7931e; -fx-text-fill:white; -fx-font-weight:800; -fx-background-radius:10; -fx-pref-height:36; -fx-pref-width:110;" />
+			<Button text="Reset"
+				style="-fx-background-color:#111827; -fx-text-fill:white; -fx-font-weight:800; -fx-background-radius:10; -fx-pref-height:36; -fx-pref-width:110;" />
+		</HBox>
+	</HBox>
+
+	<!-- ===== Scroll Content ===== -->
+	<ScrollPane layoutX="28.0" layoutY="72.0" prefWidth="854.0"
+		prefHeight="560.0" fitToWidth="true" hbarPolicy="NEVER"
+		style="-fx-background-color:transparent;">
+		<content>
+			<VBox spacing="16.0" prefWidth="854.0">
+
+				<!-- ===== HERO CARD ===== -->
+				<AnchorPane prefHeight="140.0" prefWidth="854.0"
+					style="-fx-background-color:linear-gradient(to right, #111827, #0f172a); -fx-background-radius:16; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.18), 24, 0, 0, 6);">
+					<children>
+						<VBox layoutX="18" layoutY="18" spacing="6">
+							<Label text="Inventory Suite • Control Center"
+								style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:white;" />
+							<Label
+								text="Themes, preferences, security, notifications, and more."
+								style="-fx-font-size:13px; -fx-text-fill:#cbd5e1;" />
+							<HBox spacing="10" layoutY="78">
+
+								<StackPane prefHeight="34" prefWidth="160"
+									style="-fx-background-color:rgba(255,255,255,0.12); -fx-background-radius:10; -fx-border-radius:10; -fx-border-color:rgba(255,255,255,0.15);">
+									<HBox spacing="8" alignment="CENTER_LEFT">
+										<padding>
+											<Insets top="0" right="12" bottom="0" left="12" />
+										</padding>
+										<Circle radius="5" style="-fx-fill:#f7931e;" />
+										<Label text="Orange Theme"
+											style="-fx-text-fill:white; -fx-font-weight:800;" />
+									</HBox>
+								</StackPane>
+
+								<StackPane prefHeight="34" prefWidth="160"
+									style="-fx-background-color:rgba(255,255,255,0.10); -fx-background-radius:10; -fx-border-radius:10; -fx-border-color:rgba(255,255,255,0.15);">
+									<HBox spacing="8" alignment="CENTER_LEFT">
+										<padding>
+											<Insets top="0" right="12" bottom="0" left="12" />
+										</padding>
+										<Circle radius="5" style="-fx-fill:#60a5fa;" />
+										<Label text="Blue Accents"
+											style="-fx-text-fill:white; -fx-font-weight:800;" />
+									</HBox>
+								</StackPane>
+
+							</HBox>
+						</VBox>
+
+						<Rectangle layoutX="660" layoutY="18" width="170"
+							height="110" arcWidth="18" arcHeight="18"
+							style="-fx-fill:rgba(255,255,255,0.06); -fx-stroke:rgba(255,255,255,0.08);" />
+						<Circle layoutX="770" layoutY="72" radius="38"
+							style="-fx-fill:rgba(247,147,30,0.20);" />
+						<Circle layoutX="720" layoutY="110" radius="18"
+							style="-fx-fill:rgba(96,165,250,0.20);" />
+					</children>
+				</AnchorPane>
+
+				<!-- ===== Layout row ===== -->
+				<HBox spacing="16" prefWidth="854.0">
+
+					<!-- LEFT COLUMN -->
+					<VBox spacing="16" prefWidth="420.0">
+
+						<!-- Appearance Card -->
+						<VBox spacing="12"
+							style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#e5e7eb; -fx-border-radius:16; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.06), 20, 0, 0, 4);">
+							<padding>
+								<Insets top="14" right="14" bottom="14" left="14" />
+							</padding>
+
+							<HBox alignment="CENTER_LEFT" spacing="10">
+								<Label text="Appearance"
+									style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#111827;" />
+								<Region HBox.hgrow="ALWAYS" />
+								<Label text="UI"
+									style="-fx-background-color:#eff6ff; -fx-text-fill:#1d4ed8; -fx-font-weight:800; -fx-padding:4 10 4 10; -fx-background-radius:999;" />
+							</HBox>
+							<Separator />
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Theme" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<ComboBox prefWidth="260" promptText="Choose theme"
+									style="-fx-background-radius:10;" />
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Accent Color" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<HBox spacing="10">
+									<StackPane prefWidth="38" prefHeight="28"
+										style="-fx-background-color:#f7931e; -fx-background-radius:8;" />
+									<StackPane prefWidth="38" prefHeight="28"
+										style="-fx-background-color:#1E88E5; -fx-background-radius:8;" />
+									<StackPane prefWidth="38" prefHeight="28"
+										style="-fx-background-color:#2E7D32; -fx-background-radius:8;" />
+									<StackPane prefWidth="38" prefHeight="28"
+										style="-fx-background-color:#111827; -fx-background-radius:8;" />
+									<StackPane prefWidth="38" prefHeight="28"
+										style="-fx-background-color:#8b5cf6; -fx-background-radius:8;" />
+								</HBox>
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Font Size" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<Slider prefWidth="260" min="10" max="22" value="14" />
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Animations" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<CheckBox text="Enable smooth transitions"
+									selected="true"
+									style="-fx-text-fill:#111827; -fx-font-weight:700;" />
+							</HBox>
+						</VBox>
+
+						<!-- Notifications Card -->
+						<VBox spacing="12"
+							style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#e5e7eb; -fx-border-radius:16; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.06), 20, 0, 0, 4);">
+							<padding>
+								<Insets top="14" right="14" bottom="14" left="14" />
+							</padding>
+
+							<HBox alignment="CENTER_LEFT" spacing="10">
+								<Label text="Notifications"
+									style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#111827;" />
+								<Region HBox.hgrow="ALWAYS" />
+								<Label text="Alerts"
+									style="-fx-background-color:#fff7ed; -fx-text-fill:#c2410c; -fx-font-weight:800; -fx-padding:4 10 4 10; -fx-background-radius:999;" />
+							</HBox>
+							<Separator />
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Low Stock" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<ToggleButton text="ON"
+									style="-fx-background-color:#22c55e; -fx-text-fill:white; -fx-font-weight:900; -fx-background-radius:10; -fx-pref-width:80;" />
+								<Label text="Notify when quantity &lt; min"
+									style="-fx-text-fill:#6b7280;" />
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Shipments" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<ToggleButton text="ON"
+									style="-fx-background-color:#1E88E5; -fx-text-fill:white; -fx-font-weight:900; -fx-background-radius:10; -fx-pref-width:80;" />
+								<Label text="New import shipment added"
+									style="-fx-text-fill:#6b7280;" />
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Sales" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<ToggleButton text="OFF"
+									style="-fx-background-color:#111827; -fx-text-fill:white; -fx-font-weight:900; -fx-background-radius:10; -fx-pref-width:80;" />
+								<Label text="Order completed receipts"
+									style="-fx-text-fill:#6b7280;" />
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Sound" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<Slider prefWidth="260" min="0" max="100" value="40" />
+							</HBox>
+						</VBox>
+
+					</VBox>
+
+					<!-- RIGHT COLUMN -->
+					<VBox spacing="16" prefWidth="418.0">
+
+						<!-- Account Card -->
+						<VBox spacing="12"
+							style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#e5e7eb; -fx-border-radius:16; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.06), 20, 0, 0, 4);">
+							<padding>
+								<Insets top="14" right="14" bottom="14" left="14" />
+							</padding>
+
+							<HBox alignment="CENTER_LEFT" spacing="10">
+								<Label text="Account"
+									style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#111827;" />
+								<Region HBox.hgrow="ALWAYS" />
+								<Label text="Profile"
+									style="-fx-background-color:#f3f4f6; -fx-text-fill:#111827; -fx-font-weight:800; -fx-padding:4 10 4 10; -fx-background-radius:999;" />
+							</HBox>
+							<Separator />
+
+							<HBox spacing="12" alignment="CENTER_LEFT">
+								<StackPane prefWidth="54" prefHeight="54"
+									style="-fx-background-color:#111827; -fx-background-radius:16;">
+									<Label text="R"
+										style="-fx-text-fill:white; -fx-font-size:22px; -fx-font-weight:900;" />
+								</StackPane>
+								<VBox spacing="2">
+									<Label text="Admin User"
+										style="-fx-text-fill:#111827; -fx-font-weight:900;" />
+									<Label text="admin@company.com"
+										style="-fx-text-fill:#6b7280;" />
+								</VBox>
+								<Region HBox.hgrow="ALWAYS" />
+								<Button text="Switch"
+									style="-fx-background-color:#f7931e; -fx-text-fill:white; -fx-font-weight:900; -fx-background-radius:10;" />
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Name" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<TextField prefWidth="260" promptText="Full name"
+									style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#e5e7eb;" />
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Email" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<TextField prefWidth="260" promptText="Email"
+									style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#e5e7eb;" />
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="Password" prefWidth="110"
+									style="-fx-text-fill:#374151; -fx-font-weight:800;" />
+								<PasswordField prefWidth="260"
+									promptText="••••••••"
+									style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#e5e7eb;" />
+							</HBox>
+
+							<HBox spacing="10" alignment="CENTER_RIGHT">
+								<Button text="Update"
+									style="-fx-background-color:#111827; -fx-text-fill:white; -fx-font-weight:900; -fx-background-radius:10; -fx-pref-width:110;" />
+								<Button text="Logout"
+									style="-fx-background-color:#ef4444; -fx-text-fill:white; -fx-font-weight:900; -fx-background-radius:10; -fx-pref-width:110;" />
+							</HBox>
+						</VBox>
+
+						<!-- About -->
+						<VBox spacing="8"
+							style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#e5e7eb; -fx-border-radius:16;">
+							<padding>
+								<Insets top="12" right="12" bottom="12" left="12" />
+							</padding>
+							<HBox spacing="10" alignment="CENTER_LEFT">
+								<Label text="About"
+									style="-fx-font-size:15px; -fx-font-weight:900; -fx-text-fill:#111827;" />
+								<Region HBox.hgrow="ALWAYS" />
+								<Label text="v1.0"
+									style="-fx-text-fill:#6b7280; -fx-font-weight:800;" />
+							</HBox>
+							<Separator />
+							<Label
+								text="Inventory Suite • Settings UI (Static). No backend actions are wired here."
+								style="-fx-text-fill:#6b7280;" />
+						</VBox>
+
+					</VBox>
+				</HBox>
+
+				<Region prefHeight="10" />
+			</VBox>
+		</content>
+	</ScrollPane>
+
+</AnchorPane>

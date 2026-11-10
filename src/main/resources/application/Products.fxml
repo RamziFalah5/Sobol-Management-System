@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="675.0" prefWidth="944.0" style="-fx-background-color: linear-gradient(to bottom, #f7f8fb, #eef1f7);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ProductsController">
+
+	<!-- Title -->
+	<Label fx:id="lblTitle" layoutX="28" layoutY="18" style="-fx-font-size:28px; -fx-text-fill:#f7931e; -fx-font-weight:900;" text="Products" />
+
+	<!-- Underline -->
+	<Region layoutX="28" layoutY="56" prefHeight="2" prefWidth="894" style="-fx-background-color: rgba(247,147,30,0.22); -fx-background-radius: 10;" />
+
+	<!-- Search Bar (pill) -->
+	<StackPane layoutX="639.0" layoutY="14.0" prefHeight="40" prefWidth="282" style="             -fx-background-color: white;             -fx-background-radius: 14;             -fx-border-color: rgba(0,0,0,0.06);             -fx-border-radius: 14;             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0.22, 0, 6);         ">
+
+		<children>
+			<TextField fx:id="txtSearch" promptText="Search by name / branch / warehouse..." style="                     -fx-background-color: transparent;                     -fx-background-radius: 14;                     -fx-border-color: transparent;                     -fx-padding: 8 44 8 12;                     -fx-text-fill: #222;                     -fx-prompt-text-fill: #9a9a9a;                 " />
+
+			<Button fx:id="btnSearch" onAction="#onSearch" prefHeight="30.0" prefWidth="34.0" style="                     -fx-background-color: linear-gradient(to bottom right, #f7a343, #f7931e);                     -fx-background-radius: 12;                     -fx-cursor: hand;                     -fx-effect: dropshadow(gaussian, rgba(247,147,30,0.25), 14, 0.25, 0, 4);                 " StackPane.alignment="CENTER_RIGHT">
+				<graphic>
+					<ImageView fitHeight="18.0" fitWidth="18.0" preserveRatio="true">
+						<image>
+							<Image url="@icons/Search.png" />
+						</image>
+					</ImageView>
+				</graphic>
+			</Button>
+		</children>
+	</StackPane>
+
+	<!-- Main Card -->
+	<AnchorPane layoutX="28" layoutY="70" prefHeight="590" prefWidth="894" style="             -fx-background-color: white;             -fx-background-radius: 18;             -fx-padding: 18;             -fx-border-color: rgba(0,0,0,0.05);             -fx-border-radius: 18;             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);         ">
+
+		<!-- Header inside card -->
+		<Label layoutX="18" layoutY="12" style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#222;" text="Products Table" />
+
+		<Label layoutX="18" layoutY="32" style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" text="Browse and manage products across branches &amp; warehouses" />
+
+		<Separator layoutX="18" layoutY="56" prefWidth="858" style="-fx-opacity:0.55;" />
+
+		<!-- Table -->
+		<TableView fx:id="productsTable" layoutX="18.0" layoutY="72.0" prefHeight="458.0" prefWidth="858.0" style="                 -fx-background-radius:14;                 -fx-border-radius:14;                 -fx-border-color:#e8e8e8;                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 16, 0.18, 0, 5);             ">
+
+			<columns>
+				<TableColumn fx:id="colStatus" prefWidth="60" text="" />
+				<TableColumn fx:id="colImage" prefWidth="90" text="Image" />
+
+				<TableColumn fx:id="colName" prefWidth="150" text="Name" />
+				<TableColumn fx:id="colBranch" prefWidth="130" text="Branch" />
+				<TableColumn fx:id="colWarehouse" prefWidth="140" text="Warehouse" />
+
+				<TableColumn fx:id="colQty" prefWidth="85" text="Qty" />
+				<TableColumn fx:id="colMin" prefWidth="85" text="Min" />
+				<TableColumn fx:id="colMax" prefWidth="85" text="Max" />
+
+				<TableColumn fx:id="colPrice" prefWidth="110" text="Sell Price" />
+				<TableColumn fx:id="colPallet" prefWidth="120" text="Cartons/Pallet" />
+			</columns>
+		</TableView>
+
+		<!-- Buttons -->
+		<HBox layoutX="18.0" layoutY="552.0" spacing="12">
+
+			<children>
+				<Button onAction="#openAddProduct" style="                         -fx-background-color: linear-gradient(to bottom, #2E7D32, #1B5E20);                         -fx-text-fill: white;                         -fx-font-weight: 900;                         -fx-background-radius: 14;                         -fx-pref-width: 110;                         -fx-pref-height: 42;                         -fx-cursor: hand;                         -fx-effect: dropshadow(gaussian, rgba(27,94,32,0.22), 18, 0.25, 0, 6);                     " text="Add" />
+
+				<Button onAction="#openEditProduct" style="                         -fx-background-color: linear-gradient(to bottom right, #f7a343, #f7931e);                         -fx-text-fill: white;                         -fx-font-weight: 900;                         -fx-background-radius: 14;                         -fx-pref-width: 110;                         -fx-pref-height: 42;                         -fx-cursor: hand;                         -fx-effect: dropshadow(gaussian, rgba(247,147,30,0.22), 18, 0.25, 0, 6);                     " text="Edit" />
+
+				<Button onAction="#openViewProduct" style="                         -fx-background-color: linear-gradient(to bottom right, #1E88E5, #1565C0);                         -fx-text-fill: white;                         -fx-font-weight: 900;                         -fx-background-radius: 14;                         -fx-pref-width: 110;                         -fx-pref-height: 42;                         -fx-cursor: hand;                         -fx-effect: dropshadow(gaussian, rgba(21,101,192,0.22), 18, 0.25, 0, 6);                     " text="View" />
+			</children>
+		</HBox>
+
+		<!-- Legend (Status) -->
+		<Label layoutX="494.0" layoutY="574.0" style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" text="Legend" />
+
+		<HBox layoutX="560.0" layoutY="573.0" spacing="14">
+
+			<children>
+                    <HBox spacing="6">
+                        <Circle fill="#cc0a0a" radius="6.5" stroke="#ff1f1f" strokeType="INSIDE" />
+                        <Label style="-fx-font-size:13px; -fx-font-weight:800; -fx-text-fill:#cc0a0a;" text="Deficit" />
+                    </HBox>
+
+				<HBox spacing="6">
+					<Circle fill="#ff941f" radius="6.5" stroke="#ff941f" strokeType="INSIDE" />
+					<Label style="-fx-font-size:13px; -fx-font-weight:800; -fx-text-fill:#ff941f;" text="Stability" />
+				</HBox>
+
+				<HBox spacing="6">
+					<Circle fill="#14730a" radius="6.5" stroke="#14730a" strokeType="INSIDE" />
+					<Label style="-fx-font-size:13px; -fx-font-weight:800; -fx-text-fill:#14730a;" text="Surplus" />
+				</HBox>
+			</children>
+		</HBox>
+
+	</AnchorPane>
+
+</AnchorPane>

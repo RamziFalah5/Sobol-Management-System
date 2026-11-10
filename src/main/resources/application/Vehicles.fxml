@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="650.0" prefWidth="910.0"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="application.VehiclesController"
+            style="-fx-background-color: linear-gradient(to bottom right, #f7f8fb, #eef2ff);">
+
+    <children>
+
+        <!-- Top Header Card -->
+        <HBox layoutX="22.0" layoutY="18.0" prefWidth="866.0" prefHeight="56.0"
+              alignment="CENTER_LEFT" spacing="14.0"
+              style="
+                    -fx-background-color: white;
+                    -fx-background-radius: 16;
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 20, 0.22, 0, 8);
+              ">
+            <padding>
+                <Insets top="10" right="14" bottom="10" left="16"/>
+            </padding>
+
+            <!-- Title -->
+            <VBox spacing="2" alignment="CENTER_LEFT">
+                <Label text="Vehicles"
+                       style="-fx-text-fill:#f7931e; -fx-font-weight: 900;">
+                    <font><Font size="22.0"/></font>
+                </Label>
+                <Label text="Manage vehicles and their capacity"
+                       style="-fx-text-fill: rgba(0,0,0,0.55); -fx-font-weight: 600;">
+                    <font><Font size="12.0"/></font>
+                </Label>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Search -->
+            <TextField fx:id="txtSearch" prefWidth="240" promptText="Search…"
+                       style="
+                            -fx-background-radius: 14;
+                            -fx-background-color: #f3f5ff;
+                            -fx-border-color: rgba(0,0,0,0.08);
+                            -fx-border-radius: 14;
+                            -fx-text-fill: #222;
+                            -fx-prompt-text-fill: rgba(0,0,0,0.45);
+                            -fx-padding: 9 12 9 12;
+                            -fx-font-size: 13px;
+                       "/>
+
+        </HBox>
+
+        <!-- Table Card -->
+        <VBox layoutX="22.0" layoutY="86.0" prefWidth="866.0" prefHeight="500.0"
+              style="
+                    -fx-background-color: white;
+                    -fx-background-radius: 16;
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 20, 0.22, 0, 8);
+              ">
+
+            <padding>
+                <Insets top="14" right="14" bottom="14" left="14"/>
+            </padding>
+
+            <children>
+
+                <TableView fx:id="vehiclesTable" prefWidth="838" prefHeight="472"
+                           style="
+                                -fx-background-radius: 12;
+                                -fx-border-radius: 12;
+                                -fx-border-color: rgba(0,0,0,0.08);
+                                -fx-border-width: 1;
+                           ">
+
+                    <columns>
+                        <TableColumn fx:id="colImg" text="Photo" prefWidth="90.0"/>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="60.0"/>
+                        <TableColumn fx:id="colName" text="Name" prefWidth="160.0"/>
+                        <TableColumn fx:id="colPlate" text="Plate" prefWidth="110.0"/>
+                        <TableColumn fx:id="colType" text="Type" prefWidth="100.0"/>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="110.0"/>
+                        <TableColumn fx:id="colPallets" text="Pallets" prefWidth="90.0"/>
+                        <TableColumn fx:id="colLoad" text="Max Load(kg)" prefWidth="120.0"/>
+                    </columns>
+
+                </TableView>
+
+            </children>
+        </VBox>
+
+        <!-- Bottom Actions Card -->
+        <HBox layoutX="22.0" layoutY="598.0" prefWidth="866.0" prefHeight="44.0"
+              alignment="CENTER_LEFT" spacing="10.0"
+              style="
+                    -fx-background-color: white;
+                    -fx-background-radius: 16;
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 20, 0.22, 0, 8);
+              ">
+            <padding>
+                <Insets top="8" right="12" bottom="8" left="12"/>
+            </padding>
+
+            <Button text="Add" onAction="#openAdd" prefWidth="110" prefHeight="32"
+                    style="
+                        -fx-background-color:#2E7D32;
+                        -fx-text-fill:white;
+                        -fx-font-weight: 900;
+                        -fx-background-radius: 12;
+                        -fx-cursor: hand;
+                    "/>
+
+            <Button text="Edit" onAction="#openEdit" prefWidth="110" prefHeight="32"
+                    style="
+                        -fx-background-color:#f7931e;
+                        -fx-text-fill:white;
+                        -fx-font-weight: 900;
+                        -fx-background-radius: 12;
+                        -fx-cursor: hand;
+                    "/>
+
+            <Button text="Delete" onAction="#deleteVehicle" prefWidth="110" prefHeight="32"
+                    style="
+                        -fx-background-color:#C62828;
+                        -fx-text-fill:white;
+                        -fx-font-weight: 900;
+                        -fx-background-radius: 12;
+                        -fx-cursor: hand;
+                    "/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="View" disable="true" prefWidth="110" prefHeight="32"
+                    style="
+                        -fx-background-color:#1E88E5;
+                        -fx-text-fill:white;
+                        -fx-font-weight: 900;
+                        -fx-background-radius: 12;
+                        -fx-opacity: 0.65;
+                    "/>
+
+        </HBox>
+
+    </children>
+</AnchorPane>

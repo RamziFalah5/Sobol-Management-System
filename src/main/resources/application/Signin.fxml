@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="644.0" prefWidth="478.0"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.Controller1"
+	style="-fx-background-color: linear-gradient(to bottom right, #f7f8fb, #eef2ff);">
+
+	<VBox layoutX="18" layoutY="12" prefWidth="442" prefHeight="620"
+		alignment="TOP_CENTER" spacing="18"
+		style="
+                -fx-background-color: linear-gradient(to bottom, #ff8a00, #f56b00);
+                -fx-background-radius: 22;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 26, 0.28, 0, 10);
+          ">
+
+		<padding>
+			<Insets top="26" right="22" bottom="22" left="22" />
+		</padding>
+
+		<!-- Header -->
+		<VBox alignment="CENTER" spacing="6"
+			style="-fx-padding: 8 0 6 0;">
+			<Label text="Welcome Back"
+				style="-fx-text-fill: rgba(255,255,255,0.92); -fx-font-weight: bold;">
+				<font>
+					<Font size="18" />
+				</font>
+			</Label>
+
+			<Label text="Login"
+				style="-fx-text-fill: white; -fx-font-weight: 900;">
+				<font>
+					<Font size="38" />
+				</font>
+			</Label>
+
+			<Label text="Please sign in to continue"
+				style="-fx-text-fill: rgba(255,255,255,0.85);">
+				<font>
+					<Font size="14" />
+				</font>
+			</Label>
+		</VBox>
+
+		<!-- Form Card -->
+		<VBox spacing="14" alignment="TOP_CENTER"
+			style="
+                    -fx-background-color: rgba(255,255,255,0.16);
+                    -fx-background-radius: 18;
+                    -fx-padding: 16 14 16 14;
+                    -fx-border-color: rgba(255,255,255,0.22);
+                    -fx-border-radius: 18;
+                    -fx-border-width: 1;
+              ">
+
+			<!-- EMAIL -->
+			<VBox spacing="6" prefWidth="380">
+				<Label text="Email"
+					style="-fx-text-fill: rgba(255,255,255,0.95); -fx-font-weight: bold;">
+					<font>
+						<Font size="14" />
+					</font>
+				</Label>
+
+				<TextField fx:id="email" promptText="yourname@gmail.com"
+					prefWidth="380"
+					style="
+                                -fx-background-color: rgba(255,255,255,0.96);
+                                -fx-text-fill: #222;
+                                -fx-prompt-text-fill: rgba(0,0,0,0.45);
+                                -fx-background-radius: 14;
+                                -fx-border-radius: 14;
+                                -fx-border-color: rgba(255,255,255,0.0);
+                                -fx-padding: 10 12 10 12;
+                                -fx-font-size: 14px;
+                                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.2, 0, 5);
+                           " />
+			</VBox>
+
+			<!-- PASSWORD -->
+			<VBox spacing="6" prefWidth="380">
+				<Label text="Password"
+					style="-fx-text-fill: rgba(255,255,255,0.95); -fx-font-weight: bold;">
+					<font>
+						<Font size="14" />
+					</font>
+				</Label>
+
+				<PasswordField fx:id="password" promptText="••••••"
+					prefWidth="380"
+					style="
+                                    -fx-background-color: rgba(255,255,255,0.96);
+                                    -fx-text-fill: #222;
+                                    -fx-prompt-text-fill: rgba(0,0,0,0.45);
+                                    -fx-background-radius: 14;
+                                    -fx-border-radius: 14;
+                                    -fx-border-color: rgba(255,255,255,0.0);
+                                    -fx-padding: 10 12 10 12;
+                                    -fx-font-size: 14px;
+                                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.2, 0, 5);
+                               " />
+			</VBox>
+
+			<!-- Terms -->
+			<HBox alignment="CENTER_LEFT" spacing="10" prefWidth="380"
+				style="-fx-padding: 4 4 0 4;">
+				<RadioButton text="I Accept terms and privacy policy"
+					textFill="white" style="-fx-font-size: 13px; -fx-font-weight: 700;" />
+			</HBox>
+		</VBox>
+
+		<!-- Login -->
+		<Button fx:id="loginBtn" text="Login" onAction="#onLogin"
+			prefWidth="380" prefHeight="46"
+			style="
+                    -fx-background-color: white;
+                    -fx-text-fill: #f56b00;
+                    -fx-font-weight: 900;
+                    -fx-font-size: 16px;
+                    -fx-background-radius: 16;
+                    -fx-cursor: hand;
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 18, 0.25, 0, 8);
+                " />
+
+		<!-- Register -->
+		<HBox spacing="8" alignment="CENTER">
+			<Label text="Don't have an account ?"
+				style="-fx-text-fill: rgba(255,255,255,0.92);">
+				<font>
+					<Font size="14" />
+				</font>
+			</Label>
+
+			<Button text="Register" onAction="#switchToScene3"
+				prefHeight="36"
+				style="
+                        -fx-background-color: rgba(255,255,255,0.92);
+                        -fx-text-fill: #f56b00;
+                        -fx-background-radius: 14;
+                        -fx-font-weight: 900;
+                        -fx-cursor: hand;
+                        -fx-padding: 8 16 8 16;
+                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 14, 0.25, 0, 6);
+                    " />
+		</HBox>
+
+		<!-- Divider -->
+		<VBox spacing="10" alignment="CENTER" prefWidth="380"
+			style="-fx-padding: 8 0 0 0;">
+			<Line startX="-160" endX="160"
+				style="-fx-stroke: rgba(255,255,255,0.65); -fx-stroke-width:2;" />
+			<Label text="Login with social media"
+				style="-fx-text-fill: rgba(255,255,255,0.90); -fx-font-weight: 800;">
+				<font>
+					<Font size="14" />
+				</font>
+			</Label>
+		</VBox>
+
+		<!-- Social -->
+		<HBox spacing="12" alignment="CENTER" prefWidth="380">
+
+			<Button text="Facebook" prefHeight="40" prefWidth="120"
+				style="
+                        -fx-background-color: #1877F2;
+                        -fx-text-fill: white;
+                        -fx-background-radius: 14;
+                        -fx-font-weight: 900;
+                        -fx-cursor: hand;
+                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 14, 0.25, 0, 6);
+                    " />
+
+			<Button text="X" prefHeight="40" prefWidth="60"
+				style="
+                        -fx-background-color: #000000;
+                        -fx-text-fill: white;
+                        -fx-background-radius: 14;
+                        -fx-font-weight: 900;
+                        -fx-cursor: hand;
+                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 14, 0.25, 0, 6);
+                    " />
+
+			<Button text="Google" prefHeight="40" prefWidth="120"
+				style="
+                        -fx-background-color: #DB4437;
+                        -fx-text-fill: white;
+                        -fx-background-radius: 14;
+                        -fx-font-weight: 900;
+                        -fx-cursor: hand;
+                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 14, 0.25, 0, 6);
+                    " />
+
+		</HBox>
+
+		<VBox.margin>
+			<Insets bottom="18" />
+		</VBox.margin>
+
+	</VBox>
+
+</AnchorPane>

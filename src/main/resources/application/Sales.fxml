@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefWidth="910" prefHeight="650"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.SalesController"
+	style="-fx-background-color: linear-gradient(to bottom, #f7f8fb, #eef1f7);">
+
+	<!-- Title -->
+	<Label layoutX="28" layoutY="18" text="Sales"
+		style="-fx-font-size:28px; -fx-text-fill:#f7931e; -fx-font-weight:900;" />
+
+	<!-- Underline -->
+	<Region layoutX="28" layoutY="56" prefWidth="854" prefHeight="2"
+		style="-fx-background-color: rgba(247,147,30,0.22); -fx-background-radius: 10;" />
+
+	<!-- Card Container -->
+	<AnchorPane layoutX="28" layoutY="70" prefWidth="854"
+		prefHeight="560"
+		style="
+            -fx-background-color: white;
+            -fx-background-radius: 18;
+            -fx-padding: 18;
+            -fx-border-color: rgba(0,0,0,0.05);
+            -fx-border-radius: 18;
+            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);
+        ">
+
+		<!-- Card Header -->
+		<Label layoutX="18" layoutY="14" text="Orders"
+			style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#222;" />
+
+		<Label layoutX="18" layoutY="34"
+			text="Track sales orders and customer activity"
+			style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" />
+
+		<!-- Search Box -->
+		<TextField fx:id="txtSearch" layoutX="578" layoutY="16"
+			prefWidth="220" promptText="Search by customer…"
+			style="
+                -fx-background-radius: 12;
+                -fx-background-color: #f7f8fb;
+                -fx-border-color: #e8e8e8;
+                -fx-border-radius: 12;
+                -fx-padding: 8 12;
+                -fx-text-fill: #111;
+                -fx-prompt-text-fill: #8a8a8a;
+            " />
+
+		<!-- Search Icon Button (no action change; optional) -->
+		<Button layoutX="804" layoutY="16" prefWidth="32"
+			prefHeight="32" focusTraversable="false"
+			style="
+                -fx-background-color: linear-gradient(to bottom right, #f7931e, #ff8f00);
+                -fx-background-radius: 10;
+                -fx-cursor: hand;
+                -fx-effect: dropshadow(gaussian, rgba(247,147,30,0.24), 14, 0.22, 0, 5);
+            ">
+			<graphic>
+				<ImageView fitHeight="16" fitWidth="16"
+					preserveRatio="true">
+					<image>
+						<!-- إذا ما عندك الأيقونة، احذف هذا الجزء عادي -->
+						<Image
+							url="@icons/Search.png" />
+					</image>
+				</ImageView>
+			</graphic>
+		</Button>
+
+		<Separator layoutX="18" layoutY="60" prefWidth="818"
+			style="-fx-opacity:0.55;" />
+
+		<!-- Table -->
+		<TableView fx:id="table" layoutX="18" layoutY="78"
+			prefWidth="818" prefHeight="410"
+			style="
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: #e8e8e8;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0.18, 0, 3);
+            ">
+
+			<columns>
+				<TableColumn fx:id="colId" text="Order ID"
+					prefWidth="90" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colDate" text="Date" prefWidth="110"
+					style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colCustomer" text="Customer"
+					prefWidth="210" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colEmployee" text="Employee"
+					prefWidth="190" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colItems" text="Items"
+					prefWidth="80" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colTotal" text="Total"
+					prefWidth="150" style="-fx-alignment:CENTER;" />
+			</columns>
+		</TableView>
+
+		<!-- Bottom bar -->
+		<HBox layoutX="18" layoutY="500" spacing="12"
+			style="
+                -fx-background-color: #f7f8fb;
+                -fx-background-radius: 14;
+                -fx-padding: 12;
+                -fx-border-color: #e8e8e8;
+                -fx-border-radius: 14;
+            ">
+
+			<Button text="New Order" onAction="#onNewOrder"
+				style="
+                    -fx-background-color: linear-gradient(to bottom right, #43A047, #2E7D32);
+                    -fx-text-fill: white;
+                    -fx-font-weight: 900;
+                    -fx-background-radius: 12;
+                    -fx-pref-width: 140;
+                    -fx-pref-height: 40;
+                    -fx-cursor: hand;
+                    -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.20), 16, 0.22, 0, 5);
+                " />
+
+			<Button text="View" onAction="#onView"
+				style="
+                    -fx-background-color: linear-gradient(to bottom right, #1E88E5, #1565C0);
+                    -fx-text-fill: white;
+                    -fx-font-weight: 900;
+                    -fx-background-radius: 12;
+                    -fx-pref-width: 120;
+                    -fx-pref-height: 40;
+                    -fx-cursor: hand;
+                    -fx-effect: dropshadow(gaussian, rgba(21,101,192,0.20), 16, 0.22, 0, 5);
+                " />
+
+			<Region HBox.hgrow="ALWAYS" />
+
+			<!-- tiny legend pills (optional purely visual) -->
+			<HBox spacing="10" alignment="CENTER_RIGHT">
+				<HBox spacing="6" alignment="CENTER">
+					<Circle radius="6" fill="#43A047" />
+					<Label text="Completed"
+						style="-fx-text-fill:#666; -fx-font-size:12px; -fx-font-weight:800;" />
+				</HBox>
+				<HBox spacing="6" alignment="CENTER">
+					<Circle radius="6" fill="#f7931e" />
+					<Label text="Pending"
+						style="-fx-text-fill:#666; -fx-font-size:12px; -fx-font-weight:800;" />
+				</HBox>
+			</HBox>
+		</HBox>
+
+	</AnchorPane>
+
+</AnchorPane>

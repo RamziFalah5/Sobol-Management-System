@@ -1,0 +1,66 @@
+{
+  "src/main/resources/truck2.png": {
+    "sha256": "d113903f42265792ddd296e54f635d126ba169c746e0db3218add75acfccd7db",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/images/user.png": {
+    "sha256": "f02508ce6e45ce9a490569a5cc93932f39cde4bf46da5f466291c9502b1c94a4",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Branches.png": {
+    "sha256": "23dfd63c0162522e45b8676302edc5537371460fbfebda5315e20725ede86ec0",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Category.png": {
+    "sha256": "4c7ade92acdf0afd290724c8c30068dd252320fdd3a9686b7b863378f88afd67",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Customer.png": {
+    "sha256": "ca471258fb5d800ebf873332c0388dd0ffba513d24d49ffb8b7ae4c85e8650cf",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Dashboard.png": {
+    "sha256": "ac87c6d8c5755df32227f9b5888515a5b0847bb9c457764f183df568c67e3838",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Employee.png": {
+    "sha256": "f02508ce6e45ce9a490569a5cc93932f39cde4bf46da5f466291c9502b1c94a4",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Imports.png": {
+    "sha256": "6bf75a8fb5de86858b66a2f0b2a605d2bf2eb9badff2ad613953d93cff78af8d",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/product.png": {
+    "sha256": "c24e41f05b6e8b749d0472e060514e201015029b95260cc49310c231740850a7",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Reports.png": {
+    "sha256": "02af8ff1baac5f14c3057d97ca4a53c9294648cc48c0170c17c83d9d443d1036",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Sales.png": {
+    "sha256": "b0062da63dff00571d3b1f4c1b8f2477aa50353344de72a0ba4fb7b45895f443",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Search.png": {
+    "sha256": "1f20698ea90b25baecfdfaf2967c80a5af50b1431159e4aa3803a96c6299c5cc",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Settings.png": {
+    "sha256": "bbdb487a90d0f8ec0cae348587df7bf22fed4113389621f4ea4f4f0c4483be7b",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/Supplier.png": {
+    "sha256": "9a3c24b404715d39a7fa848fef63185f45b47a695b0aed0a826ef80e92517eba",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/truck.png": {
+    "sha256": "581ccfbf3e2370bc30fe53795ba44a92572d3eeb89f6b4ba084e8ffa31555119",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  },
+  "src/main/resources/application/icons/warehouse.png": {
+    "sha256": "9845509e22eb1f6d14cafa8fb33e8758917d2b1649d0e9aaaa5d6db438780369",
+    "origin": "Original non-personal project icon; user.png is documented generic fallback"
+  }
+}

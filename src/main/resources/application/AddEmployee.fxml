@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane prefHeight="600" prefWidth="900" style="         -fx-background-color: linear-gradient(to bottom right, #ffffff, #f2f4f8);     " xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AddEmployeeController">
+
+	<!-- ================= TITLE ================= -->
+	<VBox layoutX="28" layoutY="18" spacing="4">
+		<Label style="                 -fx-font-size:26px;                 -fx-text-fill:#f7931e;                 -fx-font-weight:900;             " text="Add Employee" />
+	</VBox>
+
+	<!-- ================= CARD ================= -->
+	<AnchorPane layoutX="28" layoutY="70" prefHeight="500" prefWidth="844" style="             -fx-background-color: rgba(255,255,255,0.98);             -fx-background-radius:22;             -fx-padding:22;             -fx-border-color: rgba(0,0,0,0.04);             -fx-border-radius:22;             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 28, 0.25, 0, 10);         ">
+
+		<!-- ================= TYPE SELECT ================= -->
+		<HBox layoutX="20" layoutY="18" spacing="14">
+			<RadioButton fx:id="rbWorkers" onAction="#onTypeChanged" style="                     -fx-font-weight:800;                     -fx-padding:6 14;                 " text="General Workers" />
+			<RadioButton fx:id="rbDrivers" onAction="#onTypeChanged" style="-fx-font-weight:800; -fx-padding:6 14;" text="Truck Drivers" />
+			<RadioButton fx:id="rbSales" onAction="#onTypeChanged" style="-fx-font-weight:800; -fx-padding:6 14;" text="Sales Reps" />
+		</HBox>
+
+		<!-- ================= FORM ================= -->
+		<GridPane hgap="18" layoutX="20" layoutY="70" vgap="14">
+
+			<Label text="Full Name" />
+			<TextField fx:id="txtFullName" prefWidth="240" style="-fx-background-radius:10; -fx-padding:8;" GridPane.columnIndex="1" />
+
+			<Label text="Phone" GridPane.rowIndex="1" />
+			<TextField fx:id="txtPhone" style="-fx-background-radius:10; -fx-padding:8;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+			<Label text="Branch" GridPane.rowIndex="2" />
+			<ComboBox fx:id="cbBranch" prefWidth="240" style="-fx-background-radius:10;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+			<Label text="Hire Date" GridPane.rowIndex="3" />
+			<DatePicker fx:id="dpHireDate" style="-fx-background-radius:10;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+			<Label text="Employee Image" GridPane.rowIndex="4" />
+
+			<HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
+				<Button onAction="#chooseImage" style="                         -fx-background-color:#f7931e;                         -fx-text-fill:white;                         -fx-font-weight:800;                         -fx-background-radius:10;                         -fx-effect:dropshadow(gaussian, rgba(247,147,30,0.35), 10,0.3,0,4);                     " text="Choose Image" />
+				<Label fx:id="lblImageInfo" style="-fx-text-fill:#888;" text="No image selected" />
+			</HBox>
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+		</GridPane>
+
+		<!-- ================= IMAGE PREVIEW ================= -->
+		<VBox alignment="CENTER" layoutX="360" layoutY="90" spacing="8" />
+
+		<!-- ================= TYPE PANE ================= -->
+		<StackPane fx:id="typePane" layoutX="502.0" layoutY="77.0" prefHeight="260" prefWidth="260" style="                 -fx-background-color:#fafafa;                 -fx-background-radius:18;                 -fx-border-color:#e6e6e6;                 -fx-border-radius:18;                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.12), 16,0.25,0,6);             " />
+
+		<!-- ================= ACTIONS ================= -->
+		<HBox layoutX="20.0" layoutY="472.0" spacing="14">
+			<Button fx:id="btnSave" onAction="#onSave" style="                     -fx-background-color:#2E7D32;                     -fx-text-fill:white;                     -fx-font-weight:900;                     -fx-background-radius:12;                     -fx-pref-width:120;                     -fx-effect:dropshadow(gaussian, rgba(46,125,50,0.4), 14,0.3,0,5);                 " text="Save" />
+			<Button onAction="#onCancel" style="                     -fx-background-color:#C62828;                     -fx-text-fill:white;                     -fx-font-weight:900;                     -fx-background-radius:12;                     -fx-pref-width:120;                     -fx-effect:dropshadow(gaussian, rgba(198,40,40,0.35), 14,0.3,0,5);                 " text="Cancel" />
+		</HBox>
+			<StackPane layoutX="129.0" layoutY="287.0" prefHeight="160" prefWidth="160" style="                     -fx-background-color:#fafafa;                     -fx-border-color:#e0e0e0;                     -fx-border-radius:16;                     -fx-background-radius:16;                     -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.15), 12,0.3,0,6);                 ">
+				<clip>
+					<Rectangle arcHeight="16" arcWidth="16" height="160" width="160" />
+				</clip>
+         <children>
+                    <ImageView fx:id="imgPreview" fitHeight="160" fitWidth="160" preserveRatio="true" />
+         </children>
+			</StackPane>
+			<Label layoutX="33.0" layoutY="287.0" style="-fx-font-size:12px; -fx-text-fill:#999;" text="Employee Photo" />
+
+	</AnchorPane>
+		<Label layoutX="32.0" layoutY="56.0" style="-fx-text-fill:#7a7a7a; -fx-font-size:13px;" text="Register a new team member" />
+</AnchorPane>

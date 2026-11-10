@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="760.0" prefWidth="900" style="-fx-background-color: linear-gradient(to bottom, #f7f8fb, #fff3e6);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ViewWarehouseController">
+
+	<!-- Top Header -->
+	<AnchorPane layoutX="18" layoutY="18" prefHeight="70" prefWidth="864" style="-fx-background-color: rgba(255,255,255,0.96);                        -fx-background-radius: 16;                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 20, 0.22, 0, 6);">
+
+		<Label fx:id="lblTitle" layoutX="18" layoutY="12" style="-fx-font-size:22px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" text="Warehouse View" />
+
+		<Label fx:id="lblSubTitle" layoutX="18" layoutY="40" style="-fx-font-size:13px; -fx-text-fill:#607D8B; -fx-font-weight:bold;" text="Branch: -   •   Capacity: - pallets" />
+
+		<Button layoutX="760" layoutY="18" onAction="#onBack" style="-fx-background-color:#1E88E5;                        -fx-text-fill:white;                        -fx-background-radius:12;                        -fx-font-weight:bold;                        -fx-padding:10 18;                        -fx-effect:dropshadow(gaussian, rgba(30,136,229,0.35), 14, 0.25, 0, 6);" text="Back" />
+	</AnchorPane>
+
+	<!-- Main Scroll -->
+	<ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="18" layoutY="98" prefHeight="640" prefWidth="864" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
+
+		<content>
+			<VBox spacing="16" style="-fx-padding: 0 0 18 0;">
+
+				<!-- Row 1 -->
+				<HBox spacing="14">
+
+					<!-- Space Usage -->
+					<AnchorPane prefHeight="320" prefWidth="270" style="-fx-background-color: rgba(255,255,255,0.96);                                        -fx-background-radius: 18;                                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.22, 0, 6);">
+
+						<Label layoutX="18" layoutY="14" style="-fx-font-size:16px; -fx-font-weight:bold; -fx-text-fill:#263238;" text="Space Usage" />
+
+						<StackPane layoutX="20" layoutY="48" prefHeight="220" prefWidth="230">
+							<ProgressIndicator fx:id="progress" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="150.0" progress="0" style="-fx-progress-color:#f7931e;" />
+
+                        <Label fx:id="lblPercent" alignment="CENTER" prefWidth="270" style="-fx-font-size:24px; -fx-font-weight:bold; -fx-text-fill:#263238;" text="0%" />
+						</StackPane>
+
+						<VBox layoutX="18" layoutY="272" spacing="4">
+							<Label fx:id="lblUsed" style="-fx-text-fill:#455A64; -fx-font-size:13px; -fx-font-weight:bold;" text="Used: 0 pallets" />
+							<Label fx:id="lblRemaining" style="-fx-text-fill:#455A64; -fx-font-size:13px; -fx-font-weight:bold;" text="Remaining: 0 pallets" />
+							<Label fx:id="lblCapacity" style="-fx-text-fill:#455A64; -fx-font-size:13px; -fx-font-weight:bold;" text="Capacity: 0 pallets" />
+						</VBox>
+
+					</AnchorPane>
+
+					<!-- Big Stats -->
+					<GridPane hgap="12" prefWidth="580" vgap="12">
+
+						<AnchorPane prefHeight="98" prefWidth="284" style="-fx-background-color: linear-gradient(to bottom right, #FF3D00, #FF6D00);                                            -fx-background-radius: 18;                                            -fx-effect: dropshadow(gaussian, rgba(255,61,0,0.28), 18, 0.18, 0, 8);">
+							<Label layoutX="16" layoutY="14" style="-fx-text-fill: white; -fx-font-size:13px; -fx-font-weight:bold;" text="Total Products" />
+							<Label fx:id="lblTotalProducts" layoutX="16" layoutY="38" style="-fx-text-fill: white; -fx-font-size:26px; -fx-font-weight:bold;" text="0" />
+							<Label layoutX="16" layoutY="70" style="-fx-text-fill: rgba(255,255,255,0.92); -fx-font-size:12px;" text="items in this warehouse" />
+						</AnchorPane>
+
+						<AnchorPane prefHeight="98" prefWidth="284" style="-fx-background-color: linear-gradient(to bottom right, #2962FF, #00B0FF);                                            -fx-background-radius: 18;                                            -fx-effect: dropshadow(gaussian, rgba(41,98,255,0.26), 18, 0.18, 0, 8);" GridPane.columnIndex="1">
+							<Label layoutX="16" layoutY="14" style="-fx-text-fill: white; -fx-font-size:13px; -fx-font-weight:bold;" text="Total Quantity" />
+							<Label fx:id="lblTotalQty" layoutX="16" layoutY="38" style="-fx-text-fill: white; -fx-font-size:26px; -fx-font-weight:bold;" text="0" />
+							<Label layoutX="16" layoutY="70" style="-fx-text-fill: rgba(255,255,255,0.92); -fx-font-size:12px;" text="sum of quantities" />
+						</AnchorPane>
+
+						<AnchorPane prefHeight="98" prefWidth="284" style="-fx-background-color: linear-gradient(to bottom right, #00C853, #1DE9B6);                                            -fx-background-radius: 18;                                            -fx-effect: dropshadow(gaussian, rgba(0,200,83,0.24), 18, 0.18, 0, 8);" GridPane.rowIndex="1">
+							<Label layoutX="16" layoutY="14" style="-fx-text-fill: white; -fx-font-size:13px; -fx-font-weight:bold;" text="Out of Stock" />
+							<Label fx:id="lblOutOfStock" layoutX="16" layoutY="38" style="-fx-text-fill: white; -fx-font-size:26px; -fx-font-weight:bold;" text="0" />
+							<Label layoutX="16" layoutY="70" style="-fx-text-fill: rgba(255,255,255,0.92); -fx-font-size:12px;" text="quantity = 0" />
+						</AnchorPane>
+
+						<AnchorPane prefHeight="98" prefWidth="284" style="-fx-background-color: linear-gradient(to bottom right, #D500F9, #651FFF);                                            -fx-background-radius: 18;                                            -fx-effect: dropshadow(gaussian, rgba(213,0,249,0.22), 18, 0.18, 0, 8);" GridPane.columnIndex="1" GridPane.rowIndex="1">
+							<Label layoutX="16" layoutY="14" style="-fx-text-fill: white; -fx-font-size:13px; -fx-font-weight:bold;" text="Low Stock" />
+							<Label fx:id="lblLowStock" layoutX="16" layoutY="38" style="-fx-text-fill: white; -fx-font-size:26px; -fx-font-weight:bold;" text="0" />
+							<Label layoutX="16" layoutY="70" style="-fx-text-fill: rgba(255,255,255,0.92); -fx-font-size:12px;" text="below min quantity" />
+						</AnchorPane>
+
+						<AnchorPane prefHeight="98" prefWidth="284" style="-fx-background-color: linear-gradient(to bottom right, #FFAB00, #FFC400);                                            -fx-background-radius: 18;                                            -fx-effect: dropshadow(gaussian, rgba(255,171,0,0.22), 18, 0.18, 0, 8);" GridPane.rowIndex="2">
+							<Label layoutX="16" layoutY="14" style="-fx-text-fill: #1b1b1b; -fx-font-size:13px; -fx-font-weight:bold;" text="Avg Cartons/Pallet" />
+							<Label fx:id="lblAvgCartons" layoutX="16" layoutY="38" style="-fx-text-fill: #1b1b1b; -fx-font-size:26px; -fx-font-weight:bold;" text="0" />
+							<Label layoutX="16" layoutY="70" style="-fx-text-fill: rgba(0,0,0,0.70); -fx-font-size:12px;" text="average for products" />
+						</AnchorPane>
+
+						<AnchorPane prefHeight="98" prefWidth="284" style="-fx-background-color: linear-gradient(to bottom right, #F50057, #FF1744);                                            -fx-background-radius: 18;                                            -fx-effect: dropshadow(gaussian, rgba(245,0,87,0.22), 18, 0.18, 0, 8);" GridPane.columnIndex="1" GridPane.rowIndex="2">
+							<Label layoutX="16" layoutY="14" style="-fx-text-fill: white; -fx-font-size:13px; -fx-font-weight:bold;" text="Top Pallets Used" />
+							<Label fx:id="lblMaxPallets" layoutX="16" layoutY="38" style="-fx-text-fill: white; -fx-font-size:26px; -fx-font-weight:bold;" text="0" />
+							<Label layoutX="16" layoutY="70" style="-fx-text-fill: rgba(255,255,255,0.92); -fx-font-size:12px;" text="max pallets used (single product)" />
+						</AnchorPane>
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+
+					</GridPane>
+				</HBox>
+
+				<!-- Row 2: Charts -->
+				<GridPane hgap="14" vgap="14">
+
+					<!-- Pie -->
+					<AnchorPane prefHeight="320" prefWidth="424" style="-fx-background-color: rgba(255,255,255,0.96);                                        -fx-background-radius: 18;                                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.22, 0, 6);">
+						<Label layoutX="18" layoutY="14" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#263238;" text="Pallets by Category" />
+						<PieChart fx:id="pieCategory" labelsVisible="true" layoutX="10" layoutY="44" legendVisible="true" prefHeight="260" prefWidth="404" style="-fx-background-color: transparent;" />
+					</AnchorPane>
+
+					<!-- Bar Top Products -->
+					<AnchorPane prefHeight="320" prefWidth="424" style="-fx-background-color: rgba(255,255,255,0.96);                                        -fx-background-radius: 18;                                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.22, 0, 6);" GridPane.columnIndex="1">
+						<Label layoutX="18" layoutY="14" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#263238;" text="Top Products by Pallets Used" />
+
+						<BarChart fx:id="barTopProducts" barGap="6" categoryGap="18" layoutX="10" layoutY="44" legendVisible="true" prefHeight="260" prefWidth="404" style="-fx-background-color: transparent;">
+							<xAxis>
+								<CategoryAxis fx:id="barXAxis" label="Product" />
+							</xAxis>
+							<yAxis>
+								<NumberAxis fx:id="barYAxis" label="Pallets Used" />
+							</yAxis>
+						</BarChart>
+					</AnchorPane>
+
+					<!-- Line Added -->
+					<AnchorPane prefHeight="320" prefWidth="424" style="-fx-background-color: rgba(255,255,255,0.96);                                        -fx-background-radius: 18;                                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.22, 0, 6);" GridPane.rowIndex="1">
+						<Label layoutX="18" layoutY="14" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#263238;" text="Products Added (Last 30 Days)" />
+
+						<LineChart fx:id="lineAdded" createSymbols="true" layoutX="10" layoutY="44" legendVisible="true" prefHeight="260" prefWidth="404" style="-fx-background-color: transparent;">
+							<xAxis>
+								<CategoryAxis fx:id="lineXAxis" label="Date" tickLabelRotation="45" />
+							</xAxis>
+							<yAxis>
+								<NumberAxis fx:id="lineYAxis" label="Products" />
+							</yAxis>
+						</LineChart>
+					</AnchorPane>
+
+					<!-- Stock Status: BarChart (واضح + legend) -->
+					<AnchorPane prefHeight="320" prefWidth="424" style="-fx-background-color: rgba(255,255,255,0.96);                                        -fx-background-radius: 18;                                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.22, 0, 6);" GridPane.columnIndex="1" GridPane.rowIndex="1">
+						<Label layoutX="18" layoutY="14" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#263238;" text="Stock Status Overview" />
+
+						<BarChart fx:id="barStockStatus" barGap="8" categoryGap="30" layoutX="10" layoutY="44" legendVisible="true" prefHeight="260" prefWidth="404" style="-fx-background-color: transparent;">
+							<xAxis>
+								<CategoryAxis fx:id="stockXAxis" label="Status" />
+							</xAxis>
+							<yAxis>
+								<NumberAxis fx:id="stockYAxis" label="Products Count" />
+							</yAxis>
+						</BarChart>
+					</AnchorPane>
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+
+				</GridPane>
+
+				<!-- Row 3: Table -->
+				<AnchorPane prefHeight="560" prefWidth="864" style="-fx-background-color: rgba(255,255,255,0.96);                                    -fx-background-radius: 18;                                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.22, 0, 6);">
+
+					<HBox layoutX="18" layoutY="16" spacing="10">
+						<Label style="-fx-font-size:16px; -fx-font-weight:bold; -fx-text-fill:#263238;" text="Warehouse Products" />
+
+						<Region prefWidth="20" />
+
+						<Label fx:id="lblTableHint" style="-fx-font-size:13px; -fx-text-fill:#607D8B; -fx-font-weight:bold;" text="0 rows" />
+
+						<Region prefWidth="290" />
+
+						<TextField fx:id="txtTableSearch" promptText="Search products..." style="-fx-background-radius: 12;                                           -fx-background-color: #f3f5f9;                                           -fx-border-color: #e6e8ef;                                           -fx-border-radius: 12;                                           -fx-padding: 10 12;                                           -fx-font-size: 13px;                                           -fx-pref-width: 240;" />
+					</HBox>
+
+					<TableView fx:id="table" layoutX="18" layoutY="56" prefHeight="480" prefWidth="828" style="-fx-background-radius:14;                                       -fx-border-radius:14;                                       -fx-border-color:#e8e8e8;                                       -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.16, 0, 3);">
+						<columns>
+							<TableColumn fx:id="colImage" prefWidth="90" text="Image" />
+							<TableColumn fx:id="colName" prefWidth="270" text="Name" />
+							<TableColumn fx:id="colQty" prefWidth="110" text="Qty" />
+							<TableColumn fx:id="colCartons" prefWidth="140" text="Cartons/Pallet" />
+							<TableColumn fx:id="colPalletsUsed" prefWidth="140" text="Pallets Used" />
+						</columns>
+					</TableView>
+
+				</AnchorPane>
+
+			</VBox>
+		</content>
+	</ScrollPane>
+
+</AnchorPane>

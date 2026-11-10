@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane prefHeight="615.0" prefWidth="910" style="-fx-background-color: linear-gradient(to bottom, #ffffff, #f6f7fb);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.EmployeeController">
+
+	<!-- ================= TITLE ================= -->
+	<Label layoutX="28" layoutY="28" style="-fx-font-size: 26px; -fx-text-fill: #f7931e; -fx-font-weight: 900;" text="Employees" />
+
+	<!-- ================= GENERAL WORKERS ================= -->
+	<Button fx:id="workers" layoutX="102.0" layoutY="191.0" onAction="#openGeneralWorkers" prefHeight="190" prefWidth="190" style="             -fx-background-color: #2F80ED;             -fx-background-radius: 999;             -fx-cursor: hand;             -fx-effect: dropshadow(gaussian, rgba(47,128,237,0.35), 16, 0.3, 0, 6);         ">
+
+		<graphic>
+                <VBox alignment="CENTER" spacing="8">
+                    <ImageView fitHeight="72" preserveRatio="true">
+                        <image>
+                            <Image url="@icons/Employee.png" />
+                        </image>
+                    </ImageView>
+
+                    <Label style="-fx-text-fill:white; -fx-font-size:14px; -fx-font-weight:800;" text="Workers" />
+
+                    <Label style="-fx-text-fill:white; -fx-font-size:11px; -fx-opacity:0.9;" text="Operations" />
+                </VBox>
+		</graphic>
+	</Button>
+
+	<!-- ================= TRUCK DRIVERS ================= -->
+	<Button fx:id="Truck" layoutX="578.0" layoutY="191.0" onAction="#openTruckDrivers" prefHeight="190" prefWidth="190" style="             -fx-background-color: #f7931e;             -fx-background-radius: 999;             -fx-cursor: hand;             -fx-effect: dropshadow(gaussian, rgba(247,147,30,0.35), 16, 0.3, 0, 6);         ">
+
+		<graphic>
+                <VBox alignment="CENTER" spacing="8">
+                    <ImageView fitHeight="72" preserveRatio="true">
+                        <image>
+                            <Image url="@icons/truck.png" />
+                        </image>
+                    </ImageView>
+
+                    <Label style="-fx-text-fill:white; -fx-font-size:14px; -fx-font-weight:800;" text="Drivers" />
+
+                    <Label style="-fx-text-fill:white; -fx-font-size:11px; -fx-opacity:0.9;" text="Logistics" />
+                </VBox>
+		</graphic>
+	</Button>
+
+	<!-- ================= SALES ================= -->
+	<Button fx:id="representatives" layoutX="350.0" layoutY="191.0" onAction="#openSalesRepresentatives" prefHeight="190" prefWidth="190" style="             -fx-background-color: #9B51E0;             -fx-background-radius: 999;             -fx-cursor: hand;             -fx-effect: dropshadow(gaussian, rgba(155,81,224,0.35), 16, 0.3, 0, 6);         ">
+
+		<graphic>
+                <VBox alignment="CENTER" spacing="8">
+                    <ImageView fitHeight="72" preserveRatio="true">
+                        <image>
+                            <Image url="@icons/Employee.png" />
+                        </image>
+                    </ImageView>
+
+                                <Label style="-fx-text-fill:white; -fx-font-size:14px; -fx-font-weight:800;" text="Sales" />
+
+                                <Label style="-fx-text-fill:white; -fx-font-size:11px; -fx-opacity:0.9;" text="Clients" />
+                </VBox>
+		</graphic>
+	</Button>
+
+	<!-- ================= ADD EMPLOYEE (CENTER) ================= -->
+	<Button fx:id="btnAddEmployee" layoutX="395.0" layoutY="437.0" onAction="#addEmployee" prefHeight="100" prefWidth="100" style="             -fx-background-color: #27AE60;             -fx-background-radius: 999;             -fx-text-fill: white;             -fx-font-size: 32px;             -fx-font-weight: 900;             -fx-cursor: hand;             -fx-effect: dropshadow(gaussian, rgba(39,174,96,0.45), 18, 0.35, 0, 6);         " text="+" />
+   <Line endX="747.0000610351562" endY="7.62939453125E-6" layoutX="129.0" layoutY="79.0" startX="-100.0" style="-fx-stroke: #f7931e; -fx-stroke-width: 3;" />
+
+</AnchorPane>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="650" prefWidth="910" style="-fx-background-color:#f7f8fb;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ReportsController">
+
+	<Label layoutX="28" layoutY="22" style="-fx-font-size:22px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" text="Reports" />
+
+	<ScrollPane fitToWidth="true" layoutX="20" layoutY="60" prefHeight="570" prefWidth="870" style="-fx-background:#f7f8fb; -fx-background-color:transparent;">
+
+		<content>
+			<VBox spacing="14" style="-fx-padding:14;">
+
+				<Label style="-fx-font-size:16px; -fx-font-weight:bold; -fx-text-fill:#333;" text="Overview" />
+
+				<HBox spacing="12">
+
+					<AnchorPane prefHeight="95" prefWidth="200" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#666; -fx-font-size:13;" text="Customers" />
+						<Label fx:id="lblCustomers" layoutX="16" layoutY="35" style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#1E88E5;" text="0" />
+						<Label fx:id="lblCustomersHint" layoutX="16" layoutY="70" style="-fx-text-fill:#777; -fx-font-size:12;" text="Active database" />
+					</AnchorPane>
+
+					<AnchorPane prefHeight="95" prefWidth="200" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#666; -fx-font-size:13;" text="Suppliers" />
+						<Label fx:id="lblSuppliers" layoutX="16" layoutY="35" style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#43A047;" text="0" />
+						<Label fx:id="lblSuppliersHint" layoutX="16" layoutY="70" style="-fx-text-fill:#777; -fx-font-size:12;" text="Registered suppliers" />
+					</AnchorPane>
+
+					<AnchorPane prefHeight="95" prefWidth="200" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#666; -fx-font-size:13;" text="Products" />
+						<Label fx:id="lblProducts" layoutX="16" layoutY="35" style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#f7931e;" text="0" />
+						<Label fx:id="lblProductsHint" layoutX="16" layoutY="70" style="-fx-text-fill:#777; -fx-font-size:12;" text="Total items" />
+					</AnchorPane>
+
+					<AnchorPane prefHeight="95" prefWidth="240" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#666; -fx-font-size:13;" text="Import Shipments" />
+						<Label fx:id="lblShipments" layoutX="16" layoutY="35" style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#D32F2F;" text="0" />
+						<Label fx:id="lblShipmentsHint" layoutX="16" layoutY="70" style="-fx-text-fill:#777; -fx-font-size:12;" text="All history" />
+					</AnchorPane>
+
+				</HBox>
+
+				<Separator />
+
+				<!-- ================= CIRCLES / KPIs ================= -->
+				<Label style="-fx-font-size:16px; -fx-font-weight:bold; -fx-text-fill:#333;" text="Key Performance Indicators" />
+
+				<HBox spacing="12">
+
+					<!-- Warehouse Utilization -->
+					<AnchorPane prefHeight="190" prefWidth="280" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Total Warehouse Utilization" />
+
+						<StackPane layoutX="16" layoutY="38" prefHeight="130" prefWidth="130">
+							<ProgressIndicator fx:id="piWarehouse" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="230.0" prefWidth="230.0" progress="0" style="-fx-progress-color:#1E88E5;" />
+						</StackPane>
+
+						<VBox layoutX="155" layoutY="50" spacing="6">
+							<Label fx:id="lblWarehouseUsed" style="-fx-text-fill:#444; -fx-font-size:12;" text="Used: 0 pallets" />
+							<Label fx:id="lblWarehouseRemaining" style="-fx-text-fill:#444; -fx-font-size:12;" text="Remaining: 0 pallets" />
+							<Label fx:id="lblWarehouseCap" style="-fx-text-fill:#444; -fx-font-size:12;" text="Capacity: 0 pallets" />
+							<Label fx:id="lblMostFullWarehouse" style="-fx-text-fill:#777; -fx-font-size:12;" text="Most full: -" />
+						</VBox>
+							<Label fx:id="lblWarehousePct" layoutX="155.0" layoutY="140.0" style="-fx-font-size:18px; -fx-font-weight:bold; -fx-text-fill:#333;" text="0%" />
+					</AnchorPane>
+
+					<!-- Low Stock Ratio -->
+					<AnchorPane prefHeight="190" prefWidth="280" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Low Stock Ratio" />
+
+						<StackPane layoutX="16" layoutY="38" prefHeight="130" prefWidth="130">
+							<ProgressIndicator fx:id="piLowStock" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="230.0" prefWidth="230.0" progress="0" style="-fx-progress-color:#FB8C00;" />
+						</StackPane>
+
+						<VBox layoutX="155" layoutY="50" spacing="6">
+							<Label fx:id="lblLowStockCount" style="-fx-text-fill:#444; -fx-font-size:12;" text="LOW: 0 products" />
+							<Label fx:id="lblNormalCount" style="-fx-text-fill:#444; -fx-font-size:12;" text="NORMAL: 0 products" />
+							<Label fx:id="lblHighCount" style="-fx-text-fill:#444; -fx-font-size:12;" text="HIGH: 0 products" />
+							<Label fx:id="lblZeroCount" style="-fx-text-fill:#777; -fx-font-size:12;" text="Out of stock: 0" />
+						</VBox>
+							<Label fx:id="lblLowStockPct" layoutX="156.0" layoutY="140.0" style="-fx-font-size:18px; -fx-font-weight:bold; -fx-text-fill:#333;" text="0%" />
+					</AnchorPane>
+
+					<!-- Inventory Value Margin -->
+					<AnchorPane prefHeight="190" prefWidth="280" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Inventory Value" />
+
+						<VBox layoutX="16" layoutY="40" spacing="8">
+							<Label fx:id="lblInvUnits" style="-fx-text-fill:#444; -fx-font-size:12;" text="Total Units: 0" />
+							<Label fx:id="lblInvCost" style="-fx-text-fill:#444; -fx-font-size:12;" text="Cost Value: 0.00" />
+							<Label fx:id="lblInvSell" style="-fx-text-fill:#444; -fx-font-size:12;" text="Selling Value: 0.00" />
+
+							<Label style="-fx-text-fill:#777; -fx-font-size:12;" text="Potential Margin Ratio (Sell/Cost)" />
+
+							<ProgressBar fx:id="pbMargin" prefWidth="240" progress="0" style="-fx-accent:#43A047;" />
+
+							<Label fx:id="lblMarginHint" style="-fx-text-fill:#333; -fx-font-weight:bold;" text="0.00x" />
+						</VBox>
+					</AnchorPane>
+
+				</HBox>
+
+				<Separator />
+
+				<!-- ================= CHARTS ================= -->
+				<Label style="-fx-font-size:16px; -fx-font-weight:bold; -fx-text-fill:#333;" text="Charts  Trends" />
+
+				<HBox spacing="12">
+
+					<AnchorPane prefHeight="300" prefWidth="430" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Shipments by Payment Type" />
+						<PieChart fx:id="piePayment" layoutX="10" layoutY="35" prefHeight="255" prefWidth="410" />
+					</AnchorPane>
+
+					<AnchorPane prefHeight="300" prefWidth="430" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Employees by Type" />
+						<PieChart fx:id="pieEmployeeType" layoutX="10" layoutY="35" prefHeight="255" prefWidth="410" />
+					</AnchorPane>
+
+				</HBox>
+
+				<HBox spacing="12">
+
+					<AnchorPane prefHeight="320" prefWidth="430" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Top Warehouses (Utilization %)" />
+
+						<BarChart fx:id="barWarehouses" layoutX="10" layoutY="35" prefHeight="270" prefWidth="410">
+							<xAxis>
+								<CategoryAxis fx:id="xWarehouse" />
+							</xAxis>
+							<yAxis>
+								<NumberAxis fx:id="yWarehouse" />
+							</yAxis>
+						</BarChart>
+					</AnchorPane>
+
+					<AnchorPane prefHeight="320" prefWidth="430" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Top Suppliers (Total Import Cost)" />
+
+						<BarChart fx:id="barSuppliers" layoutX="10" layoutY="35" prefHeight="270" prefWidth="410">
+							<xAxis>
+								<CategoryAxis fx:id="xSupplier" />
+							</xAxis>
+							<yAxis>
+								<NumberAxis fx:id="ySupplier" />
+							</yAxis>
+						</BarChart>
+					</AnchorPane>
+
+				</HBox>
+
+				<Separator />
+
+				<!-- ================= TABLES ================= -->
+				<Label style="-fx-font-size:16px; -fx-font-weight:bold; -fx-text-fill:#333;" text="Tables Alerts" />
+
+				<HBox spacing="12">
+
+					<AnchorPane prefHeight="260" prefWidth="430" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Top Suppliers (Table)" />
+
+						<TableView fx:id="tblTopSuppliers" layoutX="12" layoutY="38" prefHeight="210" prefWidth="406" style="-fx-background-radius:12; -fx-border-radius:12; -fx-border-color:#e8e8e8;">
+							<columns>
+								<TableColumn fx:id="tsName" prefWidth="170" style="-fx-alignment:CENTER;" text="Supplier" />
+								<TableColumn fx:id="tsCount" prefWidth="90" style="-fx-alignment:CENTER;" text="Shipments" />
+								<TableColumn fx:id="tsTotal" prefWidth="140" style="-fx-alignment:CENTER;" text="Total Cost" />
+							</columns>
+						</TableView>
+					</AnchorPane>
+
+					<AnchorPane prefHeight="260" prefWidth="430" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+						<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Top Imported Products" />
+
+						<TableView fx:id="tblTopProducts" layoutX="12" layoutY="38" prefHeight="210" prefWidth="406" style="-fx-background-radius:12; -fx-border-radius:12; -fx-border-color:#e8e8e8;">
+							<columns>
+								<TableColumn fx:id="tpName" prefWidth="180" style="-fx-alignment:CENTER;" text="Product" />
+								<TableColumn fx:id="tpQty" prefWidth="90" style="-fx-alignment:CENTER;" text="Total Qty" />
+								<TableColumn fx:id="tpCost" prefWidth="130" style="-fx-alignment:CENTER;" text="Total Cost" />
+							</columns>
+						</TableView>
+					</AnchorPane>
+
+				</HBox>
+
+				<AnchorPane prefHeight="190" prefWidth="870" style="-fx-background-color:white; -fx-background-radius:14; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+
+					<Label layoutX="16" layoutY="12" style="-fx-text-fill:#333; -fx-font-weight:bold; -fx-font-size:13;" text="Alerts" />
+
+					<ListView fx:id="lvAlerts" layoutX="12" layoutY="38" prefHeight="140" prefWidth="846" style="-fx-background-radius:12; -fx-border-radius:12; -fx-border-color:#e8e8e8;" />
+				</AnchorPane>
+
+			</VBox>
+		</content>
+	</ScrollPane>
+
+</AnchorPane>

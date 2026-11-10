@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefWidth="910" prefHeight="650"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.ViewSalesOrderController"
+	style="-fx-background-color: linear-gradient(to bottom, #f7f8fb, #eef1f7);">
+
+	<!-- Title -->
+	<Label fx:id="lblTitle" layoutX="28" layoutY="18"
+		text="Order View"
+		style="-fx-font-size:28px; -fx-text-fill:#f7931e; -fx-font-weight:900;" />
+
+	<!-- Underline -->
+	<Region layoutX="28" layoutY="56" prefWidth="854" prefHeight="2"
+		style="-fx-background-color: rgba(247,147,30,0.22); -fx-background-radius: 10;" />
+
+	<!-- Card -->
+	<AnchorPane layoutX="28" layoutY="70" prefWidth="854"
+		prefHeight="560"
+		style="
+            -fx-background-color: white;
+            -fx-background-radius: 18;
+            -fx-padding: 18;
+            -fx-border-color: rgba(0,0,0,0.05);
+            -fx-border-radius: 18;
+            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);
+        ">
+
+		<!-- Card Header -->
+		<Label layoutX="18" layoutY="14" text="Order Summary"
+			style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#222;" />
+
+		<Label layoutX="18" layoutY="34"
+			text="Customer, employee and totals overview"
+			style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" />
+
+		<Separator layoutX="18" layoutY="58" prefWidth="818"
+			style="-fx-opacity:0.55;" />
+
+		<!-- Summary Row -->
+		<HBox layoutX="18" layoutY="76" spacing="12" prefWidth="818">
+
+			<!-- Left: Details -->
+			<VBox spacing="6" prefWidth="520">
+				<Label fx:id="lblCustomer" text="Customer:"
+					style="-fx-text-fill:#444; -fx-font-size:13px; -fx-font-weight:700;" />
+				<Label fx:id="lblEmployee" text="Employee:"
+					style="-fx-text-fill:#444; -fx-font-size:13px; -fx-font-weight:700;" />
+				<Label fx:id="lblDate" text="Date:"
+					style="-fx-text-fill:#444; -fx-font-size:13px; -fx-font-weight:700;" />
+			</VBox>
+
+			<Region HBox.hgrow="ALWAYS" />
+
+			<!-- Right: Total pill -->
+			<VBox spacing="8" alignment="TOP_RIGHT">
+				<HBox spacing="8" alignment="CENTER_RIGHT"
+					style="
+                        -fx-background-color: #f7f8fb;
+                        -fx-background-radius: 14;
+                        -fx-padding: 10 12;
+                        -fx-border-color: #e8e8e8;
+                        -fx-border-radius: 14;
+                    ">
+					<Circle radius="6" fill="#43A047" />
+					<Label fx:id="lblTotal" text="Total:"
+						style="-fx-text-fill:#222; -fx-font-size:14px; -fx-font-weight:900;" />
+				</HBox>
+
+				<!-- optional small hint -->
+				<Label text="All line totals are calculated automatically"
+					style="-fx-font-size:11px; -fx-text-fill:#9a9a9a;" />
+			</VBox>
+		</HBox>
+
+		<!-- Table -->
+		<TableView fx:id="table" layoutX="18" layoutY="150"
+			prefWidth="818" prefHeight="330"
+			style="
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-color: #e8e8e8;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0.18, 0, 3);
+            ">
+			<columns>
+				<TableColumn fx:id="colProduct" text="Product"
+					prefWidth="400" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colQty" text="Qty" prefWidth="110"
+					style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colUnit" text="Unit Price"
+					prefWidth="150" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colLine" text="Line Total"
+					prefWidth="158" style="-fx-alignment:CENTER;" />
+			</columns>
+		</TableView>
+
+		<!-- Bottom Bar -->
+		<HBox layoutX="18" layoutY="495" spacing="12" prefWidth="818"
+			style="
+                -fx-background-color: #f7f8fb;
+                -fx-background-radius: 14;
+                -fx-padding: 12;
+                -fx-border-color: #e8e8e8;
+                -fx-border-radius: 14;
+            ">
+
+			<Button text="Back" onAction="#onBack"
+				style="
+                    -fx-background-color: linear-gradient(to bottom right, #1E88E5, #1565C0);
+                    -fx-text-fill: white;
+                    -fx-font-weight: 900;
+                    -fx-background-radius: 12;
+                    -fx-pref-width: 120;
+                    -fx-pref-height: 40;
+                    -fx-cursor: hand;
+                    -fx-effect: dropshadow(gaussian, rgba(21,101,192,0.20), 16, 0.22, 0, 5);
+                " />
+
+			<Region HBox.hgrow="ALWAYS" />
+
+			<!-- Tiny legend (pure visual) -->
+			<HBox spacing="12" alignment="CENTER_RIGHT">
+				<HBox spacing="6" alignment="CENTER">
+					<Circle radius="6" fill="#1E88E5" />
+					<Label text="Unit Price"
+						style="-fx-text-fill:#666; -fx-font-size:12px; -fx-font-weight:800;" />
+				</HBox>
+				<HBox spacing="6" alignment="CENTER">
+					<Circle radius="6" fill="#f7931e" />
+					<Label text="Line Total"
+						style="-fx-text-fill:#666; -fx-font-size:12px; -fx-font-weight:800;" />
+				</HBox>
+			</HBox>
+
+		</HBox>
+
+	</AnchorPane>
+
+</AnchorPane>

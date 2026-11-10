@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="900" prefHeight="600"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.EditDailyWorkerController"
+	style="-fx-background-color:#f7f8fb;">
+
+	<AnchorPane layoutX="28" layoutY="24" prefWidth="844"
+		prefHeight="552"
+		style="-fx-background-color:white; -fx-background-radius:14;
+                       -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+
+		<Label layoutX="20" layoutY="16" text="Edit Daily Worker"
+			style="-fx-font-size:22px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" />
+		<Label fx:id="lblId" layoutX="720" layoutY="22"
+			style="-fx-text-fill:#666; -fx-font-weight:bold;" />
+
+		<GridPane layoutX="20" layoutY="70" hgap="14" vgap="12">
+			<Label text="Full Name:" />
+			<TextField fx:id="txtName" GridPane.columnIndex="1"
+				prefWidth="240" />
+
+			<Label text="Phone:" GridPane.rowIndex="1" />
+			<TextField fx:id="txtPhone" GridPane.rowIndex="1"
+				GridPane.columnIndex="1" />
+
+			<Label text="Branch:" GridPane.rowIndex="2" />
+			<ComboBox fx:id="cbBranch" GridPane.rowIndex="2"
+				GridPane.columnIndex="1" prefWidth="240" />
+
+			<Label text="Hire Date:" GridPane.rowIndex="3" />
+			<DatePicker fx:id="dpHire" GridPane.rowIndex="3"
+				GridPane.columnIndex="1" />
+
+			<Label text="Daily Rate:" GridPane.rowIndex="4" />
+			<TextField fx:id="txtRate" GridPane.rowIndex="4"
+				GridPane.columnIndex="1" />
+		</GridPane>
+
+		<VBox layoutX="520" layoutY="80" spacing="10" alignment="CENTER">
+			<ImageView fx:id="imgPreview" fitWidth="200"
+				fitHeight="150" preserveRatio="true" />
+			<HBox spacing="10">
+				<Button text="Choose Image" onAction="#chooseImage"
+					style="-fx-background-color:#f7931e; -fx-text-fill:white;" />
+				<Label fx:id="lblImg" text="(optional)"
+					style="-fx-text-fill:#777;" />
+			</HBox>
+		</VBox>
+
+		<HBox layoutX="20" layoutY="500" spacing="12">
+			<Button fx:id="btnSave" text="Save" onAction="#onSave"
+				style="-fx-background-color:#2E7D32; -fx-text-fill:white; -fx-pref-width:110;" />
+			<Button text="Cancel" onAction="#onCancel"
+				style="-fx-background-color:#C62828; -fx-text-fill:white; -fx-pref-width:110;" />
+		</HBox>
+	</AnchorPane>
+</AnchorPane>

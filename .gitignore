@@ -1,0 +1,37 @@
+# Build output and local IDE state
+/target/
+/bin/
+/build/
+*.class
+*.log
+.metadata/
+.idea/
+.vscode/
+*.launch
+.classpath
+.project
+.settings/
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+config/*.env
+!config/*.env.example
+config/*local*
+*.local.properties
+*.key
+*.pem
+# Private recovery material and databases
+/backups/
+/private/
+/dumps/
+*.sql
+*.sql.gz
+*.dump
+*.zip
+*.7z
+# Personal images / uploads are never source assets
+/uploads/
+/personal-images/
+Thumbs.db
+.DS_Store

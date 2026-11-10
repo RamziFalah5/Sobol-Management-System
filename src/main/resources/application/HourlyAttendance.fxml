@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="910" prefHeight="650"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.HourlyAttendanceController"
+	style="-fx-background-color:white;">
+
+	<Label layoutX="28" layoutY="24" text="Hourly Attendance"
+		style="-fx-font-size:22px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" />
+
+	<Label fx:id="lblDate" layoutX="700" layoutY="28"
+		style="-fx-text-fill:#666; -fx-font-weight:bold;" />
+
+	<TableView fx:id="table" layoutX="28" layoutY="70"
+		prefWidth="854" prefHeight="500">
+		<columns>
+			<TableColumn fx:id="colName" text="Employee"
+				prefWidth="640" />
+			<TableColumn fx:id="colHours" text="Hours"
+				prefWidth="170" />
+		</columns>
+	</TableView>
+
+	<HBox layoutX="28" layoutY="585" spacing="10">
+		<Button fx:id="btnSave" text="Save" onAction="#onSave"
+			style="-fx-background-color:#2E7D32; -fx-text-fill:white;" />
+		<Button text="Cancel" onAction="#onCancel"
+			style="-fx-background-color:#C62828; -fx-text-fill:white;" />
+	</HBox>
+</AnchorPane>

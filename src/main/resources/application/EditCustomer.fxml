@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="631.0" prefWidth="910"
+	style="-fx-background-color:white;"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.EditCustomerController">
+
+	<Label layoutX="28" layoutY="24" text="Edit Customer"
+		style="-fx-font-size:24px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" />
+
+	<Label fx:id="lblId" layoutX="28" layoutY="54" text="ID: -"
+		style="-fx-text-fill:#666;" />
+
+	<GridPane layoutX="28" layoutY="90" hgap="14" vgap="12">
+		<columnConstraints>
+			<ColumnConstraints prefWidth="160" />
+			<ColumnConstraints prefWidth="420" />
+		</columnConstraints>
+
+		<children>
+			<Label text="Full Name" GridPane.rowIndex="0" />
+			<TextField fx:id="txtName" GridPane.columnIndex="1"
+				GridPane.rowIndex="0" />
+
+			<Label text="Phone" GridPane.rowIndex="1" />
+			<TextField fx:id="txtPhone" GridPane.columnIndex="1"
+				GridPane.rowIndex="1" />
+
+			<Label text="Email" GridPane.rowIndex="2" />
+			<TextField fx:id="txtEmail" GridPane.columnIndex="1"
+				GridPane.rowIndex="2" promptText="optional" />
+
+			<Label text="City" GridPane.rowIndex="3" />
+			<TextField fx:id="txtCity" GridPane.columnIndex="1"
+				GridPane.rowIndex="3" />
+
+			<Label text="Address" GridPane.rowIndex="4" />
+			<TextField fx:id="txtAddress" GridPane.columnIndex="1"
+				GridPane.rowIndex="4" />
+
+			<Label text="Notes" GridPane.rowIndex="5" />
+			<TextArea fx:id="txtNotes" prefRowCount="4"
+				GridPane.columnIndex="1" GridPane.rowIndex="5" />
+		</children>
+	</GridPane>
+
+	<HBox layoutX="28" layoutY="564" spacing="12">
+		<Button text="Save" onAction="#onSave"
+			style="-fx-background-color:#f7931e; -fx-text-fill:white; -fx-pref-width:90;" />
+		<Button text="Cancel" onAction="#onCancel"
+			style="-fx-background-color:#C62828; -fx-text-fill:white; -fx-pref-width:90;" />
+	</HBox>
+
+</AnchorPane>

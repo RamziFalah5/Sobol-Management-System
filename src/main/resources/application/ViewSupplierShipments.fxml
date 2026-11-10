@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="670.0" prefWidth="900"
+	style="-fx-background-color:#f7f8fb;"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.ViewSupplierShipmentsController">
+
+	<Label fx:id="lblTitle" layoutX="28" layoutY="24"
+		text="Supplier Shipments"
+		style="-fx-font-size:22px; -fx-text-fill:#1E88E5; -fx-font-weight:bold;" />
+
+	<!-- Card -->
+	<AnchorPane layoutX="28" layoutY="70" prefWidth="854"
+		prefHeight="570"
+		style="-fx-background-color:white; -fx-background-radius:14; -fx-padding:18;
+		       -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);">
+
+		<!-- Stats Bar -->
+		<HBox layoutX="18" layoutY="16" spacing="14">
+			<Label fx:id="lblCount" text="Shipments: 0"
+				style="-fx-font-size:14px; -fx-text-fill:#444; -fx-font-weight:bold;" />
+			<Label fx:id="lblTotal" text="Total Cost: 0.00"
+				style="-fx-font-size:14px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" />
+		</HBox>
+
+		<TableView fx:id="table" layoutX="18" layoutY="55"
+			prefWidth="818" prefHeight="450"
+			style="-fx-background-radius:12; -fx-border-radius:12; -fx-border-color:#e8e8e8;">
+			<columns>
+				<TableColumn fx:id="colId" text="ID" prefWidth="55" />
+				<TableColumn fx:id="colProduct" text="Product"
+					prefWidth="140" />
+				<TableColumn fx:id="colBranch" text="Branch"
+					prefWidth="110" />
+				<TableColumn fx:id="colWarehouse" text="Warehouse"
+					prefWidth="120" />
+				<TableColumn fx:id="colQty" text="Qty" prefWidth="60" />
+				<TableColumn fx:id="colUnit" text="Unit Cost"
+					prefWidth="80" />
+				<TableColumn fx:id="colTotalCost" text="Total"
+					prefWidth="85" />
+				<TableColumn fx:id="colDate" text="Date" prefWidth="85" />
+				<TableColumn fx:id="colPayment" text="Payment"
+					prefWidth="80" />
+				<TableColumn fx:id="colShipMethod" text="Method"
+					prefWidth="80" />
+				<TableColumn fx:id="colRef" text="Ref" prefWidth="100" />
+			</columns>
+		</TableView>
+
+		<Button text="Back" layoutX="18" layoutY="520"
+			onAction="#onBack"
+			style="-fx-background-color:#1E88E5; -fx-text-fill:white; -fx-background-radius:10; -fx-pref-width:110;" />
+
+	</AnchorPane>
+</AnchorPane>

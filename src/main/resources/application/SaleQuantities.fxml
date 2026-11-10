@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefWidth="910" prefHeight="650"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.SaleQuantitiesController"
+	style="-fx-background-color: linear-gradient(to bottom, #f7f8fb, #eef1f7);">
+
+	<!-- Title -->
+	<Label fx:id="lblTitle" layoutX="28" layoutY="18"
+		text="Quantities"
+		style="-fx-font-size:28px; -fx-text-fill:#f7931e; -fx-font-weight:900;" />
+
+	<!-- Underline -->
+	<Region layoutX="28" layoutY="56" prefWidth="854" prefHeight="2"
+		style="-fx-background-color: rgba(247,147,30,0.22); -fx-background-radius: 10;" />
+
+	<!-- Main Card -->
+	<AnchorPane layoutX="28" layoutY="70" prefWidth="854"
+		prefHeight="560"
+		style="
+            -fx-background-color: white;
+            -fx-background-radius: 18;
+            -fx-padding: 18;
+            -fx-border-color: rgba(0,0,0,0.05);
+            -fx-border-radius: 18;
+            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0.22, 0, 8);
+        ">
+
+		<!-- Header -->
+		<Label layoutX="18" layoutY="14" text="Order Setup"
+			style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#222;" />
+
+		<Label layoutX="18" layoutY="34"
+			text="Choose employee, set quantities, then complete the order"
+			style="-fx-font-size:12px; -fx-text-fill:#7a7a7a;" />
+
+		<Separator layoutX="18" layoutY="58" prefWidth="818"
+			style="-fx-opacity:0.55;" />
+
+		<!-- Top Row Controls -->
+		<HBox layoutX="18" layoutY="74" spacing="14" prefWidth="818"
+			style="-fx-background-color:transparent;">
+
+			<!-- Employee Card -->
+			<VBox spacing="8" prefWidth="420"
+				style="
+                    -fx-background-color:#f7f8fb;
+                    -fx-background-radius:14;
+                    -fx-padding:12;
+                    -fx-border-color:#e8e8e8;
+                    -fx-border-radius:14;
+                ">
+
+				<HBox spacing="8" alignment="CENTER_LEFT">
+					<Circle radius="6" fill="#1E88E5" />
+					<Label text="Sales Employee"
+						style="-fx-text-fill:#222; -fx-font-weight:900; -fx-font-size:13px;" />
+				</HBox>
+
+				<ComboBox fx:id="cbEmployee" prefWidth="380"
+					style="
+                        -fx-background-radius: 12;
+                        -fx-border-radius: 12;
+                        -fx-border-color: #e3e3e3;
+                        -fx-font-weight: 700;
+                    " />
+
+				<Label text="Tip: choose who will handle the sale"
+					style="-fx-text-fill:#7a7a7a; -fx-font-size:11px;" />
+			</VBox>
+
+			<!-- Total Card -->
+			<VBox spacing="8" prefWidth="384"
+				style="
+                    -fx-background-color:#f7f8fb;
+                    -fx-background-radius:14;
+                    -fx-padding:12;
+                    -fx-border-color:#e8e8e8;
+                    -fx-border-radius:14;
+                ">
+
+				<HBox spacing="8" alignment="CENTER_LEFT">
+					<Circle radius="6" fill="#43A047" />
+					<Label text="Total"
+						style="-fx-text-fill:#222; -fx-font-weight:900; -fx-font-size:13px;" />
+				</HBox>
+
+				<TextField fx:id="txtTotal" prefWidth="340"
+					style="
+                        -fx-background-radius: 12;
+                        -fx-background-color: white;
+                        -fx-border-color: #e3e3e3;
+                        -fx-border-radius: 12;
+                        -fx-text-fill: #222;
+                        -fx-padding: 8 12;
+                        -fx-font-weight: 800;
+                    " />
+
+				<Label text="Auto-updates based on selected quantities"
+					style="-fx-text-fill:#7a7a7a; -fx-font-size:11px;" />
+			</VBox>
+
+		</HBox>
+
+		<!-- Table -->
+		<TableView fx:id="table" layoutX="18" layoutY="220"
+			prefWidth="818" prefHeight="280"
+			style="
+                -fx-background-radius:14;
+                -fx-border-radius:14;
+                -fx-border-color:#e8e8e8;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0.18, 0, 3);
+            ">
+			<columns>
+				<TableColumn fx:id="colName" text="Product"
+					prefWidth="330" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colAvail" text="Available"
+					prefWidth="120" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colPrice" text="Unit Price"
+					prefWidth="140" style="-fx-alignment:CENTER;" />
+				<TableColumn fx:id="colQty" text="Quantity"
+					prefWidth="225" style="-fx-alignment:CENTER;" />
+			</columns>
+		</TableView>
+
+		<!-- Bottom Actions Bar -->
+		<HBox layoutX="18" layoutY="510" spacing="12" prefWidth="818"
+			style="
+                -fx-background-color:#f7f8fb;
+                -fx-background-radius:14;
+                -fx-padding:12;
+                -fx-border-color:#e8e8e8;
+                -fx-border-radius:14;
+            ">
+
+			<Button text="Complete Order" onAction="#onComplete"
+				style="
+                    -fx-background-color: linear-gradient(to bottom right, #43A047, #2E7D32);
+                    -fx-text-fill: white;
+                    -fx-font-weight: 900;
+                    -fx-background-radius: 12;
+                    -fx-pref-width: 190;
+                    -fx-pref-height: 40;
+                    -fx-cursor: hand;
+                    -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.18), 16, 0.22, 0, 5);
+                " />
+
+			<Button text="Back" onAction="#onBack"
+				style="
+                    -fx-background-color: linear-gradient(to bottom right, #ff7675, #C62828);
+                    -fx-text-fill: white;
+                    -fx-font-weight: 900;
+                    -fx-background-radius: 12;
+                    -fx-pref-width: 110;
+                    -fx-pref-height: 40;
+                    -fx-cursor: hand;
+                    -fx-effect: dropshadow(gaussian, rgba(198,40,40,0.18), 16, 0.22, 0, 5);
+                " />
+
+			<Region HBox.hgrow="ALWAYS" />
+
+			<!-- Legend -->
+			<HBox spacing="14" alignment="CENTER_RIGHT">
+				<HBox spacing="6" alignment="CENTER">
+					<Circle radius="6" fill="#f7931e" />
+					<Label text="Enter quantities in the last column"
+						style="-fx-text-fill:#666; -fx-font-size:12px; -fx-font-weight:800;" />
+				</HBox>
+				<HBox spacing="6" alignment="CENTER">
+					<Circle radius="6" fill="#1E88E5" />
+					<Label text="Total reflects current selection"
+						style="-fx-text-fill:#666; -fx-font-size:12px; -fx-font-weight:800;" />
+				</HBox>
+			</HBox>
+
+		</HBox>
+
+	</AnchorPane>
+
+</AnchorPane>

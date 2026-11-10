@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="600" prefWidth="910"
+	style="-fx-background-color:white;"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.GeneralWorkersMenuController">
+
+	<Label layoutX="28" layoutY="28"
+		style="-fx-font-size:22px; -fx-text-fill:#f7931e; -fx-font-weight:bold;"
+		text="General Workers" />
+
+	<!-- Daily Workers -->
+	<Button fx:id="btnDaily" layoutX="477.0" layoutY="235.0"
+		onAction="#openDaily" prefHeight="55" prefWidth="280"
+		text="Daily Workers" textAlignment="JUSTIFY"
+		textOverrun="LEADING_ELLIPSIS"
+		style="
+			-fx-background-color:#2F80ED;
+			-fx-text-fill:white;
+			-fx-font-size:16px;
+			-fx-font-weight:bold;
+			-fx-background-radius:14;
+			-fx-cursor:hand;
+			-fx-effect:dropshadow(gaussian, rgba(47,128,237,0.35), 12, 0, 0, 4);
+		">
+
+		<graphic>
+			<ImageView fitHeight="150.0" fitWidth="118.0"
+				pickOnBounds="true" preserveRatio="true">
+				<image>
+					<Image
+						url="@icons/Employee.png" />
+				</image>
+			</ImageView>
+		</graphic>
+	</Button>
+
+	<!-- Hourly Workers -->
+	<Button layoutX="140.0" layoutY="236.0" onAction="#openHourly"
+		prefHeight="55" prefWidth="280" text="Hourly Workers"
+		style="
+			-fx-background-color:#27AE60;
+			-fx-text-fill:white;
+			-fx-font-size:16px;
+			-fx-font-weight:bold;
+			-fx-background-radius:14;
+			-fx-cursor:hand;
+			-fx-effect:dropshadow(gaussian, rgba(39,174,96,0.35), 12, 0, 0, 4);
+		">
+
+		<graphic>
+			<ImageView fitHeight="150.0" fitWidth="116.0"
+				pickOnBounds="true" preserveRatio="true">
+				<image>
+					<Image
+						url="@icons/Employee.png" />
+				</image>
+			</ImageView>
+		</graphic>
+	</Button>
+
+</AnchorPane>

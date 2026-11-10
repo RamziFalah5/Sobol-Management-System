@@ -1,0 +1,985 @@
+{
+  "sourceProject": "Eclipse javaTestSC; original archived privately outside Git",
+  "sourcePackageFiles": 155,
+  "restoredAdditionalFiles": 32,
+  "runtimeResources": "14 verified original icons, original truck2.png, generic Employee icon fallback for absent user.png",
+  "resourceFallbacks": [
+    {
+      "file": "Employee.fxml",
+      "missingOriginal": "workers.png",
+      "fallback": "Employee.png"
+    },
+    {
+      "file": "Employee.fxml",
+      "missingOriginal": "sales manager.png",
+      "fallback": "Employee.png"
+    },
+    {
+      "file": "GeneralWorkersMenu.fxml",
+      "missingOriginal": "workers.png",
+      "fallback": "Employee.png"
+    },
+    {
+      "file": "GeneralWorkersMenu.fxml",
+      "missingOriginal": "Hourly Workers.png",
+      "fallback": "Employee.png"
+    }
+  ],
+  "files": [
+    {
+      "original": "src/application/AddBranch.fxml",
+      "destination": "src/main/resources/application/AddBranch.fxml",
+      "originalSha256": "b29ec721128a992fc9f9c3ae22d504d5dcbc2252d1bb9a8c2db56da2086980bb",
+      "recoveredSha256": "b29ec721128a992fc9f9c3ae22d504d5dcbc2252d1bb9a8c2db56da2086980bb"
+    },
+    {
+      "original": "src/application/AddBranchController.java",
+      "destination": "src/main/java/application/AddBranchController.java",
+      "originalSha256": "ae238ff69b8da046dac51d6cb558651498fa7ccbb1b7ba28ae15a19959da289a",
+      "recoveredSha256": "dd6a791e7eef1e19fa7771e74a548cb538031e397726053a924dfd8e260f3c89"
+    },
+    {
+      "original": "src/application/AddCategory.fxml",
+      "destination": "src/main/resources/application/AddCategory.fxml",
+      "originalSha256": "d7dd61acaf1ab7ea5705841c07014c89586b3392717b2b496c5837ee7914fbf7",
+      "recoveredSha256": "d7dd61acaf1ab7ea5705841c07014c89586b3392717b2b496c5837ee7914fbf7"
+    },
+    {
+      "original": "src/application/AddCategoryController.java",
+      "destination": "src/main/java/application/AddCategoryController.java",
+      "originalSha256": "bf45513c9c2590813a25d4ee576ef3783eb2ab38a7ee83a913189a304ab6dae4",
+      "recoveredSha256": "bdee855cd76b91dec6466eb7153382103e19a2d010a7aa80805820e550422d8a"
+    },
+    {
+      "original": "src/application/AddCustomer.fxml",
+      "destination": "src/main/resources/application/AddCustomer.fxml",
+      "originalSha256": "6068c3a130f6f5f3832ca2a560db6ba46e6b1eafb965d8aa934b51f6bcba98a2",
+      "recoveredSha256": "df412cf9abc833fab4b62ae758491c2423a4d0ca8bd964c40eddbc98e285706f"
+    },
+    {
+      "original": "src/application/AddCustomerController.java",
+      "destination": "src/main/java/application/AddCustomerController.java",
+      "originalSha256": "651f62f021c9a08639260dcd30b51d2c6db1742dca9305e9b010779916cbc205",
+      "recoveredSha256": "82fc1e7c1aed3d0c975e10cc975a586cee89a8b6d6dc2f7ff295da06858e3da4"
+    },
+    {
+      "original": "src/application/AddEmployee.fxml",
+      "destination": "src/main/resources/application/AddEmployee.fxml",
+      "originalSha256": "e76ce001ad3558ba6f1928e603df53228dbf608181380a6239cb5e66136e354d",
+      "recoveredSha256": "f211f5b1f6364ddef40e915da8b97b4bf37c03ca21035e40012c7d0d0aa424c4",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/AddEmployeeController.java",
+      "destination": "src/main/java/application/AddEmployeeController.java",
+      "originalSha256": "43086fa21984c65a6115e61389227981174136594255fe8eae4188c902582bbd",
+      "recoveredSha256": "da56169c68fe8fd2061ff0bc5943f6c14caa19900d8af7dd772b58cb420be640"
+    },
+    {
+      "original": "src/application/AddProduct.fxml",
+      "destination": "src/main/resources/application/AddProduct.fxml",
+      "originalSha256": "7af066eecb52cb6cdf61b5d87296d2fa6fab4f61d150a0c37e6c829978f18228",
+      "recoveredSha256": "7af066eecb52cb6cdf61b5d87296d2fa6fab4f61d150a0c37e6c829978f18228"
+    },
+    {
+      "original": "src/application/AddProductController.java",
+      "destination": "src/main/java/application/AddProductController.java",
+      "originalSha256": "8cb68624b36257b74dfb61ef57b3111f0f0c33ac82128670b718a65227876286",
+      "recoveredSha256": "a110837f507710106e7d5bd69733e700fdff485e3b351c2489b77da644a49fc5"
+    },
+    {
+      "original": "src/application/AddShipment.fxml",
+      "destination": "src/main/resources/application/AddShipment.fxml",
+      "originalSha256": "4a9197a3e1bc2de48c27f0cc8c267d3a4a46e1ba765b58f509af56216d3aa448",
+      "recoveredSha256": "a47127a85a518c3920c9f0fd1737de74cf03ed9608ba311bd10061ceb711f699"
+    },
+    {
+      "original": "src/application/AddShipmentController.java",
+      "destination": "src/main/java/application/AddShipmentController.java",
+      "originalSha256": "de55d9b48c7c2736e190acf6b68e5915f04172ec7af2a2e42440efdb842698dd",
+      "recoveredSha256": "b287bad5fb80a9645a01f3b7eaa3eca0c75b0e239a6d6f995c92dbb050c30206"
+    },
+    {
+      "original": "src/application/AddSupplier.fxml",
+      "destination": "src/main/resources/application/AddSupplier.fxml",
+      "originalSha256": "3eeea92cdd697063326771f7ce2b88b077dd89bfab74493592dc1e18b3aa9464",
+      "recoveredSha256": "846008fd7a6c1f1941bbba9d4c8a0a597e368f3791b47dffdab7880614d817d5"
+    },
+    {
+      "original": "src/application/AddSupplierController.java",
+      "destination": "src/main/java/application/AddSupplierController.java",
+      "originalSha256": "5ab6706d58b2551687313d888ee612d6516b142bd8a27f1ebb8494fbcd6b038e",
+      "recoveredSha256": "dba8921c788ac0269dfc5032f8114b57f235ea47b4cd2ddaf90e57d832f249da"
+    },
+    {
+      "original": "src/application/AddVehicle.fxml",
+      "destination": "src/main/resources/application/AddVehicle.fxml",
+      "originalSha256": "d7f2cef06bf829c6fa5c5dd0bcff1a085545ba47f6b364c05445931ab6b53afb",
+      "recoveredSha256": "1198f4025e92b12b1fc6aa76baba4bc99f69a3accb048ef96b0051f63ea3faad",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/AddVehicleController.java",
+      "destination": "src/main/java/application/AddVehicleController.java",
+      "originalSha256": "416f31dabaf9dba6f47381378e94689b0b6bbe0811b58418cb3ef8c112480cd2",
+      "recoveredSha256": "2f0393d5e0c218193817eb8005273e8f3104f0d4f09feadce4dc98a04840ef18"
+    },
+    {
+      "original": "src/application/AddWarehouse.fxml",
+      "destination": "src/main/resources/application/AddWarehouse.fxml",
+      "originalSha256": "a36c5ee5121b512b13db7b6bd05f20d536932ce821bde5965e8054096a45ace1",
+      "recoveredSha256": "4bfc651965c87a3aa3c36741f335824948c22805af022d75cc212096cc782b14"
+    },
+    {
+      "original": "src/application/AddWarehouseController.java",
+      "destination": "src/main/java/application/AddWarehouseController.java",
+      "originalSha256": "0e5e0f0d3a64e758d35449ed1a0a8270fed64d1943efa4f3738ac7e6c8af3575",
+      "recoveredSha256": "356abc78723e99b08cea7457bbfab5f7fe894df535d2ae2e0aed4e5f97d666fe"
+    },
+    {
+      "original": "src/application/application.css",
+      "destination": "src/main/resources/application/application.css",
+      "originalSha256": "b10cf954f1c1371ebb88ce49881a62d759cb43af799c8197386ca820529d6859",
+      "recoveredSha256": "03ecf7b26afee9d33cf57fef6d460edb751b1ef3b8c4f2b715d357f79a8582ac",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/AttendanceDAO.java",
+      "destination": "src/main/java/application/AttendanceDAO.java",
+      "originalSha256": "9d8100c04512825867a0d50d3821fe7af4150c64902262e1e9aaf00785eb8063",
+      "recoveredSha256": "21af54614b7db194cc9c68bcd3337d5ea6323a11d4d22f8fdb5de78e2a7f41aa"
+    },
+    {
+      "original": "src/application/Branch.java",
+      "destination": "src/main/java/application/Branch.java",
+      "originalSha256": "32f0e8b92af09ca95309e7710ec6f5965180c1f5bba15f80087b602f5e9789de",
+      "recoveredSha256": "b52b569f068f16ebfa2176d39b366733f09fe183a75ef55a06645d30b7480a63"
+    },
+    {
+      "original": "src/application/BranchDAO.java",
+      "destination": "src/main/java/application/BranchDAO.java",
+      "originalSha256": "7b06a4bd344f976ca8ed195bb7729457ad1052188553126ce178a43a0452fc9e",
+      "recoveredSha256": "f0de664a4dd5b7acf69bc39cb943ed5e6036ea89a77ee71f83a4e157db2ade7d",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/Branches.fxml",
+      "destination": "src/main/resources/application/Branches.fxml",
+      "originalSha256": "76f3443ee29d7b75d528c7a62a767b8f9b3545cf871150032544be514d6ac385",
+      "changes": "Relocate icon references to packaged classpath resources (see resource fallbacks)",
+      "recoveredSha256": "b45827eb47b6a28e656fbfb6cd7412041a1d5e8bfe41b32c7720fdab2c5ee5d3"
+    },
+    {
+      "original": "src/application/BranchesController.java",
+      "destination": "src/main/java/application/BranchesController.java",
+      "originalSha256": "c82765feb416bd903e91f91fdf95205126dcdd56fe3232942eb8446491307218",
+      "recoveredSha256": "8547c5f20bf815c319dff8c5c5cfb884dce31be071509904f09eed761960e964",
+      "changes": "Prefer packaged icon; business logic unchanged"
+    },
+    {
+      "original": "src/application/BranchSession.java",
+      "destination": "src/main/java/application/BranchSession.java",
+      "originalSha256": "2e10e0ccd4b296d657094b2d153011f90a56c9fa827bd083a2e77c189880d60d",
+      "recoveredSha256": "4c01c1cee8c4b6790481fa0e3c257c8efa7695bb76e34be6632f258369643768"
+    },
+    {
+      "original": "src/application/Category.fxml",
+      "destination": "src/main/resources/application/Category.fxml",
+      "originalSha256": "d5286d7637f50eab53695f4932ed5b4d01abb6eb55b8725a0b1f199e88409435",
+      "recoveredSha256": "d5286d7637f50eab53695f4932ed5b4d01abb6eb55b8725a0b1f199e88409435"
+    },
+    {
+      "original": "src/application/Category.java",
+      "destination": "src/main/java/application/Category.java",
+      "originalSha256": "fbf10ab99e1cd579acb119f12c2defe7d56e958d2e6996d40b45092055bd9018",
+      "recoveredSha256": "89ea4c5499509eee25ee458e19e2034322674af78fbf778978815f51383283a8"
+    },
+    {
+      "original": "src/application/CategoryController.java",
+      "destination": "src/main/java/application/CategoryController.java",
+      "originalSha256": "11413633febeec6f71f1639e993e9dfed17a9a9af75043f375e1841d735c4374",
+      "recoveredSha256": "6740f2e8b18cc17f57105bd015b14ad97eb4962ee54753fb4446f9de75dda774"
+    },
+    {
+      "original": "src/application/CategoryDAO.java",
+      "destination": "src/main/java/application/CategoryDAO.java",
+      "originalSha256": "9c7da41eb4a0259546abfaf972dadf9d3be3e03cf93af35e69ce182c0a8eb561",
+      "recoveredSha256": "7635234d50f3fa490b856afc21ed67f60b24770ed4390ab1729ebcf424d014e0"
+    },
+    {
+      "original": "src/application/CategorySession.java",
+      "destination": "src/main/java/application/CategorySession.java",
+      "originalSha256": "766ff0642c14b5ad5ba12a95927510fd42d7cbc89dd011884410cfc8726c02b5",
+      "recoveredSha256": "ca1ce7dd0b5ff8875455924ea897e23e9ba9ca271d8734a68c0567023732adbe"
+    },
+    {
+      "original": "src/application/Controller1.java",
+      "destination": "src/main/java/application/Controller1.java",
+      "originalSha256": "93b471214756e11949bc4beafef999d602a47484389f1c898f1b0bfb25b62dda",
+      "recoveredSha256": "e9acfd613392b56af0df9c5b05c30e950a940dd7402e938f504ef47cd3999322"
+    },
+    {
+      "original": "src/application/ControllerSystem.java",
+      "destination": "src/main/java/application/ControllerSystem.java",
+      "originalSha256": "8bc2beacdc99e7f66bd9cec206647e218a8a7f48b2a1e0b98a36cc396863babc",
+      "recoveredSha256": "30849b6b8fa4c235a4c6b4acaf66fc5a6d30c8d4aa5443a5713a3883ce6b368c"
+    },
+    {
+      "original": "src/application/Customer.java",
+      "destination": "src/main/java/application/Customer.java",
+      "originalSha256": "e0f9c486586474f54288c3619abf1986b3b5ec985e34edd847b0ca41ba6040b6",
+      "recoveredSha256": "e1d3a6fafe145cf79feeac041f78581a851deabcfa30dc34888c034671e37cb6"
+    },
+    {
+      "original": "src/application/CustomerDAO.java",
+      "destination": "src/main/java/application/CustomerDAO.java",
+      "originalSha256": "41f567a549615bafcec7d58a4e0ea90e16a0fe5113e06b2b5150b0a15658d89f",
+      "recoveredSha256": "dd29a2287ed204916a798ca94aee479f62be89a74623dc5a4c84b111dcd36654",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/Customers.fxml",
+      "destination": "src/main/resources/application/Customers.fxml",
+      "originalSha256": "876948d516ff9e121f4d17ee641e19a9cf1af732273117a6997392a330a32b5e",
+      "recoveredSha256": "c143df203ee5b35e57457b25f3823f2165de2e4e8a531124b2efbc3cb82b694d"
+    },
+    {
+      "original": "src/application/CustomersController.java",
+      "destination": "src/main/java/application/CustomersController.java",
+      "originalSha256": "d2e560936d7be4d42755fcc8a92ed02324aaeb0d0fa640b035669a17dcb06e26",
+      "recoveredSha256": "e9a9db4f591a956facc68522e095fc483cf0a6a15bb75e6d237ac23561675c80"
+    },
+    {
+      "original": "src/application/DailyAttendance.fxml",
+      "destination": "src/main/resources/application/DailyAttendance.fxml",
+      "originalSha256": "a90c030bbe2a560a059ed7ca8282e3ec66c8f192b14503615f21ed5f1cbf430e",
+      "recoveredSha256": "078b933fe24cf75620828a3f300587eb766ffa17e144652ba9ee4dc26b027dc0"
+    },
+    {
+      "original": "src/application/DailyAttendanceController.java",
+      "destination": "src/main/java/application/DailyAttendanceController.java",
+      "originalSha256": "dc6146932038e9a7067368dcd3d35c6d7298508dfb72c8e2faecc57ed3b97a33",
+      "recoveredSha256": "6fc5527c1a0ca68f4f7563c3c25cbbd2a528676b536c873ccb222a75c7dd76cf"
+    },
+    {
+      "original": "src/application/DailyAttendanceRow.java",
+      "destination": "src/main/java/application/DailyAttendanceRow.java",
+      "originalSha256": "7fd08aa6653d405328c36cde8c9f602c4727202bde80ae6bdb721cef4406d04f",
+      "recoveredSha256": "01e3da89a71fc5e2192e08540655248168fd6598e1afe62c33a17328287b7264"
+    },
+    {
+      "original": "src/application/DailyWorkers.fxml",
+      "destination": "src/main/resources/application/DailyWorkers.fxml",
+      "originalSha256": "cc10899e1d61a494b34de6c2c3c76342cd18d80ecfed5e432589bbec15575fcd",
+      "recoveredSha256": "96fcdbd0bf26d4c985040417a93b83d706408236dec4298b11712147173f67a0"
+    },
+    {
+      "original": "src/application/DailyWorkersController.java",
+      "destination": "src/main/java/application/DailyWorkersController.java",
+      "originalSha256": "25fd052c31440cdf2a0057959fcfa4e782fb4127b0c3c109e4d0340977c5262a",
+      "recoveredSha256": "e8b875d042ab11c17d0a06aef6226c3570ae24ec44c3f9157fa66e5ca1c696ad"
+    },
+    {
+      "original": "src/application/Dashboard.fxml",
+      "destination": "src/main/resources/application/Dashboard.fxml",
+      "originalSha256": "88d1e4462f3ed53220337ebb687171864e275711bacf4680c140ee9423664c87",
+      "changes": "Relocate icon references to packaged classpath resources (see resource fallbacks)",
+      "recoveredSha256": "db26ad2a42a32e8315a969213fc8f26bfe4bc780ec6513685f3ca57ac81fc755"
+    },
+    {
+      "original": "src/application/DashboardController.java",
+      "destination": "src/main/java/application/DashboardController.java",
+      "originalSha256": "39b5bc034ea9ef70be285ccda6720dcfaa682c393bd901ed82d44a0c2f29dda4",
+      "recoveredSha256": "c710385845fb47888ae14fcda665a7605cd7feede6daec10ab7e5d5a62c47173"
+    },
+    {
+      "original": "src/application/DashboardDAO.java",
+      "destination": "src/main/java/application/DashboardDAO.java",
+      "originalSha256": "6a0a7262511f5a4e4d8df8c0f871ad448780f6c2e71c21314956f64c52744e9f",
+      "recoveredSha256": "5a3dc5d375c443bab1cbdd6d5f7f12f99e19651ae461b1c529b593c77d062345",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/DashboardStats.java",
+      "destination": "src/main/java/application/DashboardStats.java",
+      "originalSha256": "1572ecb961fbdce5df42df3640c6df8f266d28f48900a75adbd8d36ae0a48373",
+      "recoveredSha256": "0ae531cee8d429e61dd205834f0e01aff9df19239530ac9dd8ca5b2a0b1fc52b"
+    },
+    {
+      "original": "src/application/DBAuth.java",
+      "destination": "src/main/java/application/DBAuth.java",
+      "changes": "Replace embedded credentials with fail-closed, loopback sobol_dev environment configuration; sanitize connection errors",
+      "recoveredSha256": "84191c8815adcb34456015fee8ea2a2bf01eca099d8e9e71f49e9ad92049f88a"
+    },
+    {
+      "original": "src/application/DriverAttendance.fxml",
+      "destination": "src/main/resources/application/DriverAttendance.fxml",
+      "originalSha256": "e9130834e42b7f9be50cab083d660031dd519fb167baa7b9d97520b6d5de68c2",
+      "recoveredSha256": "e86a6e9321d5fedfcec1a942c1947ea46c0b21843c821485a11b8e53c32e000b"
+    },
+    {
+      "original": "src/application/DriverAttendanceController.java",
+      "destination": "src/main/java/application/DriverAttendanceController.java",
+      "originalSha256": "2819f98481231567422148925a000a81155e2f8a8cc2976d5d262957d26eacfa",
+      "recoveredSha256": "8c6b8463cbdc54a34504d5721a1e4cba9cf382bb0a693cbfd64fb26ec89215a8"
+    },
+    {
+      "original": "src/application/Drivers.fxml",
+      "destination": "src/main/resources/application/Drivers.fxml",
+      "originalSha256": "59035b3a4815bbd73d82d446e9af3453335417671df55c778bae95b35d0fa4e5",
+      "recoveredSha256": "6f1a0e39112f0439946bfc209ec7f8075ce6e2a30cb6d6e2e7216cb581267157"
+    },
+    {
+      "original": "src/application/DriversController.java",
+      "destination": "src/main/java/application/DriversController.java",
+      "originalSha256": "7ee10061b9dabb496c4381953f0e6d2c187d20130003c2261bcdb0fcc843a061",
+      "recoveredSha256": "a87065b93f82ab2b81aef36935855cd1b87bf00c37073db7067695b183f6820b"
+    },
+    {
+      "original": "src/application/EditBranch.fxml",
+      "destination": "src/main/resources/application/EditBranch.fxml",
+      "originalSha256": "1f53807136914717055fcb1fcd60bfe4c7bca6fe9fd654531d80289d1a15e1f0",
+      "recoveredSha256": "c9d63882120afa868bf414bb3333fc5e496de2a0484885e5bccaab875c4ece9d",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/EditBranchController.java",
+      "destination": "src/main/java/application/EditBranchController.java",
+      "originalSha256": "c39c131d8350bc3772b9ac3a3d2fa252b54a27d06ac6fa4e05e7b6b93e8f9a31",
+      "recoveredSha256": "2eece0d12017c1357a25a4e57203971accf5c478b23a7a72e4b5eb181fc853b2"
+    },
+    {
+      "original": "src/application/EditCategory.fxml",
+      "destination": "src/main/resources/application/EditCategory.fxml",
+      "originalSha256": "96932dec8c2610617b15fa53534058ae7790f5ee9c00535dfea3b4e1c44e564c",
+      "recoveredSha256": "96932dec8c2610617b15fa53534058ae7790f5ee9c00535dfea3b4e1c44e564c"
+    },
+    {
+      "original": "src/application/EditCategoryController.java",
+      "destination": "src/main/java/application/EditCategoryController.java",
+      "originalSha256": "b52c4ffba6d996f21ff3e2936e19a9ce7823b356bf480b3df370dfdcc5b91404",
+      "recoveredSha256": "1be657a8f55358200c4a23ec4f00e8862ca40403b580ecb0c68bad8a4fa42fb7"
+    },
+    {
+      "original": "src/application/EditCustomer.fxml",
+      "destination": "src/main/resources/application/EditCustomer.fxml",
+      "originalSha256": "0fb06f2ea3cf9231a45b56b5901de587d7f8270640f89d74948820be2ab5e6fd",
+      "recoveredSha256": "e3ea5a51cd5bb33091b42db2f70a4eefa3bc796688918e03c6c7fdf0041f3b96"
+    },
+    {
+      "original": "src/application/EditCustomerController.java",
+      "destination": "src/main/java/application/EditCustomerController.java",
+      "originalSha256": "0c7dbc5af1f7000f4e0d8bab9bec96890e858a6ad3366a86e6d54c9aac51d0bd",
+      "recoveredSha256": "769d6863dfe0133c8e4fa46368a6af8bec2313c759e54fe47378926b9ebea9a8"
+    },
+    {
+      "original": "src/application/EditDailyWorker.fxml",
+      "destination": "src/main/resources/application/EditDailyWorker.fxml",
+      "originalSha256": "f5d2d9dabe9afe63e89e777eecf2712c8cf922546ff3ef63e584785c85bfe78b",
+      "recoveredSha256": "a12051bb2077316e22b371ec3a8e09c0f3e24c5bebe2a8d5a1f44e6d4f1c546a"
+    },
+    {
+      "original": "src/application/EditDailyWorkerController.java",
+      "destination": "src/main/java/application/EditDailyWorkerController.java",
+      "originalSha256": "21cfcb9614f548aaaf501876904f8d5a1779b54f937cb6b2efeeb7d3002692be",
+      "recoveredSha256": "aaf508a6e111ffb9a7fffb24179031998bf67d53fbca923be8abc0e777029f71"
+    },
+    {
+      "original": "src/application/EditDriver.fxml",
+      "destination": "src/main/resources/application/EditDriver.fxml",
+      "originalSha256": "8a7c939282420cf789d73aa4d2f63d826bbf71b719215197a853f4addc4d6ddd",
+      "recoveredSha256": "68493bfa961641e853bf1234269984cd449b354c976756324895ea0e9b5122f5"
+    },
+    {
+      "original": "src/application/EditDriverController.java",
+      "destination": "src/main/java/application/EditDriverController.java",
+      "originalSha256": "2369bfbfe11ef2e3d43aac0aafd63136abb2b439d4c15b140be2231e79deff16",
+      "recoveredSha256": "3a42937dfc5063582cae98345911a72ec1cfd79a7527bb6acbf9c914de6b871d"
+    },
+    {
+      "original": "src/application/EditHourlyWorker.fxml",
+      "destination": "src/main/resources/application/EditHourlyWorker.fxml",
+      "originalSha256": "c47defb1e054c81b5d6a4990bd06799bde1fd523ce39604d8acfa103ca5de47a",
+      "recoveredSha256": "42f5cc7ccec118908cd134588d940ac1cc2a723deb1569ea96d9781715579631"
+    },
+    {
+      "original": "src/application/EditHourlyWorkerController.java",
+      "destination": "src/main/java/application/EditHourlyWorkerController.java",
+      "originalSha256": "812b0959e7d2a46d0b3fee77ba5fa65ad04e561ac8d47423d0fd8ff12d886a54",
+      "recoveredSha256": "497b35b202c522950b7dfd09adb52425d2dd209a7225ac3f4bf702fb404f29cc"
+    },
+    {
+      "original": "src/application/EditProduct.fxml",
+      "destination": "src/main/resources/application/EditProduct.fxml",
+      "originalSha256": "a7070b7b31cdd8f09a332096ac5ea3fdb058dc2e2ee25760cc64d9364bbd3b95",
+      "recoveredSha256": "a7070b7b31cdd8f09a332096ac5ea3fdb058dc2e2ee25760cc64d9364bbd3b95"
+    },
+    {
+      "original": "src/application/EditProductController.java",
+      "destination": "src/main/java/application/EditProductController.java",
+      "originalSha256": "8aa04f67e431810470ded1c8d5290f71dd4ae3940e84c6ecc97d822acf9484b5",
+      "recoveredSha256": "51dd11e49ab293aa55e89ba8b2b2035af4462685c2741ae999ef641f161ca7cb"
+    },
+    {
+      "original": "src/application/EditSalesRep.fxml",
+      "destination": "src/main/resources/application/EditSalesRep.fxml",
+      "originalSha256": "01bb23decd188c0486dceb43585f6bbae293356fc87df75e678ff6df090bed02",
+      "recoveredSha256": "066b217f22fbd97ba9b1e51ad434158ab2031883c7a76d3e4c760faf172d095d"
+    },
+    {
+      "original": "src/application/EditSalesRepController.java",
+      "destination": "src/main/java/application/EditSalesRepController.java",
+      "originalSha256": "183f2627e59638ba5de1417c5450d297c2a24cde13b986c6cf52529ba0212286",
+      "recoveredSha256": "4a4048fa5dea6fb05ba2a37179b195bbd92ef57ce10f5a2cef5b863de00f48e8"
+    },
+    {
+      "original": "src/application/EditSupplier.fxml",
+      "destination": "src/main/resources/application/EditSupplier.fxml",
+      "originalSha256": "3c97a534f38b6dd88c0ce1d8b5c533bc1dbf7cb233a6a1b2dfe930abbdf255d4",
+      "recoveredSha256": "20e1f31ea436782f390a3fea24c3ef59383e07395bbc9f0d4fd9035b8b0f3996"
+    },
+    {
+      "original": "src/application/EditSupplierController.java",
+      "destination": "src/main/java/application/EditSupplierController.java",
+      "originalSha256": "0b573babc25e2453ab5bb83c82859991d0157e4339bec5d45122fe8f895762bd",
+      "recoveredSha256": "23fe0ddec587cc72171ae82fd2ac8b534fab7be82f218a150f970c68f9704394"
+    },
+    {
+      "original": "src/application/EditVehicle.fxml",
+      "destination": "src/main/resources/application/EditVehicle.fxml",
+      "originalSha256": "80b8fb0cdf4198f0aea8c2c8908744841cd7b5bdeea4057abcdef490770c30a2",
+      "recoveredSha256": "886a659ec05f753b54ba9a717feedc0081e4dba7799581ac1d04a4bd07d03178"
+    },
+    {
+      "original": "src/application/EditVehicleController.java",
+      "destination": "src/main/java/application/EditVehicleController.java",
+      "originalSha256": "2c048cf7d3574fcc1123b8b36467b930c353d485888c4cb24ef23787a104a963",
+      "recoveredSha256": "ef19f2a17834a41d1eadcb50a3fe2f4d129defb1ef63baadcd3bd6eda8e28b95"
+    },
+    {
+      "original": "src/application/EditWarehouse.fxml",
+      "destination": "src/main/resources/application/EditWarehouse.fxml",
+      "originalSha256": "e0731905b2cac46da828b6d75f9e5ddb5703f160d04ef304f49057949ce17fba",
+      "recoveredSha256": "31f8143e30a3a2f9b0c24a7ed92bb6c1fd46cc3c8f1a9cea9264dfde53c1ce2f"
+    },
+    {
+      "original": "src/application/EditWarehouseController.java",
+      "destination": "src/main/java/application/EditWarehouseController.java",
+      "originalSha256": "506c0ad5a51e6373fbb339baf8e7a23a0bcc54f1d9eabb161a35df4e06cef8e1",
+      "recoveredSha256": "88424a5fe7f3b5a2f199a3ad7f5cedca84381926119fab6bcc591695c64e03e2"
+    },
+    {
+      "original": "src/application/Employee.fxml",
+      "destination": "src/main/resources/application/Employee.fxml",
+      "originalSha256": "4c5a50abe7de69984c07166d12a8048bdb81cb769a28d1828f6e1b122b570ee6",
+      "changes": "Relocate icon references to packaged classpath resources (see resource fallbacks)",
+      "recoveredSha256": "a9aaae47a33ee3da0dda81c364930b20be287e7aa651b50b9da8588a3ec5c6af",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/Employee.java",
+      "destination": "src/main/java/application/Employee.java",
+      "originalSha256": "284591debaee7d68160106551bc22ba8b895b4625727c72ba1c5cfeffdbc66ee",
+      "recoveredSha256": "cf50b216409e50858f559208dacdafe30ded58a5f696270e2607f32591890501",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/EmployeeController.java",
+      "destination": "src/main/java/application/EmployeeController.java",
+      "originalSha256": "eb224033c37829302af95a540ad6ec17700e35ef6b631cf01bedcaf6875d26e6",
+      "recoveredSha256": "d6db499d6e6697d41278c9f411c919468546b6c11cf3e70405521a1ecae05b09"
+    },
+    {
+      "original": "src/application/EmployeeDAO.java",
+      "destination": "src/main/java/application/EmployeeDAO.java",
+      "originalSha256": "b7f4069cb87796471fcab692aa220beeda4b6541f57156ebfa05daa2c547d595",
+      "recoveredSha256": "bb5bfe936cd097689c41ad4ba14b4c914b2ba04718d9e13da6ae3437f582d360"
+    },
+    {
+      "original": "src/application/FieldAdministrator.java",
+      "destination": "src/main/java/application/FieldAdministrator.java",
+      "originalSha256": "899a1d6cadf75e53325224c48db99a6de65ecdb5c9542bc77d5ef51a23ff65b0",
+      "recoveredSha256": "0b50cea0c9e482994f14d5a466ed8c91c2960de8347de20a1cf7adebcec26916"
+    },
+    {
+      "original": "src/application/GeneralWorker.java",
+      "destination": "src/main/java/application/GeneralWorker.java",
+      "originalSha256": "b386757a9a4714254a4f73776349a625c93943959b4250ab9975a1c4850a76d0",
+      "recoveredSha256": "7b3c9870d43bcfd2312248db4478747f6583727b41faf2161a97051b8cb88fd8"
+    },
+    {
+      "original": "src/application/GeneralWorkerDAO.java",
+      "destination": "src/main/java/application/GeneralWorkerDAO.java",
+      "originalSha256": "5694e4f5acb43c0a592fab460332a308b4fdc48c734d48dfeef19b48a7ed3525",
+      "recoveredSha256": "fdc0d66f89da9c6d8e1c19ef3f49d0a68235705199d386dcd563a9d9f0f42e1d",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/GeneralWorkerRow.java",
+      "destination": "src/main/java/application/GeneralWorkerRow.java",
+      "originalSha256": "d2bba64fa980802d1530a42feb275cb47faf8a6a1bd790c7b1b3a8f660f277e9",
+      "recoveredSha256": "e47d5242433434a8da535615bef061ccfb56029f85afda0a9f7126cb1de14734"
+    },
+    {
+      "original": "src/application/GeneralWorkersMenu.fxml",
+      "destination": "src/main/resources/application/GeneralWorkersMenu.fxml",
+      "originalSha256": "72a2327e71aef44673aa3efb59d30a651c2da9d1e38a2942f75f2a1cfe875b29",
+      "changes": "Relocate icon references to packaged classpath resources (see resource fallbacks)",
+      "recoveredSha256": "94dccfba57646a25f4ff6f65192427bd4f74466ddd23d952252b6c2ab6daafc7"
+    },
+    {
+      "original": "src/application/GeneralWorkersMenuController.java",
+      "destination": "src/main/java/application/GeneralWorkersMenuController.java",
+      "originalSha256": "b29a640cf283ebe687f900c517adb75dde8fff7ead8a7d93be3b844da2d9417f",
+      "recoveredSha256": "55dede6ccc2e7747cb81aeb5feeefd7f02287e6469c2dcdabedcd53e4733ffe9"
+    },
+    {
+      "original": "src/application/HourlyAttendance.fxml",
+      "destination": "src/main/resources/application/HourlyAttendance.fxml",
+      "originalSha256": "8f65a67b611af1b24b0f32b8849aaed87dcd3ce43ad60730d9ff0a1e2820559a",
+      "recoveredSha256": "1afef43ea2c18df08c35a87a8e8e616526e0c81bd7dd2ea2249531b562d50fd8"
+    },
+    {
+      "original": "src/application/HourlyAttendanceController.java",
+      "destination": "src/main/java/application/HourlyAttendanceController.java",
+      "originalSha256": "4cddfe08b493288a3f196a58530c6987bd8d8a95a357c297a08872202a182b46",
+      "recoveredSha256": "139c0de54b9892ab69f9d3a3050f8f9aff8993508d735279ad349ab33721957e"
+    },
+    {
+      "original": "src/application/HourlyAttendanceRow.java",
+      "destination": "src/main/java/application/HourlyAttendanceRow.java",
+      "originalSha256": "e5e18bc079ab80a8bd9b2b69fb87f4e2aaad26e660aec3182098b4a5c51b31ac",
+      "recoveredSha256": "294d810fee6e8eeaa4bc5b8cf43acf9b65fbbaaf2d68d2e8b420a932ad63654b"
+    },
+    {
+      "original": "src/application/HourlyWorkers.fxml",
+      "destination": "src/main/resources/application/HourlyWorkers.fxml",
+      "originalSha256": "ca1705680751ecc7877fbeb1166f02a518ffdcdfb53ea47027964130b85fd117",
+      "recoveredSha256": "ca1705680751ecc7877fbeb1166f02a518ffdcdfb53ea47027964130b85fd117"
+    },
+    {
+      "original": "src/application/HourlyWorkersController.java",
+      "destination": "src/main/java/application/HourlyWorkersController.java",
+      "originalSha256": "c17390d297bc3605ef6b9410c6e9e02dd2a3a016d47030b73901faec5ff780e3",
+      "recoveredSha256": "fd2252f809df3cb5517414def7775163cc2269b3b5b67ee4a41327f4ede85b30"
+    },
+    {
+      "original": "src/application/Imports.fxml",
+      "destination": "src/main/resources/application/Imports.fxml",
+      "originalSha256": "240fc9a08b3ebc4f949d99467554a0c935448f54b6d081650a26fb5d8a0e2b40",
+      "recoveredSha256": "240fc9a08b3ebc4f949d99467554a0c935448f54b6d081650a26fb5d8a0e2b40"
+    },
+    {
+      "original": "src/application/ImportsController.java",
+      "destination": "src/main/java/application/ImportsController.java",
+      "originalSha256": "f80335398a0c1d3a8bc91a96a3c2828883d4c7128fa2eb9cce4a14f6bb3d7e73",
+      "recoveredSha256": "13fcbee714bbae9f3fcf265f9cb7109533bf79ef419f5fb85883f5081432a276"
+    },
+    {
+      "original": "src/application/Main.java",
+      "destination": "src/main/java/application/Main.java",
+      "originalSha256": "6a64d7b84f97c8222a0d8b168cc1ed940532961df92a867875e02029156e365b",
+      "recoveredSha256": "39b0acb746164fca9959fbbddf410bd5cf5711b70ac4fc891e506e67474a839f",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/Main1.fxml",
+      "destination": "src/main/resources/application/Main1.fxml",
+      "originalSha256": "0719ff803a5286cfddeb508fdcbfdae964671d34c32250bfb6617bc876b35220",
+      "recoveredSha256": "0719ff803a5286cfddeb508fdcbfdae964671d34c32250bfb6617bc876b35220"
+    },
+    {
+      "original": "src/application/PasswordUtil.java",
+      "destination": "src/main/java/application/PasswordUtil.java",
+      "originalSha256": "a7ea5bca361279dcca8867796482768943141fe72624953be6552b4ca6bb1bd3",
+      "recoveredSha256": "6d0a68d5dd5fab66c07f7d065b5ec6ce4cfdade54caa3ecd4fc1f3d5985d5207"
+    },
+    {
+      "original": "src/application/PickCustomerForSale.fxml",
+      "destination": "src/main/resources/application/PickCustomerForSale.fxml",
+      "originalSha256": "9f832c3006f924233e29efa05ac0401a07e75bfe11cd47ede7d87a1247e956e0",
+      "recoveredSha256": "619df1f27f489a5547faa45eace1c979a4f338a609eb428ebcbc301018292cfe"
+    },
+    {
+      "original": "src/application/PickCustomerForSaleController.java",
+      "destination": "src/main/java/application/PickCustomerForSaleController.java",
+      "originalSha256": "6db892ab38a5d8f47ee69f3a5bbd543b5cbc5e76bb63b1581c082f64c57f25d5",
+      "recoveredSha256": "28e4d0e9ce15cb8a86de5c62001815b0518c3437deb0b91cd62375a16670fdfd"
+    },
+    {
+      "original": "src/application/PickProductsForSale.fxml",
+      "destination": "src/main/resources/application/PickProductsForSale.fxml",
+      "originalSha256": "8da9fd8aec73bfc75dd73e32e48165ca7c4f20c3335a9f95efa7b2bd4fb73df9",
+      "recoveredSha256": "1060b37ad80e97bf8c3f860c5d0ef41eab670257838f7e153acb659c418b7f04"
+    },
+    {
+      "original": "src/application/PickProductsForSaleController.java",
+      "destination": "src/main/java/application/PickProductsForSaleController.java",
+      "originalSha256": "7cdb7ec7c59568af5fdd6bb4d1f708187546adea6bb81c10fa64662901652f0e",
+      "recoveredSha256": "2e69c92cf2fd8f4e0893c567cdd74e6b716832550fa51d969309e402dbe0989d"
+    },
+    {
+      "original": "src/application/Product.java",
+      "destination": "src/main/java/application/Product.java",
+      "originalSha256": "751161dc29ba360b96771e601c9b24322b8bae883e434aee866659f1651a80fb",
+      "recoveredSha256": "4732a7f67a7d91d4ea33a4756790551cdc22995f2b54e47d1e546bab2ba8d22b"
+    },
+    {
+      "original": "src/application/ProductDAO.java",
+      "destination": "src/main/java/application/ProductDAO.java",
+      "originalSha256": "dfb61e91f565058e61a5c04c626d11ad6ec675d94f83bf6a2886376031d8c20a",
+      "recoveredSha256": "dca09ff1a51b6183abcaa6c6d0a96a8912bd637e06855c95cda0bba598fe4ac7"
+    },
+    {
+      "original": "src/application/ProductPickRow.java",
+      "destination": "src/main/java/application/ProductPickRow.java",
+      "originalSha256": "5175baf0dab1d88bdda1c8a8d1823064555fe04ebcb9cf46b19407b3001779fa",
+      "recoveredSha256": "468b4d4a881744aa20e513d764fd126720acce5e1a0f86f08599b63c235464bd"
+    },
+    {
+      "original": "src/application/Products.fxml",
+      "destination": "src/main/resources/application/Products.fxml",
+      "originalSha256": "c4b119616889984f7d9c5984dd6a7058f0b3f8b45b2c1a7a0e52b4dc60cbfe2c",
+      "changes": "Relocate icon references to packaged classpath resources (see resource fallbacks)",
+      "recoveredSha256": "1a4504a90feffda8ff430654255a8703ebd724ac845bed9bfdd784b8d59f3ad3",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/ProductSalePickRow.java",
+      "destination": "src/main/java/application/ProductSalePickRow.java",
+      "originalSha256": "f4196a457e74cea750af9dca837ee04f38ddea226394a1b6ba457386667c2706",
+      "recoveredSha256": "59dd4fd80d556d5e1e844b77ae1a2e88dead556ab8a460a344e0306c745b28c5"
+    },
+    {
+      "original": "src/application/ProductsController.java",
+      "destination": "src/main/java/application/ProductsController.java",
+      "originalSha256": "d9560514b1284196a85e3e83575f84eb30412d3226621de5578c437c90293769",
+      "recoveredSha256": "272ce35b8853ffd73428ed6caa3a985f980d16143a8e335ec0f83538eb672b9d"
+    },
+    {
+      "original": "src/application/Reports.fxml",
+      "destination": "src/main/resources/application/Reports.fxml",
+      "originalSha256": "665fba728bc1b19f3bcaa771c9843d96856959621145cf0d549aeb89ef8b85ca",
+      "recoveredSha256": "665fba728bc1b19f3bcaa771c9843d96856959621145cf0d549aeb89ef8b85ca"
+    },
+    {
+      "original": "src/application/ReportsController.java",
+      "destination": "src/main/java/application/ReportsController.java",
+      "originalSha256": "8a92bca5bfab822ace1558eb11211e4267da7e96c4d15535ce569534092a3e5d",
+      "recoveredSha256": "a11c961c9ebbaaedbdc436a6e01c2b0f13878c73bb26ee93bfd22b2391036538"
+    },
+    {
+      "original": "src/application/ReportsDAO.java",
+      "destination": "src/main/java/application/ReportsDAO.java",
+      "originalSha256": "a070d449e06facedbcab22df32d638cd282ea8d64a97a635ef2c1395b06d54b3",
+      "recoveredSha256": "a9a6384605c3787c56b22475f87a17c1eb1ec3d644f03fa768980650cde3b040"
+    },
+    {
+      "original": "src/application/SaleQuantities.fxml",
+      "destination": "src/main/resources/application/SaleQuantities.fxml",
+      "originalSha256": "746082dd5d3feaad2cf230be225a2d91e7ea1b4e530a09d8ee4018bae12d9ae9",
+      "recoveredSha256": "182b842925a2313372229243674cadc2b983b2535020d42a201eb7e589cd3874"
+    },
+    {
+      "original": "src/application/SaleQuantitiesController.java",
+      "destination": "src/main/java/application/SaleQuantitiesController.java",
+      "originalSha256": "3cf705a363a2f2022182e0d6591d6cbb90915445f71ad7cbe77338d927545c02",
+      "recoveredSha256": "761e3fdaad34f0a5eb24634ffddaa84edb50f4edc648a54068dd10b30d0c0c91"
+    },
+    {
+      "original": "src/application/Sales.fxml",
+      "destination": "src/main/resources/application/Sales.fxml",
+      "originalSha256": "fdaa3b84d97870d2195e340b324da598805fcf7fc3cd1e51aba1267264a7a650",
+      "changes": "Relocate icon references to packaged classpath resources (see resource fallbacks)",
+      "recoveredSha256": "467f014a0c9b72ec9f8d2c96d86c59424f8457567cbe3bc13ee897f8ae5ea275"
+    },
+    {
+      "original": "src/application/SalesAttendance.fxml",
+      "destination": "src/main/resources/application/SalesAttendance.fxml",
+      "originalSha256": "bc95e39d271acf21be11ef79e3c7866eb832483cb3b35d47641ce25eb8e5d443",
+      "recoveredSha256": "c8d25af16d5b6fce01d66163ef227c6e7c4ae3272e3d824b5358824fd993b1b8"
+    },
+    {
+      "original": "src/application/SalesAttendanceController.java",
+      "destination": "src/main/java/application/SalesAttendanceController.java",
+      "originalSha256": "2693a8c91ba87bef1b8cf0d9031e0685ad9d5bcc7fd854d1c21cfe03e15f428f",
+      "recoveredSha256": "441e0ed9771c5edff83d328917f68e2a3270d4f9f854692e9271837b36a29770"
+    },
+    {
+      "original": "src/application/SalesController.java",
+      "destination": "src/main/java/application/SalesController.java",
+      "originalSha256": "659ba614bced7a09a5560eadc74b0d145df85d406765944b2c272c4fbdc35b04",
+      "recoveredSha256": "47611feef70c65762d47d6afc6e05297dcb94f4d8622a1a77e78332308e769a9",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/SalesDAO.java",
+      "destination": "src/main/java/application/SalesDAO.java",
+      "originalSha256": "f5685e329cb1231126fb484a8411dbce2e6f5066903c4f4156fa556c208da7a4",
+      "recoveredSha256": "565fdaf824f0bc1646ca1e56e15388bfe59762702b8fab99e16a19937f9c0a3e"
+    },
+    {
+      "original": "src/application/SalesItem.java",
+      "destination": "src/main/java/application/SalesItem.java",
+      "originalSha256": "2775da09b9448430299335368d7c409a7da5a68370813a343fc25b6a6972c8ce",
+      "recoveredSha256": "926203274ed1da87ce9a1cb8dc2a1cbdd6efc0102c426d56e669db981f936dd7"
+    },
+    {
+      "original": "src/application/SalesOrder.java",
+      "destination": "src/main/java/application/SalesOrder.java",
+      "originalSha256": "936e0221f4efe478a0c3ce9f39ed9c9d536dcaed76c926fce2a19531ff7718a5",
+      "recoveredSha256": "b99eb9f36d2f796073e6c57d5c806b9883311a1e4b0ff161cd6dab0ef98e9402"
+    },
+    {
+      "original": "src/application/SalesRepDAO.java",
+      "destination": "src/main/java/application/SalesRepDAO.java",
+      "originalSha256": "8137a9d8f6d11b6d147082fb2c87c5c4a2abef150224829c298cb999814f9405",
+      "recoveredSha256": "a76b723bf83ab2aed2756b582f0ab8ef2480e8e212d62bdd553000645b80e2b8"
+    },
+    {
+      "original": "src/application/SalesRepresentative.java",
+      "destination": "src/main/java/application/SalesRepresentative.java",
+      "originalSha256": "251f9492ffef82be88691e2be592dff010d37ad7b573e6915347c6bc4efecbe4",
+      "recoveredSha256": "9a1d8d8ab5d389fba6705934321d0d7331eeaec9ceb6057c7cb9a19591471770"
+    },
+    {
+      "original": "src/application/SalesRepRow.java",
+      "destination": "src/main/java/application/SalesRepRow.java",
+      "originalSha256": "8e25c3b1174edf6159d3f1586d58f571ada2beda77d15b61a84456589379f8f7",
+      "recoveredSha256": "0ba5ec3b37c8f30ce114ec8c55bedf3a64e50eaa7819891dd2e29c26acfc235a"
+    },
+    {
+      "original": "src/application/SalesReps.fxml",
+      "destination": "src/main/resources/application/SalesReps.fxml",
+      "originalSha256": "1dedd86546152c758952d418ab158c6bce9c14c2b30fdc7b00b18367718a3de1",
+      "recoveredSha256": "ac9fbb26187c783ee4e30076da6b14866af8b3797a0919ca475a26b6ee6e603e"
+    },
+    {
+      "original": "src/application/SalesRepsController.java",
+      "destination": "src/main/java/application/SalesRepsController.java",
+      "originalSha256": "e8da8f4c34bbe883f22f82204cfc411d95914bbb8377a64045c19491b9711b1a",
+      "recoveredSha256": "3fe978cbf4113f64125dae17cf291002b0c78a386397ccd50d204d157b33b7b0"
+    },
+    {
+      "original": "src/application/Settings.fxml",
+      "destination": "src/main/resources/application/Settings.fxml",
+      "originalSha256": "b6f981501ecd5e6daa4a0f145c062a8fd770ed98ba67a01021853862e11e7d00",
+      "recoveredSha256": "c0ecda60a2c4fde7e54e1d4b4495e3a37a791cb13a8e7b4d7556a992ffd44c11"
+    },
+    {
+      "original": "src/application/SettingsController.java",
+      "destination": "src/main/java/application/SettingsController.java",
+      "originalSha256": "5eee09e5b278fd215853c1234aab96840e1cdb6ef0a5d2e00b807c10bf3bbd28",
+      "recoveredSha256": "7f8083641e71578e253060d77816719e56da7aad88f46869f205229d28100103"
+    },
+    {
+      "original": "src/application/Shipment.java",
+      "destination": "src/main/java/application/Shipment.java",
+      "originalSha256": "f6f6813f041da35ad6d5238ef85d93d744a2c4753135938f254f574c00168aa1",
+      "recoveredSha256": "129a88d9f157b5be500631d5052095809e68130f82f897f02c86dbc4af696090"
+    },
+    {
+      "original": "src/application/ShipmentDAO.java",
+      "destination": "src/main/java/application/ShipmentDAO.java",
+      "originalSha256": "29178277debc63ba0567a4423bd26e32d312fe37f4fd59bff73eb84f22338b7c",
+      "recoveredSha256": "4c2d6d60dd777c4efd15c9311530ac6d1094b0891c39d04d8337edb2c101cfc9",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/ShipmentProducts.fxml",
+      "destination": "src/main/resources/application/ShipmentProducts.fxml",
+      "originalSha256": "2c4f195d58fe8b80999d75a65be15fe50d2828b2fe52922197fdb7fcab54c51c",
+      "recoveredSha256": "2c4f195d58fe8b80999d75a65be15fe50d2828b2fe52922197fdb7fcab54c51c"
+    },
+    {
+      "original": "src/application/ShipmentProductsController.java",
+      "destination": "src/main/java/application/ShipmentProductsController.java",
+      "originalSha256": "db2eafad2f3f3c14792fecf694622835c579e929fc86e4044842416604fbf975",
+      "recoveredSha256": "4a44bcf5d130c2171ad4f355d42bbfa1cdf4c174982add1067537e53fefb43a8"
+    },
+    {
+      "original": "src/application/ShipmentSession.java",
+      "destination": "src/main/java/application/ShipmentSession.java",
+      "originalSha256": "9765087d479cde8dc515ca5dd226aaed99db410b892f1eec40291a25cdc62dcd",
+      "recoveredSha256": "7f165fead09fd4b419995a92b31b67daa1333c7b78d35ab1cf52058239c12d3d"
+    },
+    {
+      "original": "src/application/Signin.fxml",
+      "destination": "src/main/resources/application/Signin.fxml",
+      "originalSha256": "d86ac50746070e96b4c6d5ab25a81450b4e918b454c770b4a44f3f5ba0077595",
+      "recoveredSha256": "d86ac50746070e96b4c6d5ab25a81450b4e918b454c770b4a44f3f5ba0077595"
+    },
+    {
+      "original": "src/application/Supplier.java",
+      "destination": "src/main/java/application/Supplier.java",
+      "originalSha256": "f768538c0856623b29a62f5650154538214d8c454edb30692197f40a889711d4",
+      "recoveredSha256": "a5a427087b619b6b56357b85f98f6584d4c902a14dcfb6b56dde6edd73bbfb1a"
+    },
+    {
+      "original": "src/application/SupplierDAO.java",
+      "destination": "src/main/java/application/SupplierDAO.java",
+      "originalSha256": "68291625848293bf4f76bae5cf554355e9be561068d39c99d3fad12a5fa5bec1",
+      "recoveredSha256": "a680febb0a84687bab07700d6672649f0ba5fb69a472d011371933a8c36d0f30"
+    },
+    {
+      "original": "src/application/Suppliers.fxml",
+      "destination": "src/main/resources/application/Suppliers.fxml",
+      "originalSha256": "584984fe9ea30fcd98ff3ae06a39cb9cf0e3d50d6978803f05272384ef93d908",
+      "recoveredSha256": "cc4c60fab75b440746fc0c2ec934e7532c45bb820505bf5becedfd9afe951e19"
+    },
+    {
+      "original": "src/application/SuppliersController.java",
+      "destination": "src/main/java/application/SuppliersController.java",
+      "originalSha256": "3a33093be8145204e32e498156139bf08551593ce62ec9ceb1da5377d6b82e25",
+      "recoveredSha256": "c6121bbeb3c4a9c87dd97e5e2d24451b05186ae68dfc871b9adca81f209c11a4"
+    },
+    {
+      "original": "src/application/System.fxml",
+      "destination": "src/main/resources/application/System.fxml",
+      "originalSha256": "d007c39d7eed089d7356aabb874217bd45869d6735f9f6db7a19dbdf8e15fe53",
+      "changes": "Relocate icon references to packaged classpath resources (see resource fallbacks)",
+      "recoveredSha256": "ae45bb4ab975ef9d2028ec1c794ddb21ea41a091f85a33fb90e81e5407625749"
+    },
+    {
+      "original": "src/application/TruckDriver.java",
+      "destination": "src/main/java/application/TruckDriver.java",
+      "originalSha256": "a7beb8eb0540a12437e4e93ada2644efbfab44d776c740c610224b3c992ce018",
+      "recoveredSha256": "1e34ac30e354304053b72dd52bfbd581589e1d59fe88448133e32c925e2f7e21"
+    },
+    {
+      "original": "src/application/TruckDriverDAO.java",
+      "destination": "src/main/java/application/TruckDriverDAO.java",
+      "originalSha256": "0be650b7778160a4d132618184de02d68159fd4cc0b19250f6944590f4bcfdd7",
+      "recoveredSha256": "c94f622eba7b7248b9bc5aebc962b9bef55dc510396e50c9fc49a72dff13799d"
+    },
+    {
+      "original": "src/application/TruckDriverRow.java",
+      "destination": "src/main/java/application/TruckDriverRow.java",
+      "originalSha256": "c490a167f2ab0f21aa505a80f18ee0b288f12c557692ef5f61bf1257d2739aa7",
+      "recoveredSha256": "2f4c82f8de7bfeee6ba244e3893e4dd1b96cdd7005896ff10c4198b0d8f68a8e"
+    },
+    {
+      "original": "src/application/Vehicle.java",
+      "destination": "src/main/java/application/Vehicle.java",
+      "originalSha256": "23be8bc780e90381800271aa749d325b6e1edaef88716914da10fa73c44945e3",
+      "recoveredSha256": "f85fd0b7ac5615a9fd6ad483de4903d0e68c29225bb2f0278e2a1a734667b83f"
+    },
+    {
+      "original": "src/application/VehicleDAO.java",
+      "destination": "src/main/java/application/VehicleDAO.java",
+      "originalSha256": "48b8462772704134b635977272f104bde8851abd5fec03d307388da6e953bb1b",
+      "recoveredSha256": "7fb568f4a6f5390b67ffccfdc3e9e4df989b9877c5a3c09d7287bbea532fc103",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/Vehicles.fxml",
+      "destination": "src/main/resources/application/Vehicles.fxml",
+      "originalSha256": "c9f8a85376edc6175ca6d235e187583246363e50cd568803eb431136e8d3af90",
+      "recoveredSha256": "46a21cd675c8cfb192ff27a81c16dacb62332767abd85879106294912a875615"
+    },
+    {
+      "original": "src/application/VehiclesController.java",
+      "destination": "src/main/java/application/VehiclesController.java",
+      "originalSha256": "bf7d717b8e47b29dd4b4640b456f95097183a205c1f9bca33790cb383843f912",
+      "recoveredSha256": "aeb5e1c49128e4f320eaa579573fe41551f459e3064a02009f21ff902b414642"
+    },
+    {
+      "original": "src/application/ViewProduct.fxml",
+      "destination": "src/main/resources/application/ViewProduct.fxml",
+      "originalSha256": "25fa9be0aaad4f4c7afb58972db75a073eba01357412854f3a24cd50c7b71c37",
+      "recoveredSha256": "b2f5a1fa76e6b0d97160024b5cad3ecb8a8357cefc03f91122282bfe56a4ee75"
+    },
+    {
+      "original": "src/application/ViewProductController.java",
+      "destination": "src/main/java/application/ViewProductController.java",
+      "originalSha256": "cce6ac6d257edac091b85affced085d8670a9e317f03922d3ffdfe6423e28be6",
+      "recoveredSha256": "5ba79e64dcca3996e382cc0e5784685085c7bc554f691864bb740aad312fae1b"
+    },
+    {
+      "original": "src/application/ViewSalesOrder.fxml",
+      "destination": "src/main/resources/application/ViewSalesOrder.fxml",
+      "originalSha256": "5651236d2e89a1b2e30968630a84c4d135ee23bb8ba7a918e6f03489322ef2bc",
+      "recoveredSha256": "9a09466199bbfea36ceff43f305590ea76e2124a05a3b6f1afa9ca86042a28db"
+    },
+    {
+      "original": "src/application/ViewSalesOrderController.java",
+      "destination": "src/main/java/application/ViewSalesOrderController.java",
+      "originalSha256": "20e0c9b7c941e674295b42da2a7c1f92412f1401a6b14c37b6e15acb236dd033",
+      "recoveredSha256": "8c255b634a4aacdcfd4fa8cf2895341f9e7c79dbc1abbda3c73ba9b02870c47c"
+    },
+    {
+      "original": "src/application/ViewSupplierShipments.fxml",
+      "destination": "src/main/resources/application/ViewSupplierShipments.fxml",
+      "originalSha256": "50cbba1e942cf813a5a3d51f5f1b8b1ecb2192b442eabc748360d88e79b15546",
+      "recoveredSha256": "cab34c129b250cf8e8da894cd7e1190afaf86a7e72ac2700ac61dbf6802b6389"
+    },
+    {
+      "original": "src/application/ViewSupplierShipmentsController.java",
+      "destination": "src/main/java/application/ViewSupplierShipmentsController.java",
+      "originalSha256": "d96dd2115f8ec7bb054021c490a18247b5e16e0ee2a80b6f2d5ae2ed653df222",
+      "recoveredSha256": "8496cb2ad9355263a1140eb5cec07c9f1908d85ecff8040ca00c389c93f607af"
+    },
+    {
+      "original": "src/application/ViewWarehouse.fxml",
+      "destination": "src/main/resources/application/ViewWarehouse.fxml",
+      "originalSha256": "af04eeeb302794143146a3d3938bd98d3c1bd3f4cb8d9b91c6a10f4fa8cbee75",
+      "recoveredSha256": "76215abd01d8cced93d27cc9c4eb42f0b0159f73871ee2e6100d2783e931ae9c",
+      "formatting": "Normalize trailing whitespace / XML indentation only; no business change"
+    },
+    {
+      "original": "src/application/ViewWarehouseController.java",
+      "destination": "src/main/java/application/ViewWarehouseController.java",
+      "originalSha256": "b717e2b00b425c7118d86b970876d270564691fb3657b069c80c16b35a1095ce",
+      "recoveredSha256": "43f5902b8a9b8ebf4cca5256ad62e8cdd2670115222d686e4a555bfdba609bdc"
+    },
+    {
+      "original": "src/application/Warehouse.java",
+      "destination": "src/main/java/application/Warehouse.java",
+      "originalSha256": "0cce2f5a53a7e535e95b2ad85701eed242e4655906998d5dc5c3883e936accfe",
+      "recoveredSha256": "5f2139ffb26089abb8ea0931aa562a2ed521647ee5418f59bf08ad6eaf5d4664"
+    },
+    {
+      "original": "src/application/WarehouseDAO.java",
+      "destination": "src/main/java/application/WarehouseDAO.java",
+      "originalSha256": "7c06eecb928a9139d16e055b8f971849ade7cc77da815fa167b3c6892b069f9d",
+      "recoveredSha256": "c351eebb764644cd7689251054b5a88bbe51fde5e9cf8db079176596103c0a71"
+    },
+    {
+      "original": "src/application/WarehouseProductRow.java",
+      "destination": "src/main/java/application/WarehouseProductRow.java",
+      "originalSha256": "7c9762c5dce3a43f353752b14703e27196986e334433c3496067eab5f9db05e0",
+      "recoveredSha256": "6d74b1a4c0bfd32a6f79a5d9d7463b4cad7de72bb87ffe5059597e07b35c78ec"
+    },
+    {
+      "original": "src/application/Warehouses.fxml",
+      "destination": "src/main/resources/application/Warehouses.fxml",
+      "originalSha256": "25ec60670360c6003b2e9fd31f52838cf8b1f3282e7b8df9a5efce8a83d6cfd5",
+      "recoveredSha256": "25ec60670360c6003b2e9fd31f52838cf8b1f3282e7b8df9a5efce8a83d6cfd5"
+    },
+    {
+      "original": "src/application/WarehousesController.java",
+      "destination": "src/main/java/application/WarehousesController.java",
+      "originalSha256": "e043c55763a5073b08dd7e683b07ace99eeaeaa519cd13630de24123e8e7a64e",
+      "recoveredSha256": "28a52f4cd788720b2ae2f477b0bbd122f3a58d201302b4119774d88982d57a82",
+      "changes": "Prefer packaged icon; business logic unchanged"
+    },
+    {
+      "original": "src/application/WarehouseViewDAO.java",
+      "destination": "src/main/java/application/WarehouseViewDAO.java",
+      "originalSha256": "f0c0f9ceec09aba8d3e84c1f901f9bff2fac97e6ab0a18edcd9c0e3f96060e60",
+      "recoveredSha256": "21acc393503ecbdf83ddb470c4a134cbb1c59c13339e8a16422eceef95fb6f3e"
+    },
+    {
+      "original": "src/application/WorkerDAO.java",
+      "destination": "src/main/java/application/WorkerDAO.java",
+      "originalSha256": "a515d443a3ae930008e27e0130cd6b2cfbfb976d566922bb2201b7ebd6266eb3",
+      "recoveredSha256": "db7094db2d1812bb015e0b4040826de0e942513b226d2c649ddd3dff8ef1c56f"
+    },
+    {
+      "original": "src/application/WorkerRow.java",
+      "destination": "src/main/java/application/WorkerRow.java",
+      "originalSha256": "fd7318584661b9c2d76a09579f35ffd6b040682a28edaf8f9f655b8afacf58f7",
+      "recoveredSha256": "983c9e282c972c926b338b6547963a1b13b0d96bfdd1b9554876294f57d8f797"
+    }
+  ]
+}

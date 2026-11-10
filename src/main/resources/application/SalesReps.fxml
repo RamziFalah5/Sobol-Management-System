@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="910" prefHeight="650"
+	xmlns="http://javafx.com/javafx/23.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.SalesRepsController"
+	style="-fx-background-color:white;">
+
+	<Label layoutX="28" layoutY="24" text="Sales Representatives"
+		style="-fx-font-size:22px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" />
+
+	<TableView fx:id="table" layoutX="28" layoutY="70"
+		prefWidth="854" prefHeight="500"
+		style="-fx-background-radius:12; -fx-border-radius:12; -fx-border-color:#e8e8e8;">
+
+		<style>
+			.table-cell { -fx-alignment: CENTER; }
+		</style>
+
+		<columns>
+			<TableColumn fx:id="colImage" text="Photo" prefWidth="90" />
+			<TableColumn fx:id="colName" text="Name" prefWidth="240" />
+			<TableColumn fx:id="colPhone" text="Phone"
+				prefWidth="150" />
+			<TableColumn fx:id="colBranch" text="Branch"
+				prefWidth="160" />
+			<TableColumn fx:id="colRate" text="Daily Rate"
+				prefWidth="110" />
+			<TableColumn fx:id="colCommission" text="Commission %"
+				prefWidth="120" />
+			<TableColumn fx:id="colHire" text="Hire Date"
+				prefWidth="120" />
+		</columns>
+	</TableView>
+
+	<HBox layoutX="28" layoutY="585" spacing="10">
+		<Button fx:id="btnAnchor" text="Edit" onAction="#onEdit"
+			style="-fx-background-color:#f7931e; -fx-text-fill:white; -fx-background-radius:10;" />
+		<Button text="Delete" onAction="#onDelete"
+			style="-fx-background-color:#C62828; -fx-text-fill:white; -fx-background-radius:10;" />
+		<Button text="View" onAction="#onView"
+			style="-fx-background-color:#1E88E5; -fx-text-fill:white; -fx-background-radius:10;" />
+		<Button text="Attendance" onAction="#onAttendance"
+			style="-fx-background-color:#2E7D32; -fx-text-fill:white; -fx-background-radius:10;" />
+	</HBox>
+
+</AnchorPane>
