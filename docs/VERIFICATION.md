@@ -38,3 +38,22 @@ The owner confirmed that MySQL development accounts/environment are not prepared
 | `-Pdb-setup test-compile exec:java` without rotation confirmation | EXPECTED BUILD FAILURE at the same named confirmation, before a JDBC connection or DDL. Initial command exposed a test-tool entry-point visibility error; making the tooling class public corrected it, and the repeated command reached the intended safety guard. |
 
 The negative profile invocation explicitly removes rotation confirmation from its child process; it cannot proceed to network access even if other environment values later become available. Integration assertions were not loosened to hide original defects. Original DBAuth/DAO/Model/Controller and main resources remain unchanged. All new database tooling and SQL are in test scope and are excluded from the application JAR. See DEVELOPMENT-DATABASE.md for commands, synthetic data, limitations and the remaining live Phase 2 acceptance steps.
+
+## Phase 3A — first functional repairs, 2026-11-10
+
+Started on a clean `main` at `a34abdbe2b96c68cd1477ed3974e82f48c5a288e`, matching remote main. The authorized application changes are limited to DailyAttendance.fxml and DailyAttendanceController, CategoryController, EditCategoryController and AddProductController. All DAOs, DBAuth, models, historical migration and database tooling remain unchanged. Historical Eclipse sources/private backups were not modified.
+
+| Check | Actual result |
+| --- | --- |
+| `mvnw.cmd -B -ntp clean verify` | PASS: 17 tests, 0 failures/errors/skips; includes 3 new ControllerRepairContractTest cases. All 101 application sources compile. |
+| `mvnw.cmd -B -ntp -Pdesktop-smoke verify` | PASS: 32 tests, 0 failures/errors/skips; includes the existing sign-in startup smoke and all 14 new ControllerRepairsDesktopTest cases. |
+| Daily attendance | Actual FXML loads the daily controller with all injections. Synthetic existing false/true/null states become false/true/true. A rendered checkbox is toggled and the correct rows/date reach the synthetic save boundary. Save success/failure and cancel paths are exercised. |
+| Category editing | Actual category card selection handler and Edit button load the actual editor FXML with ID/name/description. Save retains ID 42 despite later synthetic session/model/display changes to ID 99. Missing/stale selection, invalid initialization, null description, blank/duplicate names, persistence-failure response and cancel are exercised. |
+| Initial product warehouse | Actual AddProduct.fxml/controller initialize with synthetic branches; initial warehouse selection, changing branches, empty/null branches, no branches, failed lookup and stale/out-of-list values are exercised before product persistence. |
+| Isolation | Surefire keeps SOBOL_DB_ENABLED=false. Tests override only package-visible DAO/UI boundaries with artificial data; no MySQL connection, setup/import or SQL write was performed. The 17 real MySQL IT methods were not invoked. |
+
+The first desktop run exposed a test-fixture setup error: Category.fxml's ScrollPane content was not attached to the Scene until its skin/layout was initialized. The fixture now applies CSS/layout and asserts scene attachment before navigation. The original assertions remain intact; the complete repeated desktop run passes.
+
+Desktop output includes the existing JavaFX unnamed-module warning and the deliberately injected `Synthetic warehouse lookup failure` stack trace from the original error handler. That artificial error verifies clearing stale state and produces no test failure. These are not MySQL errors. The default build remains display-free; graphical tests are explicitly enabled by desktop-smoke, which uses separate JVMs to preserve JavaFX lifecycle isolation for the existing startup test and the new controller tests.
+
+Verification stops at the controller-to-DAO boundary for repaired CRUD flows. Real attendance save, category duplicate/update queries, product inserts/capacity queries and complete return-screen data reloads require the isolated development database. The outstanding Phase 2 live setup/credential-rotation requirements remain; no database-backed behavior is claimed as verified. CategoryDAO's zero-affected-row success defect is explicitly still open.

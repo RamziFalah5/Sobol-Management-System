@@ -5,25 +5,25 @@
 <AnchorPane prefWidth="910" prefHeight="650"
 	xmlns="http://javafx.com/javafx/23.0.1"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="application.DriverAttendanceController"
+	fx:controller="application.DailyAttendanceController"
 	style="-fx-background-color:white;">
 
-	<Label layoutX="28" layoutY="24" text="Driver Attendance"
+	<Label layoutX="28" layoutY="24" text="Daily Worker Attendance"
 		style="-fx-font-size:22px; -fx-text-fill:#f7931e; -fx-font-weight:bold;" />
 
-	<TableView fx:id="table" layoutX="28" layoutY="70"
-		prefWidth="854" prefHeight="500">
+	<Label fx:id="lblDate" layoutX="28" layoutY="52" />
+
+	<TableView fx:id="table" layoutX="28" layoutY="80"
+		prefWidth="854" prefHeight="490" editable="true">
 		<columns>
-			<TableColumn fx:id="colName" text="Name" prefWidth="420" />
-			<TableColumn fx:id="colBranch" text="Branch"
-				prefWidth="240" />
+			<TableColumn fx:id="colName" text="Name" prefWidth="660" editable="false" />
 			<TableColumn fx:id="colPresent" text="Present"
 				prefWidth="180" />
 		</columns>
 	</TableView>
 
 	<HBox layoutX="28" layoutY="585" spacing="10">
-		<Button fx:id="btnAnchor" text="Save" onAction="#onSave"
+		<Button fx:id="btnSave" text="Save" onAction="#onSave"
 			style="-fx-background-color:#2E7D32; -fx-text-fill:white; -fx-pref-width:120; -fx-background-radius:10;" />
 		<Button text="Cancel" onAction="#onCancel"
 			style="-fx-background-color:#C62828; -fx-text-fill:white; -fx-pref-width:120; -fx-background-radius:10;" />

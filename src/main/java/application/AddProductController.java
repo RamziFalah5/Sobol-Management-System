@@ -11,6 +11,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.List;
 
 public class AddProductController {
 
@@ -30,21 +31,35 @@ public class AddProductController {
 
 	@FXML
 	public void initialize() {
-		loadBranches();
-
+		clearWarehouses();
 		cbBranch.valueProperty().addListener((obs, oldB, newB) -> {
+			clearWarehouses();
 			if (newB == null) {
-				cbWarehouse.getItems().clear();
-				cbWarehouse.setValue(null);
 				return;
 			}
 			loadWarehouses(newB.getBranchId());
 		});
+		loadBranches();
+	}
+
+	private void clearWarehouses() {
+		cbWarehouse.getSelectionModel().clearSelection();
+		cbWarehouse.setValue(null);
+		cbWarehouse.getItems().clear();
+		cbWarehouse.setDisable(true);
+	}
+
+	List<Branch> getBranches() {
+		return BranchDAO.getAllBranches();
+	}
+
+	List<Warehouse> getWarehouses(int branchId) {
+		return WarehouseDAO.getWarehousesByBranch(branchId);
 	}
 
 	private void loadBranches() {
 		try {
-			cbBranch.setItems(FXCollections.observableArrayList(BranchDAO.getAllBranches()));
+			cbBranch.setItems(FXCollections.observableArrayList(getBranches()));
 			cbBranch.setCellFactory(list -> new ListCell<>() {
 				@Override
 				protected void updateItem(Branch b, boolean empty) {
@@ -72,8 +87,9 @@ public class AddProductController {
 	private void loadWarehouses(int branchId) {
 		try {
 			ObservableList<Warehouse> ws = FXCollections
-					.observableArrayList(WarehouseDAO.getWarehousesByBranch(branchId));
+					.observableArrayList(getWarehouses(branchId));
 			cbWarehouse.setItems(ws);
+			cbWarehouse.setDisable(ws.isEmpty());
 
 			cbWarehouse.setCellFactory(list -> new ListCell<>() {
 				@Override
@@ -126,6 +142,10 @@ public class AddProductController {
 		Warehouse w = cbWarehouse.getValue();
 		if (w == null) {
 			alert("Validation", "No warehouse available for this branch.");
+			return;
+		}
+		if (w.getBranchId() != b.getBranchId() || !cbWarehouse.getItems().contains(w)) {
+			alert("Validation", "Please select a warehouse for this branch.");
 			return;
 		}
 
@@ -236,7 +256,7 @@ public class AddProductController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);

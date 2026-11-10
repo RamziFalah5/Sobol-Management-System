@@ -1,15 +1,13 @@
 # Original defects and unavailable functionality
 
-These defects exist in the original source; recovery does not silently repair their business behavior.
+Outstanding original defects are listed below. Verified Phase 3A repairs are recorded separately with their verification boundary.
 
 | Area | Original evidence | Impact / verification boundary |
 | --- | --- | --- |
-| Daily attendance | DailyAttendance.fxml names DriverAttendanceController | Daily-worker navigation uses driver data/behavior. |
-| Category edit | CategoryController.editCategory() does not call setCategory(); CategoryDAO ignores affected-row count | Selection is not passed; apparent success may update no row. |
+| Category persistence | CategoryDAO.updateCategory() ignores affected-row count | A selected category deleted before saving can still produce apparent success; the Phase 3A form/ID repair does not change this DAO behavior. |
 | Shipment form | AddShipment.fxml lacks rbCash/rbCredit/cbMethod; onSave dereferences cbMethod | Save cannot complete without a separate approved fix. |
 | Global search | System.fxml lacks searchField; onSearchClicked reads it | Null dereference. |
 | Logout | ControllerSystem.logout() is empty | No logout behavior. |
-| Product entry | AddProductController selects first branch before installing its warehouse listener | Initial warehouse list is not populated automatically. |
 | Attendance | Driver/Sales attendance initialize all present and save per row; hourly cells accumulate listeners | Existing absence can be overwritten; partial saves/row cross-updates are possible. |
 | Stock concurrency | SalesDAO/ShipmentDAO read quantities without row locks, then set an absolute value | Transaction exists but lost updates/overselling are possible. |
 | Capacity | ProductDAO checks capacity separately from writes; warehouse edits use stale UI deltas | Concurrent writes and aggregate drift are possible. |
@@ -22,6 +20,16 @@ These defects exist in the original source; recovery does not silently repair th
 | View/social actions | Multiple worker View actions are placeholders; social buttons have no handlers | Do not present these as completed features. |
 
 Recovery-only resource substitutions are listed in RECOVERY.md and the provenance manifest. They are not business fixes. Database-backed runtime behavior remains unverified until a separately authorized isolated schema and synthetic fixtures are prepared.
+
+## Verified Phase 3A repairs — 2026-11-10
+
+| Original defect | Repair | Verified evidence and remaining boundary |
+| --- | --- | --- |
+| DailyAttendance.fxml used DriverAttendanceController, driver fields and title; the intended daily controller requires lblDate/btnSave and editable Boolean cells. | Bind DailyAttendanceController; provide its date/save fields and Name/Present columns; enable checkbox editing. Preserve GeneralWorkerDAO daily-worker source, existing attendance restoration, missing-record default present, loaded date and AttendanceDAO.saveDaily batch delegate. | Real FXMLLoader/JavaFX tests verify saved absence/presence/default, a rendered checkbox changing DailyAttendanceRow, save-date/row handoff, failure staying on screen and cancel without saving. Actual MySQL persistence is unverified. |
+| CategoryController.editCategory() opened EditCategory.fxml without passing the selected Category. | Load the editor with an FXMLLoader instance and call setCategory before displaying it. Require a valid selection from loaded categories; reject a stale session-only ID. EditCategoryController rejects uninitialized/invalid targets, captures the selected ID and normalizes nullable description. | Real FXML tests verify selection-to-form navigation, prefilled values, retained ID even if session/model/display ID changes afterward, blank/duplicate validation, save failure and cancel. CategoryDAO remains unchanged; live SQL and the affected-row defect remain unverified/unfixed. |
+| AddProductController selected its first branch before installing the warehouse listener and could retain a previous warehouse after lookup failure. | Install the listener first, clear/disable warehouse state before loading another branch, select the first available warehouse, leave empty/null/failed branches unselected, and reject an out-of-branch or unloaded warehouse before persistence. | Real FXML tests verify initial selection, branch changes, empty/null branches, zero branches, lookup failure and stale values. Existing numerical/stock/capacity validation and ProductDAO are unchanged. No product database write was executed. |
+
+Package-visible DAO/UI delegates permit synthetic controller tests without enabling DBAuth or changing application architecture. Default delegates still call the original static DAOs. The desktop profile runs test classes in separate JVMs because JavaFX cannot restart after Platform.exit. No original test was removed, weakened or disabled; the new graphical tests join the existing opt-in desktop profile, and new display-free contracts run in ordinary verification.
 
 ## Phase 2 database investigation (static evidence; no live defect reproduction)
 

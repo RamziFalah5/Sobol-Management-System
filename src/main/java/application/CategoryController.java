@@ -51,7 +51,7 @@ public class CategoryController {
 
 	// ================= LOAD =================
 	private void loadCategories() {
-		categoryList.setAll(CategoryDAO.getAllCategories());
+		categoryList.setAll(getCategories());
 
 		lblStats.setText(categoryList.size() + " categories");
 		lblEmpty.setVisible(categoryList.isEmpty());
@@ -267,11 +267,28 @@ public class CategoryController {
 
 	@FXML
 	private void editCategory() {
-		if (selectedCategory == null && !CategorySession.hasSelectedCategory()) {
+		if (selectedCategory == null || selectedCategory.getId() <= 0) {
 			showInfo("Edit Category", "Please select a category first (Right-click to select).");
 			return;
 		}
-		loadView("EditCategory.fxml");
+		try {
+			FXMLLoader loader = createViewLoader("EditCategory.fxml");
+			Parent view = loader.load();
+			EditCategoryController controller = loader.getController();
+			controller.setCategory(selectedCategory);
+			StackPane contentArea = (StackPane) categoryGrid.getScene().getRoot().lookup("#contentArea");
+			contentArea.getChildren().setAll(view);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	List<Category> getCategories() {
+		return CategoryDAO.getAllCategories();
+	}
+
+	FXMLLoader createViewLoader(String fxml) {
+		return new FXMLLoader(getClass().getResource(fxml));
 	}
 
 	private void openProducts() {
@@ -288,7 +305,7 @@ public class CategoryController {
 		}
 	}
 
-	private void showInfo(String title, String msg) {
+	void showInfo(String title, String msg) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(title);
 		a.setHeaderText(null);

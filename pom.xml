@@ -15,6 +15,8 @@
     <mysql.version>9.3.0</mysql.version>
     <junit.version>5.11.4</junit.version>
     <desktop.test.exclude>**/ApplicationStartupTest.java</desktop.test.exclude>
+    <controller.desktop.test.exclude>**/*DesktopTest.java</controller.desktop.test.exclude>
+    <test.reuse.forks>true</test.reuse.forks>
   </properties>
   <dependencies>
     <dependency><groupId>org.openjfx</groupId><artifactId>javafx-controls</artifactId><version>${javafx.version}</version></dependency>
@@ -40,7 +42,8 @@
         <groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.2.5</version>
         <configuration>
           <useModulePath>false</useModulePath>
-          <excludes><exclude>${desktop.test.exclude}</exclude></excludes>
+          <excludes><exclude>${desktop.test.exclude}</exclude><exclude>${controller.desktop.test.exclude}</exclude></excludes>
+          <reuseForks>${test.reuse.forks}</reuseForks>
           <environmentVariables><SOBOL_DB_ENABLED>false</SOBOL_DB_ENABLED></environmentVariables>
         </configuration>
       </plugin>
@@ -71,6 +74,10 @@
         <configuration><mainClass>application.DevDatabase</mainClass><classpathScope>test</classpathScope></configuration>
       </plugin></plugins></build>
     </profile>
-    <profile><id>desktop-smoke</id><properties><desktop.test.exclude>**/NoTestsExcluded.java</desktop.test.exclude></properties></profile>
+    <profile><id>desktop-smoke</id><properties>
+      <desktop.test.exclude>**/NoTestsExcluded.java</desktop.test.exclude>
+      <controller.desktop.test.exclude>**/NoTestsExcluded.java</controller.desktop.test.exclude>
+      <test.reuse.forks>false</test.reuse.forks>
+    </properties></profile>
   </profiles>
 </project>

@@ -11,17 +11,26 @@ public class EditCategoryController {
     @FXML private TextField txtName;
     @FXML private TextArea txtDescription;
 
-    private int categoryId;
+    private int categoryId = -1;
 
     public void setCategory(Category c) {
+        categoryId = -1;
+        if (c == null || c.getId() <= 0) {
+            throw new IllegalArgumentException("A valid selected category is required.");
+        }
         this.categoryId = c.getId();
         lblCategoryId.setText(String.valueOf(c.getId()));
         txtName.setText(c.nameProperty().get());
-        txtDescription.setText(c.descriptionProperty().get());
+        txtDescription.setText(c.descriptionProperty().get() == null ? "" : c.descriptionProperty().get());
     }
 
     @FXML
     private void onSave() {
+
+        if (categoryId <= 0) {
+            showAlert("Validation", "Please select a category before editing.");
+            return;
+        }
 
         String name = txtName.getText().trim();
         String desc = txtDescription.getText().trim();
@@ -31,13 +40,13 @@ public class EditCategoryController {
             return;
         }
 
-        if (CategoryDAO.categoryNameExistsForEdit(name, categoryId)) {
+        if (nameExistsForEdit(name, categoryId)) {
             showAlert("Duplicate",
                     "Another category already uses this name.");
             return;
         }
 
-        if (CategoryDAO.updateCategory(categoryId, name, desc)) {
+        if (updateCategory(categoryId, name, desc)) {
             goBack();
         } else {
             showAlert("Error", "Failed to update category.");
@@ -49,7 +58,15 @@ public class EditCategoryController {
         goBack();
     }
 
-    private void goBack() {
+    boolean nameExistsForEdit(String name, int currentId) {
+        return CategoryDAO.categoryNameExistsForEdit(name, currentId);
+    }
+
+    boolean updateCategory(int id, String name, String description) {
+        return CategoryDAO.updateCategory(id, name, description);
+    }
+
+    void goBack() {
         try {
             Parent view = FXMLLoader.load(getClass().getResource("Category.fxml"));
             StackPane contentArea =
@@ -60,7 +77,7 @@ public class EditCategoryController {
         }
     }
 
-    private void showAlert(String title, String msg) {
+    void showAlert(String title, String msg) {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setTitle(title);
         a.setHeaderText(null);

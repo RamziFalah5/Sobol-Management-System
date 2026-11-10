@@ -41,8 +41,8 @@ public class DailyAttendanceController {
 
 	private void loadToday() {
 		list.clear();
-		for (GeneralWorkerRow w : GeneralWorkerDAO.getDailyWorkers()) {
-			Boolean existing = AttendanceDAO.getPresent(w.getEmployeeId(), today);
+		for (GeneralWorkerRow w : loadDailyWorkers()) {
+			Boolean existing = getRecordedPresence(w.getEmployeeId(), today);
 			boolean present = (existing == null) ? true : existing; // ✅ default حاضر
 			list.add(new DailyAttendanceRow(w.getEmployeeId(), w.getFullName(), present));
 		}
@@ -52,7 +52,7 @@ public class DailyAttendanceController {
 	@FXML
 	private void onSave(javafx.event.ActionEvent e) {
 		List<DailyAttendanceRow> rows = new ArrayList<>(list);
-		if (AttendanceDAO.saveDaily(today, rows)) {
+		if (persistDailyAttendance(today, rows)) {
 			alert("Saved", "Attendance saved for " + today + " (updated if existed).");
 			goBack();
 		} else {
@@ -65,7 +65,19 @@ public class DailyAttendanceController {
 		goBack();
 	}
 
-	private void goBack() {
+	List<GeneralWorkerRow> loadDailyWorkers() {
+		return GeneralWorkerDAO.getDailyWorkers();
+	}
+
+	Boolean getRecordedPresence(int employeeId, LocalDate date) {
+		return AttendanceDAO.getPresent(employeeId, date);
+	}
+
+	boolean persistDailyAttendance(LocalDate date, List<DailyAttendanceRow> rows) {
+		return AttendanceDAO.saveDaily(date, rows);
+	}
+
+	void goBack() {
 		try {
 			Parent view = FXMLLoader.load(getClass().getResource("DailyWorkers.fxml"));
 			StackPane content = (StackPane) btnSave.getScene().getRoot().lookup("#contentArea");
@@ -75,7 +87,7 @@ public class DailyAttendanceController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);

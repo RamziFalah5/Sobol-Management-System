@@ -45,3 +45,7 @@ No SQL dump, account/customer records, employee photos, local Eclipse configurat
 No original database is contacted, no dump is imported, and no development schema is provisioned during recovery verification. SQL compatibility was assessed statically against the supplied dump. Production operation, database integration, inventory concurrency, and complete feature acceptance remain unverified.
 
 See [VERIFICATION.md](VERIFICATION.md) for the checks actually executed and their results.
+
+## Approved functional repairs after recovery
+
+Phase 3A changes only DailyAttendance.fxml, DailyAttendanceController.java, CategoryController.java, EditCategoryController.java and AddProductController.java in the application tree. These are intentional repairs after the recovered baseline, documented in KNOWN-DEFECTS.md and verified in VERIFICATION.md. The recovery-provenance.json digests continue to describe the recovered Phase 1 snapshot; they are not rewritten to make later repairs look like untouched originals. Git records the approved changes relative to the pre-repair main commit a34abdbe2b96c68cd1477ed3974e82f48c5a288e. The private historical evidence remains outside the implementation workspace and was not changed.
