@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.StackPane;
 import java.io.IOException;
@@ -109,7 +110,9 @@ public class ControllerSystem {
 	}
 
 	private void loadPage(String fxmlFile, ToggleButton activeBtn) throws IOException {
-		Node view = FXMLLoader.load(getClass().getResource(fxmlFile));
+		Node view = isPageAvailable(fxmlFile)
+				? FXMLLoader.load(getClass().getResource(fxmlFile))
+				: new Label("This module is temporarily unavailable.");
 		contentArea.getChildren().setAll(view);
 
 		for (ToggleButton tb : new ToggleButton[] { btnDashboard, btnCategory, btnSales, btnImports, btnBranches,
@@ -124,6 +127,11 @@ public class ControllerSystem {
 			activeBtn.getStyleClass().add("nav-btn-active");
 			activeBtn.setSelected(true);
 		}
+	}
+
+	// Keep PostgreSQL master-data IDs out of unmigrated transactional/reporting workflows.
+	static boolean isPageAvailable(String page) {
+		return java.util.Set.of("Category.fxml", "Suppliers.fxml", "Customers.fxml").contains(page);
 	}
 
 }

@@ -66,7 +66,7 @@ class PostgresDatabaseTest {
         assertTrue(session.statementClosed); assertTrue(session.resultClosed); assertFalse(session.closed);
     }
     @Test void refusesWrongTargetIdentityPrivilegeTransportOrRoleMembershipAndClosesConnection() throws Exception {
-        for (int column : List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) {
+        for (int column : List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)) {
             var session = new Session(); session.values.put(column, column <= 5 ? "unexpected" : column != 10);
             var config = PostgresDatabase.configuration(env(), PostgresDatabase.Purpose.APPLICATION);
             safe(assertThrows(SQLException.class, () -> PostgresDatabase.open(config, (u, p) -> session.connection())));
@@ -103,6 +103,7 @@ class PostgresDatabaseTest {
     }
     static class Session {
         final Map<Integer, Object> values = new HashMap<>(Map.of(1, "sobol_dev", 2, "sobol", 3, "sobol_app", 4, "sobol_app", 5, "127.0.0.1", 6, false, 7, false, 8, false, 9, false, 10, true));
+        { values.put(11, false); values.put(12, false); values.put(13, false); }
         boolean closed, statementClosed, resultClosed, failClose, failMetadata;
         final Connection connection = proxy(Connection.class, (o, m, a) -> switch (m.getName()) {
             case "createStatement" -> proxy(Statement.class, (s, method, args) -> switch (method.getName()) {

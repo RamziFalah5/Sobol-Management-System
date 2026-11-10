@@ -34,6 +34,8 @@ Existing GitHub history previously contained embedded database credentials. Remo
 - [Original defects and unavailable features](docs/KNOWN-DEFECTS.md)
 - [Engineering/Git policy](AGENTS.md)
 
+Phase 6A migrates the three layered persistence slices to PostgreSQL, permits repeated Customer names and blocks navigation into unmigrated business workflows. Live PostgreSQL verification is pending an approved environment; see the target model and measured verification records. No legacy financial/inventory/HR workflow has been migrated.
+
 The recovered snapshot contained 101 original Java files and 53 FXML screens. Phase 3A repaired three UI workflows; Phases 4A/4B/4C replace CategoryDAO, SupplierDAO and CustomerDAO with layered services/repositories and independent domain models. Supplier shipment lookup and Customer sales selection use the new services; ShipmentDAO and SalesDAO transactions remain unchanged. Customer selection is detached before the sales handoff. Controllers/resource paths remain compatible, all 53 FXML files are retained, and historical evidence/provenance remains preserved. Other business modules retain their legacy implementation. `FieldAdministrators.fxml` was not found and was not reconstructed. Settings is an original static UI.
 
 Before every commit, run appropriate verification and review the complete staged tree:

@@ -1,12 +1,39 @@
-# Current direction ? PostgreSQL transition, Phase 6A
+# Current direction - PostgreSQL transition, Phase 6A
 
 The owner's Phase 6A decision supersedes the MySQL-specific architecture descriptions below. This section describes the current foundation; lower Phase 4 sections are retained historical design records, not current database setup instructions.
 
-PostgreSQL JDBC is the sole production database driver. PostgresDatabase is an explicit numeric-loopback/sobol_dev/sobol boundary, with verified TLS and dedicated identity/privilege checks. Retired DBAuth.get always throws before opening a connection. All legacy DAO/UI source is retained for coherent future migration; it cannot reach MySQL or borrow PostgreSQL connections. Existing login is not migrated and no bypass is added; this is not a production-ready functional cutover.
+PostgreSQL JDBC is the sole production database driver. PostgresDatabase is an explicit numeric-loopback/sobol_dev/sobol boundary, requiring certificate-verified TLS and dedicated identity/privilege checks. These checks are implemented and tested offline; no live TLS or privilege result is established. Retired DBAuth.get always throws before opening a connection. All legacy DAO/UI source is retained for coherent future migration; it cannot reach MySQL or borrow PostgreSQL connections. Existing login is not migrated and no bypass is added; this is not a production-ready functional cutover.
 
-Test-scoped PostgresMigrations delegates version/checksum/locking/DDL execution to Flyway only after a separate explicit migration approval. The owner creates the dedicated empty database/schema/roles only after a separately reviewed approval; no setup runs on startup or ordinary verify. V1 contains only three independent master-data tables. CategoryModule now supplies PostgresDatabase::get to the migrated Category repository; SupplierModule also now supplies PostgresDatabase::get; CustomerModule now supplies PostgresDatabase::get as well. Customer uses qualified sobol.customer SQL, exact uq_customer_email protocol conflicts and explicit identity-column retrieval; repeated names are allowed through schema/service/UI contracts and no DUPLICATE_NAME outcome remains. Supplier uses qualified sobol.supplier SQL, explicit generated-key column, structured uq_supplier_name conflicts and exactly one matched update row. Supplier -> shipment navigation is blocked with an unavailable notice; the legacy lookup/view implementations remain for later coherent migration. Category uses qualified sobol.category SQL, explicit identity column keys, structured 23505 classification and exactly one matched update row. Its Products action displays an unavailable notice instead of entering legacy inventory. No live persistence acceptance is claimed.
+Test-scoped PostgresMigrations delegates version/checksum/locking/DDL execution to Flyway only after a separate explicit migration approval. The owner prepares the dedicated empty database/schema/roles only after separately reviewed approval. Nothing runs on startup or ordinary verify. V1 contains three independent master-data tables.
+
+CategoryModule, SupplierModule and CustomerModule supply PostgresDatabase::get to their respective JDBC repositories. Each repository uses qualified sobol.* SQL, requests its exact identity column and requires one matched update row after a locking existence check. Duplicate classification uses SQLSTATE 23505 and structured schema/table/constraint identities. Category/Supplier enforce exact name uniqueness; Customer allows repeated names and enforces only exact non-null email uniqueness. All existing validation and safe failure/uncertain-commit handling remain. The actual available operations are create, list/read and update; no new delete UI/API was invented.
+
+Category -> Products and Supplier -> Shipments actions display unavailable notices. Legacy lookup/view source remains for later coherent migration; it cannot complete a PostgreSQL inventory/receiving/sales operation. No live persistence acceptance is claimed.
 
 See [POSTGRESQL-MODEL.md](POSTGRESQL-MODEL.md) for implemented-vs-deferred schema/ERD, design assumptions and full dependency closures; [POSTGRESQL-SETUP.md](POSTGRESQL-SETUP.md) for safety and owner preparation. Historical MySQL SQL/test machinery is non-executable reference under reference/mysql. Original business SQL is not mechanically translated to a redesigned stock schema.
+
+## Actual Phase 6A dependency graph
+
+```text
+JavaFX Category / Supplier / Customer CRUD forms
+    -> independent Application services -> Domain + Repository ports
+    <- Jdbc*Repository -> PostgresErrors (structured driver fields)
+Composition roots -> PostgresDatabase -> approved local PostgreSQL sobol_dev/sobol
+
+ControllerSystem -> three migrated pages
+                 -> unavailable status for all other sidebar modules
+Category -> Products: unavailable notice
+Supplier -> Shipments: unavailable notice
+Legacy DAOs / Controller1 authentication -> retired DBAuth -> always refuses
+
+Explicit test-scoped migration command -> guarded DataSource -> Flyway -> V1
+Explicit live IT command -> guard + version preflight -> synthetic CRUD + owned-ID cleanup
+Ordinary Maven / desktop verification -> both DB boundaries disabled
+```
+
+Only master-data persistence source contracts are migrated. Sign-in opens offline, but authentication/account creation and normal authenticated entry remain unavailable. There is no login bypass. Sales/customer-product handoff and shipment lookup/view code remain isolated legacy compatibility code tested with synthetic delegates; they are not active PostgreSQL transaction flows. No FXML, stylesheet, image, business money calculation, attendance default or legacy transactional SQL changed in Phase 6A.
+
+The historical Phase 4 descriptions below are retained as prior implementation records. Read the graph above and POSTGRESQL-MODEL.md as the current direction. No full PostgreSQL functional cutover or live acceptance is claimed.
 
 ---
 

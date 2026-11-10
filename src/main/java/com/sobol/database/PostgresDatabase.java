@@ -88,7 +88,23 @@ public final class PostgresDatabase {
                        has_database_privilege(current_user, current_database(), 'CREATE'),
                        has_schema_privilege(current_user, 'sobol', 'CREATE'),
                        EXISTS (SELECT 1 FROM pg_catalog.pg_auth_members WHERE member = r.oid),
-                       (SELECT ssl FROM pg_catalog.pg_stat_ssl WHERE pid = pg_backend_pid())
+                       (SELECT ssl FROM pg_catalog.pg_stat_ssl WHERE pid = pg_backend_pid()),
+                       has_database_privilege(current_user, current_database(), 'TEMP'),
+                       EXISTS (
+                           SELECT 1 FROM pg_catalog.pg_namespace n
+                           WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema'
+                             AND n.nspname <> 'sobol' AND has_schema_privilege(current_user, n.oid, 'CREATE')
+                       ),
+                       EXISTS (
+                           SELECT 1 FROM pg_catalog.pg_class o
+                           JOIN pg_catalog.pg_namespace n ON n.oid=o.relnamespace
+                           WHERE n.nspname !~ '^pg_' AND n.nspname <> 'information_schema'
+                             AND ((current_user='sobol_app' AND o.relowner=r.oid)
+                               OR (n.nspname <> 'sobol' AND CASE WHEN o.relkind IN ('r','p','v','m','f')
+                                 THEN has_table_privilege(current_user, o.oid, 'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER') ELSE false END)
+                               OR (current_user='sobol_app' AND n.nspname='sobol' AND CASE WHEN o.relkind IN ('r','p','v','m','f')
+                                 THEN has_table_privilege(current_user, o.oid, 'TRUNCATE,REFERENCES,TRIGGER') ELSE false END))
+                       )
                 FROM pg_catalog.pg_roles r WHERE r.rolname = current_user
                 """;
         try (Statement p = c.createStatement(); ResultSet r = p.executeQuery(sql)) {
@@ -96,6 +112,7 @@ public final class PostgresDatabase {
                     || !config.user.equals(r.getString(3)) || !config.user.equals(r.getString(4))
                     || !"127.0.0.1/32".equals(r.getString(5)) && !"127.0.0.1".equals(r.getString(5))
                     || r.getBoolean(6) || r.getBoolean(7) || r.getBoolean(9) || !r.getBoolean(10)
+                    || r.getBoolean(11) || r.getBoolean(12) || r.getBoolean(13)
                     || r.getBoolean(8) != (config.purpose == Purpose.MIGRATION) || r.next()) throw unavailable();
         }
     }

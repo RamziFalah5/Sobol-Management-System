@@ -6,4 +6,4 @@ Phase 6A supersedes the historical MySQL setup. Do not run db-setup/mysql-it or 
 - [PostgreSQL configuration, private preparation and separate approval gates](POSTGRESQL-SETUP.md)
 - [Actually executed verification](VERIFICATION.md)
 
-Only Category/Supplier/Customer are scheduled for persistence migration in this phase. Full application cutover is not complete; stock/sales/HR/security/reporting remain legacy and unavailable. No automatic migration runs on application startup. Owner confirmed PostgreSQL is not prepared: no connection, DDL, fixture or live IT is authorized/executed. Historical MySQL credential rotation remains unconfirmed and separately outstanding.
+Category/Supplier/Customer persistence contracts are migrated and verified offline in this phase. Full application cutover is not complete; stock/sales/HR/security/reporting remain legacy and unavailable. No automatic migration runs on application startup. Owner confirmed PostgreSQL is not prepared: no connection, DDL, fixture or live IT is authorized/executed. Historical MySQL credential rotation remains unconfirmed and separately outstanding.

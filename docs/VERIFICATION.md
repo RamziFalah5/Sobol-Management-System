@@ -177,7 +177,7 @@ The independently verified hardening was committed/pushed as d4365a9f2b72dbfe558
 
 DEVELOPMENT-DATABASE.md now records NOT EXECUTED on every one of the 25 IT rows and separates their intended evidence from measured results. The next owner action is private historical-credential rotation/revocation, followed by separate loopback accounts/new distinct credentials and least-privilege schema grants, with no historical default schema selected. Configure only a private process and require encrypted 127.0.0.1 transport; never paste secrets into chat. Schema-state/grant/TLS review and explicit approval for the existing 14-table V001 + tooling history operation must precede the setup confirmation. Partial/unknown destinations cannot be reset automatically. Phase 5A is stopped at that boundary; real MySQL acceptance remains incomplete.
 
-## Phase 6A foundation ? offline, 2026-11-10
+## Phase 6A foundation - offline, 2026-11-10
 
 Started clean main 8ba996702d838a785a2f2f30e13ca8ce18d5a479. Owner confirmed PostgreSQL is not prepared; continue implementation/offline tests only. No database connection, DDL, migration or live test was run. Historical MySQL rotation remains unconfirmed.
 
@@ -196,3 +196,85 @@ clean verify passes 140 tests with zero failures/errors/skips. Supplier JDBC 25,
 ## Phase 6A Customer slice
 
 clean verify passes 143 tests with zero failures/errors/skips. Customer JDBC 26, service 13 and architecture 6 pass. Old name-conflict assertions are deliberately replaced by same-name create/update identity assertions because the approved target design removes the flawed name uniqueness rule, not because a test was failing. The in-memory email rule now matches COLLATE C exact equality. Structured PostgreSQL protocol fields replace the MySQL diagnostic parser. All resource/rollback/missing/unchanged/duplicate-email tests remain; a new before/after recorded commit-response-loss regression verifies no retry and no rollback certainty claim. Ten live PostgreSQL methods compile and remain NOT EXECUTED. Desktop verify passes 196 tests with zero failures/errors/skips, including 17 Customer real-FXML methods.
+
+## Phase 6A final transition verification, 2026-11-10
+
+- Final clean verify: **145 tests**, zero failures/errors/skips; **118 production Java sources / 23 test-tooling sources** compile.
+- Final desktop-smoke verify: **199 tests**, zero failures/errors/skips. This includes startup 1, original controller repairs 20, Supplier 15, Customer 17 and new transition shell 1, in addition to offline contracts. Counts overlap; do not add 145 and 199.
+- Source contracts: Category JDBC/service/architecture 21/10/4; Supplier 25/11/5; Customer 26/13/6. All original safe resource, rollback and uncertain-commit scenarios remain. Assertions were updated only where the explicit PostgreSQL/name-policy contract differs.
+- New transition tests: only three migrated pages load operational Controllers; all other actual sidebar actions render unavailable status, without legacy dashboard initialization. Only three composition roots reference the PostgreSQL connection boundary. Authentication remains unmigrated, with no bypass.
+- Session guard adds effective TEMP, outside-schema CREATE, application ownership and selected excess/cross-schema table privilege rejection. Offline flags simulate all rejected results; the actual PostgreSQL catalog query remains NOT EXECUTED. Full owner grant review is still required, including cross-database/column/sequence/function/grant-option details not exhaustively proved by these checks.
+- Separate compiled jdeps checks pass for Category/Supplier/Customer/database. Inner layers have no JavaFX/JDBC/driver/legacy/persistence-boundary imports; Infrastructure uses java.sql and PostgreSQL infrastructure inward of presentation.
+- FXML/resource contracts pass across all 53 original screens, with only the documented original gaps. JAR contains 53 FXML and 16 approved PNGs, and no SQL migrations, historical text, live tooling/IT or local environment files. The driver/Flyway were resolved by Maven; Connector/J is absent from pom and the production dependency direction.
+- Byte comparison against the pre-phase commit verifies the six archived MySQL schema/tooling/test references are unchanged. Business DAO SQL, attendance defaults, all original FXML/CSS/images and recovery/resource provenance remain unchanged. Historical schema provenance digest is unchanged; only its resource path points to the non-executable reference.
+- All **13 PostgreSQL Integration Test methods compile and are NOT EXECUTED**; every method/result is listed in POSTGRESQL-SETUP.md. No Failsafe reports exist. No postgres-migrate/postgres-it command, SQL login, DDL, account creation, fixture or cleanup was executed. The decimal/timestamp case is a prepared JDBC/server probe, not a migrated money workflow; positive operational FK and concurrency coverage awaits the deferred entity closures.
+- Existing JavaFX unnamed-module warnings and the intentional synthetic warehouse lookup error remain expected. The earlier foundation fork class-loading error is documented above; subsequent clean/full desktop runs passed without skipping or weakening tests. Its underlying cause remains unconfirmed.
+
+The implementation and offline contracts are delivered; live PostgreSQL activation/acceptance and full functional cutover are **not complete**. The owner chose an unprepared environment and offline-only continuation. Do not run creation/migrations or tests until their separately documented approvals. Historical MySQL credential revocation remains independently outstanding.
+
+### Complete Phase 6A file inventory
+
+Paths are relative to the repository root. R100 means a byte-identical rename to non-executable reference, not deleted evidence. No private historical project was modified.
+
+| Git change | File / old -> new path |
+| --- | --- |
+| M | `.gitignore` |
+| M | `AGENTS.md` |
+| M | `README.md` |
+| M | `config/development.env.example` |
+| M | `docs/ARCHITECTURE.md` |
+| M | `docs/DEVELOPMENT-DATABASE.md` |
+| M | `docs/KNOWN-DEFECTS.md` |
+| A | `docs/POSTGRESQL-MODEL.md` |
+| A | `docs/POSTGRESQL-SETUP.md` |
+| M | `docs/RECOVERY.md` |
+| M | `docs/VERIFICATION.md` |
+| A | `docs/postgresql-migrations.json` |
+| R100 | `src/test/java/application/CorePersistenceIT.java` -> `docs/reference/mysql/CorePersistenceIT.java.txt` |
+| A | `docs/reference/mysql/DEVELOPMENT-DATABASE.md` |
+| R100 | `src/test/java/application/DevDatabase.java` -> `docs/reference/mysql/DevDatabase.java.txt` |
+| R100 | `src/test/java/application/DevDatabaseTest.java` -> `docs/reference/mysql/DevDatabaseTest.java.txt` |
+| A | `docs/reference/mysql/README.md` |
+| R100 | `src/test/java/application/StockReadBarrier.java` -> `docs/reference/mysql/StockReadBarrier.java.txt` |
+| R100 | `src/test/java/application/SyntheticFixture.java` -> `docs/reference/mysql/SyntheticFixture.java.txt` |
+| R100 | `src/test/resources/db/migration/V001__historical_schema.sql` -> `docs/reference/mysql/V001__historical_schema.sql.txt` |
+| M | `docs/schema-provenance.json` |
+| M | `pom.xml` |
+| M | `src/main/java/application/AddCustomerController.java` |
+| M | `src/main/java/application/CategoryController.java` |
+| M | `src/main/java/application/CategoryModule.java` |
+| M | `src/main/java/application/ControllerSystem.java` |
+| M | `src/main/java/application/CustomerModule.java` |
+| M | `src/main/java/application/DBAuth.java` |
+| M | `src/main/java/application/EditCustomerController.java` |
+| M | `src/main/java/application/SupplierModule.java` |
+| M | `src/main/java/application/SuppliersController.java` |
+| M | `src/main/java/com/sobol/category/infrastructure/JdbcCategoryRepository.java` |
+| M | `src/main/java/com/sobol/customer/application/CustomerException.java` |
+| M | `src/main/java/com/sobol/customer/application/CustomerRepository.java` |
+| M | `src/main/java/com/sobol/customer/infrastructure/JdbcCustomerRepository.java` |
+| A | `src/main/java/com/sobol/database/PostgresDatabase.java` |
+| A | `src/main/java/com/sobol/database/PostgresErrors.java` |
+| M | `src/main/java/com/sobol/supplier/infrastructure/JdbcSupplierRepository.java` |
+| M | `src/test/java/application/ControllerRepairsDesktopTest.java` |
+| M | `src/test/java/application/CustomerDesktopTest.java` |
+| M | `src/test/java/application/DBAuthTest.java` |
+| A | `src/test/java/application/PostgresTransitionContractTest.java` |
+| A | `src/test/java/application/PostgresTransitionDesktopTest.java` |
+| M | `src/test/java/application/SupplierDesktopTest.java` |
+| M | `src/test/java/com/sobol/category/CategoryArchitectureTest.java` |
+| M | `src/test/java/com/sobol/category/application/CategoryServiceTest.java` |
+| M | `src/test/java/com/sobol/category/infrastructure/JdbcCategoryRepositoryTest.java` |
+| M | `src/test/java/com/sobol/customer/CustomerArchitectureTest.java` |
+| M | `src/test/java/com/sobol/customer/application/CustomerServiceTest.java` |
+| M | `src/test/java/com/sobol/customer/infrastructure/JdbcCustomerRepositoryTest.java` |
+| A | `src/test/java/com/sobol/database/PostgresDatabaseTest.java` |
+| A | `src/test/java/com/sobol/database/PostgresErrorsTest.java` |
+| A | `src/test/java/com/sobol/database/PostgresMigrationPlanTest.java` |
+| A | `src/test/java/com/sobol/database/PostgresMigrations.java` |
+| A | `src/test/java/com/sobol/database/PostgresPersistenceIT.java` |
+| M | `src/test/java/com/sobol/supplier/SupplierArchitectureTest.java` |
+| M | `src/test/java/com/sobol/supplier/application/SupplierServiceTest.java` |
+| M | `src/test/java/com/sobol/supplier/infrastructure/JdbcSupplierRepositoryTest.java` |
+| A | `src/test/resources/db/postgresql/V1__reference_data.sql` |
+| M | `tools/review_staged.py` |

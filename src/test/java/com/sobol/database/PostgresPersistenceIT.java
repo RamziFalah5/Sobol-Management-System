@@ -7,6 +7,8 @@ import com.sobol.supplier.infrastructure.JdbcSupplierRepository;
 import com.sobol.customer.application.*;
 import com.sobol.customer.infrastructure.JdbcCustomerRepository;
 import java.sql.*;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -156,5 +158,63 @@ class PostgresPersistenceIT {
         } catch (SQLException failure) { throw PostgresDatabase.unavailable(); }
         assertEquals(CustomerException.Reason.NOT_FOUND,
                 assertThrows(CustomerException.class, () -> customers().updateCustomer(value.id(), unique(), "000", null, null, null, null)).reason());
+    }
+    @Test void databaseEnforcesRequiredLengthsAndIdentityWithoutInventedForeignKeys() throws SQLException {
+        try (Connection c = connection()) {
+            c.setAutoCommit(false);
+            try {
+                try (PreparedStatement p = c.prepareStatement("INSERT INTO sobol.category(name) VALUES (?)")) {
+                    p.setString(1, " "); rejected(c, p, "23514");
+                    p.setString(1, "x".repeat(151)); rejected(c, p, "22001");
+                    p.setNull(1, Types.VARCHAR); rejected(c, p, "23502");
+                }
+                try (PreparedStatement p = c.prepareStatement("INSERT INTO sobol.category(category_id, name) VALUES (-1, ?)")) {
+                    p.setString(1, unique()); rejected(c, p, "428C9");
+                }
+                try (Statement p = c.createStatement(); ResultSet r = p.executeQuery("""
+                        SELECT count(*) FROM pg_catalog.pg_constraint c
+                        JOIN pg_catalog.pg_namespace n ON n.oid=c.connamespace
+                        WHERE n.nspname='sobol' AND c.contype='f'
+                        """)) {
+                    assertTrue(r.next()); assertEquals(0, r.getInt(1)); // Operational FK entities are deferred, not fabricated.
+                }
+            } finally { c.rollback(); } // Even a wrongly accepted invalid write cannot persist.
+        } catch (SQLException failure) { throw PostgresDatabase.unavailable(); }
+    }
+    private void rejected(Connection c, PreparedStatement p, String state) throws SQLException {
+        Savepoint before = c.setSavepoint();
+        try { assertEquals(state, assertThrows(SQLException.class, p::executeUpdate).getSQLState()); }
+        finally { c.rollback(before); c.releaseSavepoint(before); }
+    }
+    @Test void failingSecondStatementRollsBackTheFirstSyntheticWrite() throws SQLException {
+        int id;
+        try (Connection c = connection()) {
+            c.setAutoCommit(false);
+            try {
+                try (PreparedStatement p = c.prepareStatement("INSERT INTO sobol.category(name) VALUES (?)", new String[]{"category_id"})) {
+                    p.setString(1, unique()); assertEquals(1, p.executeUpdate());
+                    try (ResultSet r = p.getGeneratedKeys()) {
+                        assertTrue(r.next()); id = r.getInt(1); remember("category", id, id);
+                    }
+                    p.setString(1, " "); assertEquals("23514", assertThrows(SQLException.class, p::executeUpdate).getSQLState());
+                }
+            } finally { c.rollback(); }
+            try (PreparedStatement p = c.prepareStatement("SELECT 1 FROM sobol.category WHERE category_id=?")) {
+                p.setInt(1, id); try (ResultSet r = p.executeQuery()) { assertFalse(r.next()); }
+            }
+        } catch (SQLException failure) { throw PostgresDatabase.unavailable(); }
+    }
+    @Test void postgresDecimalAndTimestampProbeUsesExactJdbcTypes() throws SQLException {
+        var value = category(unique());
+        try (Connection c = connection(); PreparedStatement p = c.prepareStatement("""
+                SELECT CAST(? AS numeric(18,2)) + CAST(? AS numeric(18,2)), created_at
+                FROM sobol.category WHERE category_id=?
+                """)) {
+            p.setBigDecimal(1, new BigDecimal("0.10")); p.setBigDecimal(2, new BigDecimal("0.20")); p.setInt(3, value.id());
+            try (ResultSet r = p.executeQuery()) {
+                assertTrue(r.next()); assertEquals(new BigDecimal("0.30"), r.getBigDecimal(1));
+                assertNotNull(r.getObject(2, OffsetDateTime.class));
+            }
+        } catch (SQLException failure) { throw PostgresDatabase.unavailable(); }
     }
 }
