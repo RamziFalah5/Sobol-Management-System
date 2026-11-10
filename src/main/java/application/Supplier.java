@@ -2,7 +2,13 @@ package application;
 
 import javafx.beans.property.*;
 
+/** Detached mutable JavaFX view state. Supplier business invariants live in the domain/service. */
 public class Supplier {
+
+	public static Supplier fromDomain(com.sobol.supplier.domain.Supplier supplier) {
+		var d = supplier.details();
+		return new Supplier(supplier.id(), d.name(), d.phone(), d.email(), d.city(), d.address(), d.contactPerson(), d.notes());
+	}
 
 	private final IntegerProperty supplierId = new SimpleIntegerProperty();
 	private final StringProperty name = new SimpleStringProperty();

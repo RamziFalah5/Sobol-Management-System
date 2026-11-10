@@ -1,6 +1,6 @@
 # Original defects and unavailable functionality
 
-Outstanding original defects are listed below. Verified Phase 3A/4A changes are recorded separately with their verification boundaries.
+Outstanding original defects are listed below. Verified Phase 3A/4A/4B changes are recorded separately with their verification boundaries.
 
 | Area | Original evidence | Impact / verification boundary |
 | --- | --- | --- |
@@ -50,3 +50,11 @@ The owner has not prepared isolated database accounts. Integration infrastructur
 | Medium | V001: product.branch_id and product.warehouse_id have separate FKs; employee.managed_branch_id has no FK; user_database.user_id has no FK. | FK-valid rows can still violate intended cross-field/domain consistency; orphan metadata is structurally permitted. Preserve historical DDL now; agree on intended invariants before adding constraints. |
 
 The empty-warehouse COUNT(*) defect still has an enabled correct-behavior Integration Test. The nonexistent-category regression remains enabled through the Phase 4A service/repository replacement described above; its historical tag does not exclude it. See DEVELOPMENT-DATABASE.md for coverage, unexecuted scenarios and setup prerequisites. No live MySQL pass/fail claim is made.
+
+## Phase 4B Supplier replacement — implemented and verified offline
+
+Original SupplierDAO.getAllSuppliers() returned an empty/partial list after errors; nameExists/nameExistsForEdit returned false after errors, and boolean writes collapsed duplicate/storage outcomes. updateSupplier required a positive affected count, conflating an unchanged existing record with failure in changed-row mode. Add/Edit duplicated validation and did not enforce schema lengths before writing.
+
+The production replacement uses SupplierService/JdbcSupplierRepository for all prior DAO consumers, including AddShipmentController lookup and the retained combined Supplier/Customer Integration Test. SupplierDAO is removed. Validation is centralized, preserves the historical email regex and optional-null behavior, and checks all schema lengths without new phone/email uniqueness rules. Locked existence verification distinguishes missing from unchanged updates; UNIQUE conflicts and storage failures produce distinct safe typed feedback. Selection IDs are captured independently of mutable display state. Evidence: 10 service/domain, 16 scripted JDBC, 4 architecture/mapping and 15 real-FXML tests pass. Existing Category tests remain unchanged and pass.
+
+These are offline-verified application/JDBC-call contracts, not live server results. Three additional Supplier IT cases compile; all 22 live methods remain unexecuted. Supplier rows with invalid historical contact data produce an explicit storage error and are not auto-repaired. No schema/data migration occurred. ViewSupplierShipmentsController still uses unchanged ShipmentDAO reads, whose silent failure/empty results and separate count/total snapshots remain legacy debt. AddShipment's missing payment/method controls and save defect remain outstanding; only Supplier lookup compatibility was migrated and tested. Stock/capacity, authentication and unrelated defects above are unchanged.

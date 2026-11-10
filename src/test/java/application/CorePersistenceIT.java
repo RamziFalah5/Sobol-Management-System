@@ -2,6 +2,7 @@ package application;
 
 import org.junit.jupiter.api.*;
 import com.sobol.category.application.CategoryException;
+import com.sobol.supplier.application.SupplierException;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
@@ -87,11 +88,12 @@ class CorePersistenceIT {
     }
 
     @Test void supplierAndCustomerDaoRoundTripsAndUniqueEmail() throws Exception {
-        var supplier = new SupplierDAO.SupplierFormData();
-        supplier.name = f.prefix + "_supplier"; supplier.phone = "0000000000";
-        supplier.email = f.prefix + "_updated_supplier@example.invalid";
-        assertTrue(SupplierDAO.updateSupplier(f.supplier, supplier));
-        assertTrue(SupplierDAO.getAllSuppliers().stream().anyMatch(s -> s.getSupplierId() == f.supplier && supplier.email.equals(s.getEmail())));
+        var suppliers = SupplierModule.service();
+        String supplierEmail = f.prefix + "_updated_supplier@example.invalid";
+        var supplier = suppliers.updateSupplier(f.supplier, f.prefix + "_supplier", "0000000000",
+                supplierEmail, null, null, null, null);
+        assertEquals(f.supplier, supplier.id());
+        assertTrue(suppliers.listSuppliers().stream().anyMatch(s -> s.id() == f.supplier && supplierEmail.equals(s.details().email())));
         var customer = new CustomerDAO.CustomerFormData();
         customer.fullName = f.prefix + "_customer"; customer.phone = "0000000000";
         customer.email = f.prefix + "_updated_customer@example.invalid";
@@ -100,6 +102,37 @@ class CorePersistenceIT {
         customer.fullName = f.prefix + "_duplicate_email";
         assertFalse(CustomerDAO.insertCustomer(customer));
         assertTrue(CustomerDAO.emailExists(customer.email));
+    }
+
+    @Test void unchangedExistingSupplierUpdateSucceeds() {
+        var service = SupplierModule.service();
+        var supplier = service.listSuppliers().stream().filter(s -> s.id() == f.supplier).findFirst().orElseThrow();
+        var d = supplier.details();
+        assertEquals(supplier, service.updateSupplier(supplier.id(), d.name(), d.phone(), d.email(), d.city(), d.address(), d.contactPerson(), d.notes()));
+    }
+
+    @Test void supplierCreationNullMappingAndUniqueConflictsUseTheNewRepository() throws Exception {
+        var service = SupplierModule.service();
+        var created = service.createSupplier(f.prefix + "_created_supplier", "0000000000", " ", null, null, null, null);
+        try {
+            assertEquals(created, service.listSuppliers().stream().filter(s -> s.id() == created.id()).findFirst().orElseThrow());
+            assertEquals(1, f.integer("SELECT COUNT(*) FROM supplier WHERE supplier_id=? AND email IS NULL AND city IS NULL AND address IS NULL AND contact_person IS NULL AND notes IS NULL", created.id()));
+            assertEquals(SupplierException.Reason.DUPLICATE_NAME, assertThrows(SupplierException.class,
+                    () -> service.createSupplier(created.details().name(), "000", null, null, null, null, null)).reason());
+            var existing = service.listSuppliers().stream().filter(s -> s.id() == f.supplier).findFirst().orElseThrow();
+            assertEquals(SupplierException.Reason.DUPLICATE_NAME, assertThrows(SupplierException.class,
+                    () -> service.updateSupplier(created.id(), existing.details().name(), "000", null, null, null, null, null)).reason());
+            assertEquals(created, service.listSuppliers().stream().filter(s -> s.id() == created.id()).findFirst().orElseThrow());
+        } finally { f.update("DELETE FROM supplier WHERE supplier_id=?", created.id()); }
+    }
+
+    @Test void deletedSupplierUpdateReportsNotFound() throws Exception {
+        int removed = f.insert("supplier", "name,phone", f.prefix + "_removed_supplier", "000");
+        try {
+            f.update("DELETE FROM supplier WHERE supplier_id=?", removed);
+            assertEquals(SupplierException.Reason.NOT_FOUND, assertThrows(SupplierException.class,
+                    () -> SupplierModule.service().updateSupplier(removed, "Synthetic", "000", null, null, null, null, null)).reason());
+        } finally { f.update("DELETE FROM supplier WHERE supplier_id=?", removed); }
     }
 
     @Test void shipmentCommitsHeaderAndInventoryTogether() throws Exception {

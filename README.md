@@ -30,11 +30,11 @@ Existing GitHub history previously contained embedded database credentials. Remo
 ## Recovery and limitations
 
 - [Recovery provenance and validation](docs/RECOVERY.md)
-- [Implemented Category architecture and module boundaries](docs/ARCHITECTURE.md)
+- [Implemented Category and Supplier architecture and module boundaries](docs/ARCHITECTURE.md)
 - [Original defects and unavailable features](docs/KNOWN-DEFECTS.md)
 - [Engineering/Git policy](AGENTS.md)
 
-The recovered snapshot contained 101 original Java files and 53 FXML screens. Phase 3A repaired three UI workflows; Phase 4A replaces CategoryDAO with a layered Category service/repository and independent domain model. Category controllers/resource paths remain compatible, all 53 FXML files are retained, and historical evidence/provenance remains preserved. Other business modules retain their legacy implementation. `FieldAdministrators.fxml` was not found and was not reconstructed. Settings is an original static UI.
+The recovered snapshot contained 101 original Java files and 53 FXML screens. Phase 3A repaired three UI workflows; Phase 4A replaces CategoryDAO with a layered Category service/repository and independent domain model. Phase 4B applies that separation to Supplier CRUD and shipment supplier lookup, retiring SupplierDAO while preserving the existing ShipmentDAO integration. Controllers/resource paths remain compatible, all 53 FXML files are retained, and historical evidence/provenance remains preserved. Other business modules retain their legacy implementation. `FieldAdministrators.fxml` was not found and was not reconstructed. Settings is an original static UI.
 
 Before every commit, run appropriate verification and review the complete staged tree:
 

@@ -4,7 +4,7 @@
 
 The local Windows service `MySQL93` is running and MySQL Server 9.3 is installed. A running service does not prove TCP access, usable credentials or permissions. No MySQL login, server configuration change, schema creation, historical import or database-backed DAO execution was performed in this phase. The owner confirmed that the development accounts/environment are not prepared and requested tooling/instructions only. Old credential rotation is **unverified and outstanding**. Do not set the rotation confirmation until the owner has actually rotated/revoked the compromised historical credentials.
 
-The implemented foundation compiles and has offline tests. Live DDL execution, grant compatibility, fixture creation/cleanup and all **19 current Integration Test methods** remain unverified (17 original cases plus 2 Category cases added in Phase 4A). Phase 2's live acceptance criteria are incomplete. Never interpret the expected preflight failure or later offline Category tests as successful persistence testing.
+The implemented foundation compiles and has offline tests. Live DDL execution, grant compatibility, fixture creation/cleanup and all **22 current Integration Test methods** remain unverified (17 original cases plus 2 Category cases added in Phase 4A and 3 Supplier cases in Phase 4B). Phase 2's live acceptance criteria are incomplete. Never interpret the expected preflight failure or later offline Category/Supplier tests as successful persistence testing.
 
 ## Architecture and historical fidelity
 
@@ -99,7 +99,7 @@ Before fixture writes, the invalid-ID rejection-test sentinels are checked for a
 
 ## Integration coverage and interpretation
 
-All current methods below are compiled but **NOT EXECUTED against MySQL**. The suite includes the retained Phase 2 cases and the Phase 4A Category additions:
+All current methods below are compiled but **NOT EXECUTED against MySQL**. The suite includes the retained Phase 2 cases and the Phase 4A Category and Phase 4B Supplier additions:
 
 | Methods in CorePersistenceIT | Intended evidence |
 | --- | --- |
@@ -108,7 +108,10 @@ All current methods below are compiled but **NOT EXECUTED against MySQL**. The s
 | productDaoPreservesRelationsPricesAndThresholds | ProductDAO insert/read/update/delete; relationships, prices, min/max |
 | capacityUsesRoundedPalletsAndExcludesCurrentProduct | Pallet rounding, capacity limits, low/zero stock buckets |
 | emptyWarehouseHasZeroProducts | Correct expected result for known COUNT(*) defect |
-| supplierAndCustomerDaoRoundTripsAndUniqueEmail | SupplierDAO/CustomerDAO update/read, duplicate email rejection |
+| supplierAndCustomerDaoRoundTripsAndUniqueEmail | SupplierService/JdbcSupplierRepository and CustomerDAO update/read; email uniqueness remains a Customer rule |
+| unchangedExistingSupplierUpdateSucceeds | Supplier service accepts existing identical contact details |
+| supplierCreationNullMappingAndUniqueConflictsUseTheNewRepository | Supplier create/read, SQL NULL optional fields, duplicate create/update, no overwrite after conflict |
+| deletedSupplierUpdateReportsNotFound | Valid fixture-owned ID deleted before update -> NOT_FOUND |
 | shipmentCommitsHeaderAndInventoryTogether | ShipmentDAO insertion, stock increment, supplier totals |
 | shipmentRejectsOverflowAndInvalidForeignKeyWithoutChanges | Capacity rejection and failed-FK path; stock/header unchanged |
 | multiItemSaleUsesCurrentPricesAndDeductsStock | SalesDAO order/items, stored DECIMAL totals, stock deductions |
@@ -123,9 +126,9 @@ All current methods below are compiled but **NOT EXECUTED against MySQL**. The s
 | concurrentSalesMustNotOversellTheSameStock | Two actual SalesDAO calls synchronized after buffered nonlocking product SELECT; only one sale of 8 may consume stock of 10 |
 | concurrentCapacityChecksMustNotAllowWarehouseOverflow | Two real capacity-check/insert callers approve 2 pallets against the same capacity of 3 |
 
-There are 19 Integration Test methods. Their source presence and successful compilation do not establish execution or successful persistence.
+There are 22 Integration Test methods. Their source presence and successful compilation do not establish execution or successful persistence.
 
-Correct-behavior tests with historical `original-defect` tags are **not excluded**. The missing-category case now uses the repaired Phase 4A implementation; empty-warehouse/concurrency defects remain original risks. A red test must be classified with evidence, not weakened or converted into a skip. Preflight failure prevents all method bodies from running; a JUnit class-initialization error is not 19 failed business scenarios.
+Correct-behavior tests with historical `original-defect` tags are **not excluded**. The missing-category case now uses the repaired Phase 4A implementation; empty-warehouse/concurrency defects remain original risks. A red test must be classified with evidence, not weakened or converted into a skip. Preflight failure prevents all method bodies from running; a JUnit class-initialization error is not 22 failed business scenarios.
 
 The stock timing seam changes only scheduling/JDBC delegation inside the IT JVM; original SQL, transactions and results remain real. It relies on Connector/J's default buffered result sets and the current product-read query shape; a changed query must cause an explicit seam assertion failure. A future correct locking strategy may need a different synchronization point, since forcing both readers past a locking SELECT can itself deadlock the harness. Timeouts/instrumentation errors are test-infrastructure failures, not evidence of overselling. Capacity race outcomes require at least one actual insertion. No passing race test proves global race freedom.
 
@@ -139,4 +142,4 @@ The stock timing seam changes only scheduling/JDBC delegation inside the IT JVM;
 
 ## Remaining live acceptance before database-dependent changes
 
-Provide the new accounts and private process configuration, confirm actual historical credential rotation, run guarded setup once, then run mysql-it. Record per-method pass/fail/error, SQLState/category without private values, and cleanup results. Separate infrastructure/test-harness defects from original application defects. Commit measured results separately when available. The separately authorized Phase 3A UI repairs and Phase 4A Category slice have offline verification; they do not establish live database acceptance. Stock/capacity transaction changes, other module migrations and further features require their own approval and appropriate live evidence.
+Provide the new accounts and private process configuration, confirm actual historical credential rotation, run guarded setup once, then run mysql-it. Record per-method pass/fail/error, SQLState/category without private values, and cleanup results. Separate infrastructure/test-harness defects from original application defects. Commit measured results separately when available. The separately authorized Phase 3A UI repairs and Phase 4A Category / Phase 4B Supplier slices have offline verification; they do not establish live database acceptance. Stock/capacity transaction changes, other module migrations and further features require their own approval and appropriate live evidence.

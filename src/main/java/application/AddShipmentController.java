@@ -1,5 +1,8 @@
 package application;
 
+import com.sobol.supplier.application.SupplierService;
+import com.sobol.supplier.application.SupplierException;
+import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.fxml.*;
 import javafx.scene.Parent;
@@ -10,6 +13,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class AddShipmentController {
+
+	private final SupplierService supplierService;
+	public AddShipmentController() { this(SupplierModule.service()); }
+	AddShipmentController(SupplierService supplierService) { this.supplierService = Objects.requireNonNull(supplierService); }
 
 	@FXML
 	private TextField txtProduct, txtCategory, txtCartons, txtCurrentQty;
@@ -112,8 +119,16 @@ public class AddShipmentController {
 		}
 	}
 
-	private void loadSuppliers() {
-		List<Supplier> suppliers = SupplierDAO.getAllSuppliers();
+	void loadSuppliers() {
+		cbSupplier.getSelectionModel().clearSelection();
+		cbSupplier.getItems().clear();
+		List<Supplier> suppliers;
+		try {
+			suppliers = supplierService.listSuppliers().stream().map(Supplier::fromDomain).toList();
+		} catch (SupplierException failure) {
+			alert("Error", failure.getMessage());
+			return;
+		}
 		if (suppliers.isEmpty()) {
 			alert("Suppliers Required", "No suppliers found. Please add suppliers first.");
 			go("Imports.fxml");
@@ -241,7 +256,7 @@ public class AddShipmentController {
 		}
 	}
 
-	private void go(String fxml) {
+	void go(String fxml) {
 		try {
 			Parent view = FXMLLoader.load(getClass().getResource(fxml));
 			StackPane content = (StackPane) txtProduct.getScene().getRoot().lookup("#contentArea");
@@ -251,7 +266,7 @@ public class AddShipmentController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);

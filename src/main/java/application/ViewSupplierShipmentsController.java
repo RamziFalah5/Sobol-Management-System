@@ -52,10 +52,12 @@ public class ViewSupplierShipmentsController {
 
 	private final ObservableList<Shipment> list = FXCollections.observableArrayList();
 
-	private Supplier supplier;
+	private int supplierId = -1;
 
 	public void setSupplier(Supplier s) {
-		this.supplier = s;
+		supplierId = -1;
+		if (s == null || s.getSupplierId() <= 0) throw new IllegalArgumentException("A valid selected supplier is required.");
+		supplierId = s.getSupplierId();
 
 		lblTitle.setText("Supplier Shipments - " + s.getName());
 
@@ -132,17 +134,17 @@ public class ViewSupplierShipmentsController {
 
 	private void load() {
 
-		if (supplier == null) {
+		if (supplierId <= 0) {
 			alert("Error", "No supplier selected.");
 			return;
 		}
 
-		list.setAll(ShipmentDAO.getShipmentsBySupplier(supplier.getSupplierId()));
+		list.setAll(loadShipments(supplierId));
 		table.setItems(list);
 
 		lblCount.setText("Shipments: " + list.size());
 
-		double total = ShipmentDAO.getTotalCostBySupplier(supplier.getSupplierId());
+		double total = loadTotalCost(supplierId);
 		lblTotal.setText(String.format("Total Cost: %.2f", total));
 
 		if (list.isEmpty()) {
@@ -154,7 +156,7 @@ public class ViewSupplierShipmentsController {
 	@FXML
 	private void onBack() {
 		try {
-			Parent view = FXMLLoader.load(getClass().getResource("Suppliers.fxml"));
+			Parent view = createViewLoader("Suppliers.fxml").load();
 			StackPane content = (StackPane) table.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
 		} catch (Exception e) {
@@ -162,7 +164,11 @@ public class ViewSupplierShipmentsController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	java.util.List<Shipment> loadShipments(int id) { return ShipmentDAO.getShipmentsBySupplier(id); }
+	double loadTotalCost(int id) { return ShipmentDAO.getTotalCostBySupplier(id); }
+	FXMLLoader createViewLoader(String fxml) { return new FXMLLoader(getClass().getResource(fxml)); }
+
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);

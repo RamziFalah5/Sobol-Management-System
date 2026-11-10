@@ -1,5 +1,8 @@
 package application;
 
+import com.sobol.supplier.application.SupplierService;
+import com.sobol.supplier.application.SupplierException;
+import java.util.Objects;
 import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.Parent;
@@ -7,6 +10,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 
 public class SuppliersController {
+
+	private final SupplierService service;
+	public SuppliersController() { this(SupplierModule.service()); }
+	SuppliersController(SupplierService service) { this.service = Objects.requireNonNull(service); }
 
 	@FXML
 	private TableView<Supplier> table;
@@ -42,7 +49,12 @@ public class SuppliersController {
 	}
 
 	private void load() {
-		list.setAll(SupplierDAO.getAllSuppliers());
+		try {
+			list.setAll(service.listSuppliers().stream().map(Supplier::fromDomain).toList());
+		} catch (SupplierException failure) {
+			list.clear();
+			alert("Error", failure.getMessage());
+		}
 		table.setItems(list);
 	}
 
@@ -71,8 +83,9 @@ public class SuppliersController {
 
 	private Supplier selectedOrAlert(String title) {
 		Supplier s = table.getSelectionModel().getSelectedItem();
-		if (s == null) {
+		if (s == null || s.getSupplierId() <= 0 || !list.contains(s)) {
 			alert(title, "Please select a supplier first.");
+			return null;
 		}
 		return s;
 	}
@@ -89,7 +102,7 @@ public class SuppliersController {
 			return;
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditSupplier.fxml"));
+			FXMLLoader loader = createViewLoader("EditSupplier.fxml");
 			Parent view = loader.load();
 
 			EditSupplierController c = loader.getController();
@@ -112,7 +125,7 @@ public class SuppliersController {
 			return;
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewSupplierShipments.fxml"));
+			FXMLLoader loader = createViewLoader("ViewSupplierShipments.fxml");
 			Parent view = loader.load();
 
 			ViewSupplierShipmentsController c = loader.getController();
@@ -128,7 +141,7 @@ public class SuppliersController {
 
 	private void go(String fxml) {
 		try {
-			Parent view = FXMLLoader.load(getClass().getResource(fxml));
+			Parent view = createViewLoader(fxml).load();
 			StackPane content = (StackPane) table.getScene().getRoot().lookup("#contentArea");
 			content.getChildren().setAll(view);
 		} catch (Exception e) {
@@ -136,7 +149,11 @@ public class SuppliersController {
 		}
 	}
 
-	private void alert(String t, String m) {
+	FXMLLoader createViewLoader(String fxml) {
+		return new FXMLLoader(getClass().getResource(fxml));
+	}
+
+	void alert(String t, String m) {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle(t);
 		a.setHeaderText(null);
