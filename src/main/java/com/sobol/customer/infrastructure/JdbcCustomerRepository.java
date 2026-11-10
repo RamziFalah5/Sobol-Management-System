@@ -4,6 +4,7 @@ import com.sobol.customer.application.CustomerException;
 import com.sobol.customer.application.CustomerRepository;
 import com.sobol.customer.domain.Customer;
 import java.sql.*;
+import com.sobol.database.PostgresErrors;
 import java.util.*;
 import static com.sobol.customer.application.CustomerException.Reason.*;
 
@@ -15,7 +16,7 @@ public final class JdbcCustomerRepository implements CustomerRepository {
 
     @Override public List<Customer> findAll() {
         try (Connection c = connections.open();
-             PreparedStatement p = c.prepareStatement("SELECT customer_id, full_name, phone, email, city, address, notes FROM customer ORDER BY customer_id DESC");
+             PreparedStatement p = c.prepareStatement("SELECT customer_id, full_name, phone, email, city, address, notes FROM sobol.customer ORDER BY customer_id DESC");
              ResultSet r = p.executeQuery()) {
             List<Customer> rows = new ArrayList<>();
             while (r.next()) rows.add(new Customer(r.getInt("customer_id"), new Customer.Details(
@@ -31,7 +32,7 @@ public final class JdbcCustomerRepository implements CustomerRepository {
             c.setAutoCommit(false);
             try {
                 Customer created;
-                try (PreparedStatement p = c.prepareStatement("INSERT INTO customer(full_name, phone, email, city, address, notes) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                try (PreparedStatement p = c.prepareStatement("INSERT INTO sobol.customer(full_name, phone, email, city, address, notes) VALUES (?, ?, ?, ?, ?, ?)", new String[]{"customer_id"})) {
                     bind(p, details);
                     if (executeWrite(p) != 1) throw storage();
                     try (ResultSet keys = p.getGeneratedKeys()) {
@@ -51,17 +52,17 @@ public final class JdbcCustomerRepository implements CustomerRepository {
             c.setAutoCommit(false);
             try {
                 boolean exists;
-                try (PreparedStatement p = c.prepareStatement("SELECT customer_id FROM customer WHERE customer_id=? FOR UPDATE")) {
+                try (PreparedStatement p = c.prepareStatement("SELECT customer_id FROM sobol.customer WHERE customer_id=? FOR UPDATE")) {
                     p.setInt(1, id);
                     try (ResultSet r = p.executeQuery()) { exists = r.next(); }
                 }
                 if (!exists) { c.rollback(); return Optional.empty(); }
                 Customer updated = new Customer(id, details);
-                try (PreparedStatement p = c.prepareStatement("UPDATE customer SET full_name=?, phone=?, email=?, city=?, address=?, notes=? WHERE customer_id=?")) {
+                try (PreparedStatement p = c.prepareStatement("UPDATE sobol.customer SET full_name=?, phone=?, email=?, city=?, address=?, notes=? WHERE customer_id=?")) {
                     bind(p, details); p.setInt(7, id);
                     int count = executeWrite(p);
-                    // Existence is locked: both matched-row (1) and unchanged-row (0) modes succeed.
-                    if (count != 0 && count != 1) throw storage();
+                    // PostgreSQL counts unchanged matched rows too; a locked existing row must match once.
+                    if (count != 1) throw storage();
                 }
                 c.commit();
                 return Optional.of(updated);
@@ -85,18 +86,11 @@ public final class JdbcCustomerRepository implements CustomerRepository {
         if (failure instanceof CustomerException customer) return customer;
         return storage();
     }
-    // ER_DUP_ENTRY contains the violated key name in the server diagnostic.
-    // Inspect only a known trailing constraint token, never a substring in the duplicate value.
-    // Unknown/localized diagnostics fail closed as storage failures rather than guessing.
+    // Classify only an actual write with the exact PostgreSQL protocol constraint identity.
     private int executeWrite(PreparedStatement p) throws SQLException {
         try { return p.executeUpdate(); }
         catch (SQLException failure) {
-            if (failure.getErrorCode() == 1062 && failure.getMessage() != null) {
-                var key = java.util.regex.Pattern.compile(
-                        "\\bfor key (['`])((?:sobol_dev\\.)?(?:customer\\.)?uq_customer_(?:name|email))\\1\\s*\\z")
-                        .matcher(failure.getMessage());
-                if (key.find()) throw new CustomerException(key.group(2).endsWith("uq_customer_email") ? DUPLICATE_EMAIL : DUPLICATE_NAME);
-            }
+            if (PostgresErrors.unique(failure, "customer", "uq_customer_email")) throw new CustomerException(DUPLICATE_EMAIL);
             throw failure;
         }
     }

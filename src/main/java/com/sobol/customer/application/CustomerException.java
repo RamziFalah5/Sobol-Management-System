@@ -4,7 +4,7 @@ package com.sobol.customer.application;
 public final class CustomerException extends RuntimeException {
     public enum Reason {
         INVALID_NAME, INVALID_PHONE, INVALID_EMAIL, INVALID_CITY, INVALID_ADDRESS,
-        INVALID_NOTES, INVALID_ID, DUPLICATE_NAME, DUPLICATE_EMAIL, NOT_FOUND, STORAGE_FAILURE
+        INVALID_NOTES, INVALID_ID, DUPLICATE_EMAIL, NOT_FOUND, STORAGE_FAILURE
     }
     private final Reason reason;
     public CustomerException(Reason reason) {
@@ -16,7 +16,6 @@ public final class CustomerException extends RuntimeException {
             case INVALID_ADDRESS -> "Address cannot exceed 220 characters.";
             case INVALID_NOTES -> "Notes cannot exceed 400 characters.";
             case INVALID_ID -> "A valid selected customer is required.";
-            case DUPLICATE_NAME -> "Another customer already uses this name.";
             case DUPLICATE_EMAIL -> "Another customer already uses this email.";
             case NOT_FOUND -> "The customer no longer exists. Reload customers before editing.";
             case STORAGE_FAILURE -> "Customer storage is unavailable. The operation could not be confirmed.";

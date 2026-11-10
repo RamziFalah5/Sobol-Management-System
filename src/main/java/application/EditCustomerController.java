@@ -45,7 +45,7 @@ public class EditCustomerController {
 			goBack();
 		} catch (CustomerException failure) {
 			String title = switch (failure.reason()) {
-				case DUPLICATE_NAME, DUPLICATE_EMAIL -> "Duplicate";
+				case DUPLICATE_EMAIL -> "Duplicate";
 				case NOT_FOUND -> "Not Found";
 				case STORAGE_FAILURE -> "Error";
 				default -> "Validation";

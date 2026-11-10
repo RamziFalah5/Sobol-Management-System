@@ -4,6 +4,8 @@ import com.sobol.category.application.*;
 import com.sobol.category.infrastructure.JdbcCategoryRepository;
 import com.sobol.supplier.application.*;
 import com.sobol.supplier.infrastructure.JdbcSupplierRepository;
+import com.sobol.customer.application.*;
+import com.sobol.customer.infrastructure.JdbcCustomerRepository;
 import java.sql.*;
 import java.util.*;
 import org.junit.jupiter.api.*;
@@ -124,5 +126,35 @@ class PostgresPersistenceIT {
         } catch (SQLException failure) { throw PostgresDatabase.unavailable(); }
         assertEquals(SupplierException.Reason.NOT_FOUND,
                 assertThrows(SupplierException.class, () -> suppliers().updateSupplier(value.id(), unique(), "000", null, null, null, null, null)).reason());
+    }
+    private CustomerService customers() { return new CustomerService(new JdbcCustomerRepository(PostgresPersistenceIT::connection)); }
+    private com.sobol.customer.domain.Customer customer(String name, String email) {
+        var value = customers().createCustomer(name, "000", email, "", "", "");
+        return remember("customer", value.id(), value);
+    }
+    @Test void customerSameNameCrudAndUnchangedUpdatesPreserveDistinctIdentities() {
+        String name = unique(); var first = customer(name, null); var second = customer(name, null);
+        assertNotEquals(first.id(), second.id()); assertNull(first.details().email()); assertEquals("", first.details().city());
+        assertEquals(first, customers().updateCustomer(first.id(), name, "000", null, "", "", ""));
+        var updated = customers().updateCustomer(second.id(), name, "111", null, "City", "Address", "Notes");
+        assertEquals(second.id(), updated.id());
+        assertTrue(customers().listCustomers().contains(first)); assertTrue(customers().listCustomers().contains(updated));
+    }
+    @Test void customerExactEmailConflictsRollBackAndCaseVariantsRemainDistinct() {
+        String email = unique() + "@example.invalid"; var first = customer(unique(), email);
+        var second = customer(first.details().fullName(), email.toLowerCase(Locale.ROOT));
+        assertEquals(CustomerException.Reason.DUPLICATE_EMAIL,
+                assertThrows(CustomerException.class, () -> customers().createCustomer(unique(), "000", email, null, null, null)).reason());
+        assertEquals(CustomerException.Reason.DUPLICATE_EMAIL,
+                assertThrows(CustomerException.class, () -> customers().updateCustomer(second.id(), unique(), "111", email, null, null, null)).reason());
+        assertTrue(customers().listCustomers().contains(second));
+    }
+    @Test void deletedCustomerUpdateReportsMissing() throws SQLException {
+        var value = customer(unique(), null);
+        try (Connection c = connection(); PreparedStatement p = c.prepareStatement("DELETE FROM sobol.customer WHERE customer_id=?")) {
+            p.setInt(1, value.id()); assertEquals(1, p.executeUpdate());
+        } catch (SQLException failure) { throw PostgresDatabase.unavailable(); }
+        assertEquals(CustomerException.Reason.NOT_FOUND,
+                assertThrows(CustomerException.class, () -> customers().updateCustomer(value.id(), unique(), "000", null, null, null, null)).reason());
     }
 }

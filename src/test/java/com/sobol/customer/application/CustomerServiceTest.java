@@ -13,8 +13,7 @@ class CustomerServiceTest {
         private void available() { if (failure != null) throw failure; }
         private void unique(Customer.Details d, int id) {
             for (var row : rows.values()) if (row.id() != id) {
-                if (row.details().fullName().equalsIgnoreCase(d.fullName())) throw new CustomerException(DUPLICATE_NAME);
-                if (d.email() != null && d.email().equalsIgnoreCase(row.details().email())) throw new CustomerException(DUPLICATE_EMAIL);
+                if (d.email() != null && d.email().equals(row.details().email())) throw new CustomerException(DUPLICATE_EMAIL);
             }
         }
         public List<Customer> findAll() { available(); return new ArrayList<>(rows.values()); }
@@ -76,19 +75,21 @@ class CustomerServiceTest {
         assertEquals(new Customer(first.id(), new Customer.Details("Updated", "222", "new@example.invalid", "City", "Address", "Notes")), updated);
         assertEquals(second, r.rows.get(second.id()));
     }
-    @Test void duplicateNameCreateAndUpdateAreDistinctAndDoNotOverwrite() {
+    @Test void repeatedNamesCreateAndUpdateByIdentityWithoutRetargeting() {
         var r = new Memory(); var s = new CustomerService(r);
-        var first = s.createCustomer("First", "000", null, null, null, null);
-        var second = s.createCustomer("Second", "000", null, null, null, null);
-        reason(DUPLICATE_NAME, () -> s.createCustomer("first", "000", null, null, null, null));
-        reason(DUPLICATE_NAME, () -> s.updateCustomer(second.id(), "First", "000", null, null, null, null));
-        assertEquals(List.of(first, second), s.listCustomers());
+        var first = s.createCustomer("Repeated", "000", null, null, null, null);
+        var second = s.createCustomer("Repeated", "111", null, null, null, null);
+        var third = s.createCustomer("Third", "222", null, null, null, null);
+        var changed = s.updateCustomer(third.id(), "Repeated", "333", null, null, null, null);
+        assertNotEquals(first.id(), second.id()); assertEquals(third.id(), changed.id());
+        assertEquals(first, r.rows.get(first.id())); assertEquals(second, r.rows.get(second.id()));
+        assertEquals(3, s.listCustomers().size());
     }
     @Test void duplicateNonNullEmailCreateAndUpdateAreDistinctAndDoNotOverwrite() {
         var r = new Memory(); var s = new CustomerService(r);
         var first = s.createCustomer("First", "000", "shared@example.invalid", null, null, null);
         var second = s.createCustomer("Second", "000", null, null, null, null);
-        reason(DUPLICATE_EMAIL, () -> s.createCustomer("Third", "000", "SHARED@example.invalid", null, null, null));
+        reason(DUPLICATE_EMAIL, () -> s.createCustomer("Third", "000", "shared@example.invalid", null, null, null));
         reason(DUPLICATE_EMAIL, () -> s.updateCustomer(second.id(), "Second", "000", first.details().email(), null, null, null));
         assertEquals(List.of(first, second), s.listCustomers());
     }
@@ -117,6 +118,13 @@ class CustomerServiceTest {
         assertThrows(IllegalArgumentException.class, () -> new Customer(0, d));
         assertThrows(NullPointerException.class, () -> new Customer(1, null));
         assertThrows(Customer.InvalidField.class, () -> new Customer.Details("Synthetic", "", null, null, null, null));
+    }
+    @Test void exactEmailPolicyAllowsCaseVariantsAndRetainsExactDuplicateRejection() {
+        var s = new CustomerService(new Memory());
+        s.createCustomer("Same", "000", "Case@example.invalid", null, null, null);
+        s.createCustomer("Same", "000", "case@example.invalid", null, null, null);
+        reason(DUPLICATE_EMAIL, () -> s.createCustomer("Same", "000", "Case@example.invalid", null, null, null));
+        assertEquals(2, s.listCustomers().size());
     }
     private Customer create(CustomerService s, String[] v) { return s.createCustomer(v[0], v[1], v[2], v[3], v[4], v[5]); }
     private void reason(CustomerException.Reason reason, org.junit.jupiter.api.function.Executable action) {

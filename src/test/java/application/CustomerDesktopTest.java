@@ -70,12 +70,11 @@ class CustomerDesktopTest {
         assertEquals(1, h.r.writes);
     }); }
 
-    @Test void addValidationAndNameEmailConflictsProduceDistinctFeedback() throws Exception { onFx(() -> {
+    @Test void addValidationAndEmailConflictProduceDistinctFeedback() throws Exception { onFx(() -> {
         var h = new Harness(); var l = h.open("AddCustomer.fxml"); var c = (Add) l.getController();
         button(l, "Add").fire(); assertEquals("Validation", c.title);
         field(l, "txtName").setText("New"); button(l, "Add").fire(); assertEquals("Validation", c.title);
         fill(l, "New"); field(l, "txtEmail").setText("invalid"); button(l, "Add").fire(); assertEquals("Validation", c.title); assertEquals(0, h.r.writes);
-        field(l, "txtEmail").clear(); fill(l, "First"); button(l, "Add").fire(); assertTrue(c.message.contains("name"));
         fill(l, "New"); field(l, "txtEmail").setText("first@example.invalid"); button(l, "Add").fire();
         assertEquals("Duplicate", c.title); assertTrue(c.message.contains("email")); assertEquals(2, h.r.rows.size()); h.assertVisible(l);
     }); }
@@ -121,9 +120,8 @@ class CustomerDesktopTest {
         assertEquals("", field(other, "txtEmail").getText()); assertEquals("", field(other, "txtAddress").getText()); assertEquals("", ((TextArea) node(other, "txtNotes")).getText());
     }); }
 
-    @Test void editNameEmailMissingAndStorageFailuresNeverNavigateOrOverwrite() throws Exception { onFx(() -> {
+    @Test void editEmailMissingAndStorageFailuresNeverNavigateOrOverwrite() throws Exception { onFx(() -> {
         var h = new Harness(); var l = h.open("EditCustomer.fxml"); var c = (Edit) l.getController(); c.setCustomer(Customer.fromDomain(h.r.rows.get(99)));
-        field(l, "txtName").setText("First"); button(l, "Save").fire(); assertTrue(c.message.contains("name"));
         field(l, "txtName").setText("Second"); field(l, "txtEmail").setText("first@example.invalid"); button(l, "Save").fire(); assertTrue(c.message.contains("email"));
         field(l, "txtEmail").clear(); h.r.failure = STORAGE_FAILURE; button(l, "Save").fire(); assertEquals("Error", c.title);
         assertEquals("Second", h.r.rows.get(99).details().fullName()); h.r.failure = null; h.r.rows.remove(99);
@@ -188,6 +186,18 @@ class CustomerDesktopTest {
         assertNull(customers(picker).getSelectionModel().getSelectedItem()); button(picker, "Back").fire(); h.assertVisible(h.current("Sales.fxml"));
     }); }
 
+    @Test void sameNameCustomersCanBeAddedAndEditedWithoutChangingAnotherIdentity() throws Exception { onFx(() -> {
+        var h = new Harness(); var add = h.open("AddCustomer.fxml"); fill(add, "First");
+        button(add, "Add").fire();
+        assertEquals("First", h.r.rows.get(101).details().fullName()); assertEquals("First", h.r.rows.get(42).details().fullName());
+        var list = h.current("Customers.fxml"); select(list, 101); button(list, "Edit").fire();
+        var edit = h.current("EditCustomer.fxml"); field(edit, "txtPhone").setText("222"); button(edit, "Save").fire();
+        assertEquals(101, h.r.updatedId); assertEquals("222", h.r.rows.get(101).details().phone());
+        assertEquals("000", h.r.rows.get(42).details().phone());
+        var picker = h.open("PickCustomerForSale.fxml"); var selected = select(picker, 101);
+        assertEquals("First", selected.getFullName()); assertEquals(101, selected.getCustomerId());
+    }); }
+
     private static class Memory implements CustomerRepository {
         final Map<Integer, com.sobol.customer.domain.Customer> rows = new LinkedHashMap<>();
         int sequence = 100, writes, updatedId; CustomerException.Reason failure;
@@ -198,8 +208,7 @@ class CustomerDesktopTest {
         private void available() { if (failure != null) throw new CustomerException(failure); }
         private void unique(Details d, int id) {
             for (var row : rows.values()) if (row.id() != id) {
-                if (row.details().fullName().equalsIgnoreCase(d.fullName())) throw new CustomerException(DUPLICATE_NAME);
-                if (d.email() != null && d.email().equalsIgnoreCase(row.details().email())) throw new CustomerException(DUPLICATE_EMAIL);
+                if (d.email() != null && d.email().equals(row.details().email())) throw new CustomerException(DUPLICATE_EMAIL);
             }
         }
         public List<com.sobol.customer.domain.Customer> findAll() { available(); return rows.values().stream().sorted(Comparator.comparingInt(com.sobol.customer.domain.Customer::id).reversed()).toList(); }

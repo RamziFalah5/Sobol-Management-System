@@ -23,12 +23,18 @@ class CustomerArchitectureTest {
         }
         assertFalse(Files.exists(Path.of("src/main/java/application/CustomerDAO.java")));
         String root = Files.readString(Path.of("src/main/java/application/CustomerModule.java"));
-        assertTrue(root.contains("new CustomerService(new JdbcCustomerRepository(DBAuth::get))"));
+        assertTrue(root.contains("new CustomerService(new JdbcCustomerRepository(PostgresDatabase::get))"));
     }
     @Test void infrastructureImplementsThePortWithoutLegacyPresentation() throws Exception {
         String source = Files.readString(Path.of("src/main/java/com/sobol/customer/infrastructure/JdbcCustomerRepository.java"));
         assertFalse(source.contains("javafx.")); assertFalse(source.contains("import application."));
         assertTrue(com.sobol.customer.application.CustomerRepository.class.isAssignableFrom(com.sobol.customer.infrastructure.JdbcCustomerRepository.class));
+    }
+    @Test void postgresSqlAndConflictContractDoNotTreatNamesAsIdentities() throws Exception {
+        String source = Files.readString(Path.of("src/main/java/com/sobol/customer/infrastructure/JdbcCustomerRepository.java"));
+        assertTrue(source.contains("sobol.customer")); assertTrue(source.contains("PostgresErrors.unique"));
+        assertFalse(source.contains("1062")); assertFalse(source.contains("uq_customer_name"));
+        for (var reason : com.sobol.customer.application.CustomerException.Reason.values()) assertNotEquals("DUPLICATE_NAME", reason.name());
     }
     @Test void domainAndViewMappingsPreserveAllContactsWithoutAliasing() {
         var d = new com.sobol.customer.domain.Customer.Details("Synthetic", "000", "test@example.invalid", "City", "Address", "Notes");

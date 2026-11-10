@@ -4,7 +4,7 @@ import com.sobol.customer.domain.Customer;
 import java.util.List;
 import java.util.Optional;
 
-/** Name/non-null email uniqueness is enforced at write time; failures never become empty results. */
+/** Non-null exact email uniqueness; repeated customer names are allowed. Uniqueness is enforced at write time; failures never become empty results. */
 public interface CustomerRepository {
     List<Customer> findAll();
     Customer insert(Customer.Details details);
