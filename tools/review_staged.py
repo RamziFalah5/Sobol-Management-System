@@ -37,7 +37,7 @@ schema_path = schema_manifest['resource']
 if schema_path != 'docs/reference/mysql/V001__historical_schema.sql.txt':
     sys.exit('Unexpected sanitized schema path; review stopped.')
 postgres_migrations = json.loads(git('show', ':docs/postgresql-migrations.json'))
-if set(postgres_migrations) != {'src/test/resources/db/postgresql/V1__reference_data.sql'}:
+if set(postgres_migrations) != {'src/test/resources/db/postgresql/V1__reference_data.sql', 'src/test/resources/db/postgresql/V2__accounts.sql'}:
     sys.exit('Unexpected PostgreSQL migration paths; review stopped.')
 patterns = [
     ('private key', re.compile(rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----')),
@@ -75,10 +75,11 @@ for path in paths:
         ddl = re.sub(rb'(?m)^--[^\r\n]*', b'', data)
         statements = [s.strip() for s in ddl.split(b';') if s.strip()]
         names = [re.match(rb'CREATE TABLE sobol\.([a-z_]+) \(', s) for s in statements]
-        if (len(names) != 3 or any(m is None for m in names)
-                or {m.group(1) for m in names if m} != {b'category', b'supplier', b'customer'}
+        expected_names = {b'category', b'supplier', b'customer'} if path.endswith('V1__reference_data.sql') else {b'account'}
+        if (len(names) != len(expected_names) or any(m is None for m in names)
+                or {m.group(1) for m in names if m} != expected_names
                 or re.search(rb'\b(?:INSERT|UPDATE|DELETE|TRUNCATE|DROP|GRANT|REVOKE|COPY|accounts|AUTO_INCREMENT)\b', ddl, re.I)):
-            findings.append((path, 'only the reviewed PostgreSQL master-data CREATE TABLE statements are allowed'))
+            findings.append((path, 'only the reviewed PostgreSQL CREATE TABLE statements are allowed'))
     if known_secret and known_secret in data:
         findings.append((path, 'historical database credential is present'))
     if b'\0' in data or lower.endswith(('.png', '.jpg', '.jpeg', '.gif', '.ico')):

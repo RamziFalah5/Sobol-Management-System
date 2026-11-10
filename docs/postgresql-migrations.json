@@ -1,3 +1,4 @@
 {
-  "src/test/resources/db/postgresql/V1__reference_data.sql": "8eb6eb1591b0a0fac6d6eb5377760699a6664ca023fb5611e355f466fbc88a90"
+  "src/test/resources/db/postgresql/V1__reference_data.sql": "8eb6eb1591b0a0fac6d6eb5377760699a6664ca023fb5611e355f466fbc88a90",
+  "src/test/resources/db/postgresql/V2__accounts.sql": "232d755a8809dfc75dc9ca9b7defbdc5491a4422c3a1db448d975826adf587ba"
 }

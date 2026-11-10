@@ -1,5 +1,8 @@
 # Current direction - PostgreSQL transition, Phase 6A
 
+Current Phase 6B architecture: [Authentication and protected shell](AUTHENTICATION.md). Main -> Controller1 -> AuthenticationService/AccountRepository/PasswordHasher -> PostgreSQL; SessionManager protects Home and the three master-data composition roots. V2 adds accounts without modifying V1. Older phase narratives below describe historical implementations and do not reactivate MySQL or unrestricted navigation. Client-side sessions are not a trusted backend authorization boundary.
+
+
 The owner's Phase 6A decision supersedes the MySQL-specific architecture descriptions below. This section describes the current foundation; lower Phase 4 sections are retained historical design records, not current database setup instructions.
 
 PostgreSQL JDBC is the sole production database driver. PostgresDatabase is an explicit numeric-loopback/sobol_dev/sobol boundary, requiring certificate-verified TLS and dedicated identity/privilege checks. These checks are implemented and tested offline; no live TLS or privilege result is established. Retired DBAuth.get always throws before opening a connection. All legacy DAO/UI source is retained for coherent future migration; it cannot reach MySQL or borrow PostgreSQL connections. Existing login is not migrated and no bypass is added; this is not a production-ready functional cutover.

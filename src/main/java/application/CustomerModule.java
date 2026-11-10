@@ -8,6 +8,7 @@ import com.sobol.customer.infrastructure.JdbcCustomerRepository;
 final class CustomerModule {
     private CustomerModule() { }
     static CustomerService service() {
-        return new CustomerService(new JdbcCustomerRepository(PostgresDatabase::get));
+        var access = AuthModule.protect(PostgresDatabase::get);
+        return new CustomerService(new JdbcCustomerRepository(access::open));
     }
 }

@@ -8,6 +8,7 @@ import com.sobol.category.infrastructure.JdbcCategoryRepository;
 final class CategoryModule {
     private CategoryModule() { }
     static CategoryService service() {
-        return new CategoryService(new JdbcCategoryRepository(PostgresDatabase::get));
+        var access = AuthModule.protect(PostgresDatabase::get);
+        return new CategoryService(new JdbcCategoryRepository(access::open));
     }
 }

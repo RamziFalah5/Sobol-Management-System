@@ -14,7 +14,7 @@ public final class PostgresMigrations {
         return Flyway.configure().dataSource(new GuardedSource(config))
                 .locations("classpath:db/postgresql").schemas("sobol").defaultSchema("sobol")
                 .createSchemas(false).cleanDisabled(true).baselineOnMigrate(false).outOfOrder(false)
-                .validateMigrationNaming(true).validateOnMigrate(true).target("1")
+                .validateMigrationNaming(true).validateOnMigrate(true).target("2")
                 .loggers(SafeLogCreator.class.getName()).load();
     }
     static void validateDestination(Connection c) throws SQLException {
@@ -37,16 +37,17 @@ public final class PostgresMigrations {
         validateObjectNames(objects);
     }
     static void validateObjectNames(Set<String> objects) throws SQLException {
-        if (!objects.isEmpty() && !objects.equals(Set.of("category", "supplier", "customer", "flyway_schema_history",
-                "category_category_id_seq", "supplier_supplier_id_seq", "customer_customer_id_seq")))
-            throw PostgresDatabase.unavailable();
+        Set<String> v1 = Set.of("category", "supplier", "customer", "flyway_schema_history",
+                "category_category_id_seq", "supplier_supplier_id_seq", "customer_customer_id_seq");
+        Set<String> v2 = new HashSet<>(v1); v2.add("account"); v2.add("account_account_id_seq");
+        if (!objects.isEmpty() && !objects.equals(v1) && !objects.equals(v2)) throw PostgresDatabase.unavailable();
     }
     public static void main(String[] args) {
         try {
             var config = PostgresDatabase.configuration(System.getenv(), PostgresDatabase.Purpose.MIGRATION);
             try (Connection c = PostgresDatabase.open(config)) { validateDestination(c); }
             plan(config).migrate();
-            System.out.println("Verified PostgreSQL sobol_dev/sobol reference-data migration. No historical records imported.");
+            System.out.println("Verified PostgreSQL sobol_dev/sobol migrations through V2. No historical records imported.");
         } catch (Exception failure) {
             throw new IllegalStateException("PostgreSQL migration stopped. Review approvals, TLS, dedicated privileges and target state privately; no automatic reset or repair is permitted.");
         }

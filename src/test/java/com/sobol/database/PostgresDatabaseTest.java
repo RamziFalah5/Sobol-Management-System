@@ -66,7 +66,7 @@ class PostgresDatabaseTest {
         assertTrue(session.statementClosed); assertTrue(session.resultClosed); assertFalse(session.closed);
     }
     @Test void refusesWrongTargetIdentityPrivilegeTransportOrRoleMembershipAndClosesConnection() throws Exception {
-        for (int column : List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)) {
+        for (int column : List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)) {
             var session = new Session(); session.values.put(column, column <= 5 ? "unexpected" : column != 10);
             var config = PostgresDatabase.configuration(env(), PostgresDatabase.Purpose.APPLICATION);
             safe(assertThrows(SQLException.class, () -> PostgresDatabase.open(config, (u, p) -> session.connection())));
@@ -96,6 +96,17 @@ class PostgresDatabaseTest {
         assertThrows(SQLException.class, () -> PostgresDatabase.open(config, (u, p) -> rejected.connection()));
         assertTrue(rejected.closed);
     }
+    @Test void accountAdministrationRequiresItsOwnApprovalAndDedicatedOwnerIdentity() throws Exception {
+        var e = env();
+        assertThrows(SQLException.class, () -> PostgresDatabase.configuration(e, PostgresDatabase.Purpose.ACCOUNT_ADMIN));
+        e.put("SOBOL_PG_ACCOUNT_ADMIN_APPROVED", "sobol_dev/sobol");
+        e.remove("SOBOL_PG_MIGRATION_APPROVED");
+        var config = PostgresDatabase.configuration(e, PostgresDatabase.Purpose.ACCOUNT_ADMIN);
+        var session = new Session(); session.values.put(3, "sobol_migrator"); session.values.put(4, "sobol_migrator"); session.values.put(8, true);
+        assertSame(session.connection(), PostgresDatabase.open(config, (u, p) -> session.connection()));
+        e.put("SOBOL_PG_MIGRATION_USER", "sobol_app");
+        assertThrows(SQLException.class, () -> PostgresDatabase.configuration(e, PostgresDatabase.Purpose.ACCOUNT_ADMIN));
+    }
     private static void safe(SQLException failure) {
         assertNull(failure.getCause()); assertEquals(0, failure.getSuppressed().length);
         assertFalse(failure.getMessage().contains("private" + " synthetic"));
@@ -103,7 +114,7 @@ class PostgresDatabaseTest {
     }
     static class Session {
         final Map<Integer, Object> values = new HashMap<>(Map.of(1, "sobol_dev", 2, "sobol", 3, "sobol_app", 4, "sobol_app", 5, "127.0.0.1", 6, false, 7, false, 8, false, 9, false, 10, true));
-        { values.put(11, false); values.put(12, false); values.put(13, false); }
+        { values.put(11, false); values.put(12, false); values.put(13, false); values.put(14, false); }
         boolean closed, statementClosed, resultClosed, failClose, failMetadata;
         final Connection connection = proxy(Connection.class, (o, m, a) -> switch (m.getName()) {
             case "createStatement" -> proxy(Statement.class, (s, method, args) -> switch (method.getName()) {

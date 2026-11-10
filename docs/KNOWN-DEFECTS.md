@@ -1,17 +1,17 @@
 # Original defects and unavailable functionality
 
-Outstanding original defects are listed below. Verified Phase 3A/4A/4B/4C changes are recorded separately with their verification boundaries.
+Outstanding original defects are listed below. Verified Phase 3A/4A/4B/4C/5A/6A/6B changes are recorded separately with their verification boundaries.
 
 | Area | Original evidence | Impact / verification boundary |
 | --- | --- | --- |
 | Shipment form | AddShipment.fxml lacks rbCash/rbCredit/cbMethod; onSave dereferences cbMethod | Save cannot complete without a separate approved fix. |
-| Global search | System.fxml lacks searchField; onSearchClicked reads it | Null dereference. |
-| Logout | ControllerSystem.logout() is empty | No logout behavior. |
+| Global search | Original System.fxml lacks searchField | Phase 6B makes Search explicitly unavailable without reading/logging input; actual search remains unimplemented. |
+| Logout | Original ControllerSystem.logout() was empty | Phase 6B implements session invalidation, clearing protected content and returning to Signin; tested offline. |
 | Attendance | Driver/Sales attendance initialize all present and save per row; hourly cells accumulate listeners | Existing absence can be overwritten; partial saves/row cross-updates are possible. |
 | Stock concurrency | SalesDAO/ShipmentDAO read quantities without row locks, then set an absolute value | Transaction exists but lost updates/overselling are possible. |
 | Capacity | ProductDAO checks capacity separately from writes; warehouse edits use stale UI deltas | Concurrent writes and aggregate drift are possible. |
 | Warehouse summary | COUNT(*) with LEFT JOIN counts an empty warehouse as one product | Incorrect card value. |
-| Authentication | Unsalted SHA-256, no authorization/session; registration password uses TextField | Recovery only secures the DB configuration boundary, not the complete authentication design. |
+| Authentication | Original unsalted SHA-256, no authorization/session; registration password used TextField | Replaced in Phase 6B with layered PBKDF2 authentication, PasswordField, pending-only registration and protected sessions; live PostgreSQL acceptance pending. |
 | Original history | Embedded database credentials existed in earlier public commits | Rotate/revoke them; history is preserved without force-push or rewriting. |
 | Field administrators | FieldAdministrators.fxml and its controller not found | Keep unavailable; do not fabricate an original implementation. |
 | Settings | Original FXML explicitly static, no controller/events; unused SettingsController prints only | Save/update/theme/account controls are not functional. |
@@ -87,3 +87,11 @@ The owner's new architecture decision supersedes historical-schema compatibility
 Phase 6A master-data contracts now target PostgreSQL. The historical globally unique Customer name is removed across schema, exception contract, form feedback and service/JDBC/desktop/live test expectations; customers with the same name remain separate IDs. Exact non-null Customer email uniqueness and exact Category/Supplier name uniqueness are explicit provisional policies, different from historical MySQL collation. Structured SQLSTATE 23505 + schema/table/constraint replaces vendor-code/message parsing. PostgreSQL matched update counts must equal one after a locked existence read; unchanged updates remain successful. These are offline-verified contracts, not executed SQL-engine results. Live target constraints, driver identities, lock/commit outcomes and cleanup remain unverified.
 
 The transition shell now loads only migrated Category/Supplier/Customer pages. Legacy dashboard/report/sales/import/location/HR/fleet/settings routes show an unavailable state instead of executing legacy initializers and displaying misleading empty/zero data. Category product navigation and Supplier shipment navigation are also explicitly blocked. Original login/session/authorization, binary-double financial calculations, stock/capacity races, attendance policies, reports and legacy file paths remain unmigrated debt. A database guard cannot replace server privilege review: effective TEMP/excess/cross-schema privileges and application ownership are now rejected by planned checks, but actual query/grant compatibility is still unexecuted.
+
+## Phase 6B authentication and shell - implemented, verified offline
+
+Controller1 no longer performs direct SQL or calls the retained, unused PasswordUtil. com.sobol.auth provides bounded versioned PBKDF2, generic login failures, process-local throttling, opt-in pending-Member registration, typed safe JDBC errors and minimal session identity. Session generation prevents a slow authentication from surviving logout. Idle/absolute expiry, persistent status/role/version refresh and same-handle data-connection guards prevent stale forms from acting as a new user. Both ACTIVE roles access the three migrated master-data modules; no finer permissions are claimed.
+
+ControllerSystem requires authentication, displays a functional Home, blocks all unmigrated modules, and implements Logout. Search remains unavailable with explicit feedback. All major business source/FXML is retained. V2 adds no seeded users; owner-only test-classpath tooling separately gates first-admin provisioning and pending-member approval. Normal app account grants exclude role/status insertion and all account updates/deletes. New metadata-guard SQL/grants, V2 constraints and owner transactions require real PostgreSQL acceptance.
+
+Known remaining limitations: desktop-controlled shared DB credentials are not a trusted authorization boundary; local throttling can be bypassed with another process; synchronous legacy UI/CRUD I/O remains; revocation cannot cancel an already-running transaction; no MFA/reset/password change/account-management UI/audit-event persistence. Existing business/inventory/financial/attendance defects remain unchanged and their routes stay disabled. Owner database/TLS preparation and historical credential revocation remain outstanding. See AUTHENTICATION.md, POSTGRESQL-SETUP.md and VERIFICATION.md for exact evidence and gates.

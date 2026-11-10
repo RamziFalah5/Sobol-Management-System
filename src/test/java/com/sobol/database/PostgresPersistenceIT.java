@@ -28,8 +28,8 @@ class PostgresPersistenceIT {
             PostgresMigrations.validateDestination(suiteLock);
             PostgresMigrations.plan(config).validate(); // Read-only migration validation, no migrate call.
             try (Statement p = suiteLock.createStatement(); ResultSet r = p.executeQuery(
-                    "SELECT version, success FROM sobol.flyway_schema_history WHERE type='SQL'")) {
-                if (!r.next() || !"1".equals(r.getString(1)) || !r.getBoolean(2) || r.next()) throw PostgresDatabase.unavailable();
+                    "SELECT version, success FROM sobol.flyway_schema_history WHERE type='SQL' ORDER BY installed_rank")) {
+                if (!r.next() || !"1".equals(r.getString(1)) || !r.getBoolean(2) || !r.next() || !"2".equals(r.getString(1)) || !r.getBoolean(2) || r.next()) throw PostgresDatabase.unavailable();
             }
         } catch (Exception failure) {
             closeLock();
@@ -70,7 +70,7 @@ class PostgresPersistenceIT {
         try (Connection c = connection(); Statement p = c.createStatement(); ResultSet r = p.executeQuery(
                 "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='sobol'")) {
             Set<String> tables = new HashSet<>(); while (r.next()) tables.add(r.getString(1));
-            assertEquals(Set.of("category", "supplier", "customer", "flyway_schema_history"), tables);
+            assertEquals(Set.of("category", "supplier", "customer", "account", "flyway_schema_history"), tables);
         } catch (SQLException failure) { throw PostgresDatabase.unavailable(); }
     }
     @Test void categoryCreateReadUpdateAndUnchangedValuesUseTheRealRepository() {

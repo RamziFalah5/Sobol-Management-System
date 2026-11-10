@@ -20,11 +20,12 @@ class PostgresTransitionDesktopTest {
         var result = new CompletableFuture<Void>();
         Platform.runLater(() -> {
             try {
-                var loader = new FXMLLoader(getClass().getResource("/application/System.fxml"));
+                var auth = new AuthUiTestSupport(false); auth.login(1);
+                var loader = auth.context.loader("System.fxml");
                 Parent root = loader.load(); new Scene(root);
                 StackPane content = (StackPane) loader.getNamespace().get("contentArea");
-                assertUnavailable(content);
-                for (String id : new String[]{"btnDashboard", "btnSales", "btnImports", "btnBranches", "btnEmployee", "btnVehicles", "btnReports", "btnSettings"}) {
+                assertInstanceOf(javafx.scene.layout.VBox.class, content.getChildren().getFirst());
+                for (String id : new String[]{"btnSales", "btnImports", "btnBranches", "btnEmployee", "btnVehicles", "btnReports", "btnSettings"}) {
                     ToggleButton button = (ToggleButton) loader.getNamespace().get(id);
                     assertNotNull(button, id); button.fire(); assertTrue(button.isSelected()); assertUnavailable(content);
                 }

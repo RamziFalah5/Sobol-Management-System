@@ -8,6 +8,7 @@ import com.sobol.supplier.infrastructure.JdbcSupplierRepository;
 final class SupplierModule {
     private SupplierModule() { }
     static SupplierService service() {
-        return new SupplierService(new JdbcSupplierRepository(PostgresDatabase::get));
+        var access = AuthModule.protect(PostgresDatabase::get);
+        return new SupplierService(new JdbcSupplierRepository(access::open));
     }
 }

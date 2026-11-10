@@ -278,3 +278,94 @@ Paths are relative to the repository root. R100 means a byte-identical rename to
 | M | `src/test/java/com/sobol/supplier/infrastructure/JdbcSupplierRepositoryTest.java` |
 | A | `src/test/resources/db/postgresql/V1__reference_data.sql` |
 | M | `tools/review_staged.py` |
+
+## Phase 6B - PostgreSQL authentication and secure shell, 2026-11-10
+
+Started on clean main at 011c733eabca3d17af733897c6a465bb8faa50fa, matching origin/main. Fresh baseline clean verify passed 145 tests. The final implementation adds 10 production Java files (9 layered auth types + AuthModule) and preserves the existing business architecture. No historical project/private backup/original database was modified or opened for credentials/data. No PostgreSQL connection, provisioning, migration, live IT or cleanup was executed.
+
+| Check | Actual result and boundary |
+| --- | --- |
+| `.\mvnw.cmd -B -ntp clean verify` | PASS: **187 tests**, 0 failures/errors/skips; 128 production and 35 test/tooling sources compiled. Live profiles were not enabled. |
+| `.\mvnw.cmd -B -ntp -Pdesktop-smoke verify` | PASS: **251 tests**, 0 failures/errors/skips, including all existing graphical regression suites and 10 new auth FXML/event tests. |
+| AuthenticationServiceTest | 11: normalized success, generic wrong/unknown/pending/disabled failures, old identity clearing, closed/pending-only/duplicate registration, bounds/Unicode policy, storage failure, state refresh after KDF, logout race and process/global throttle expiry. |
+| SessionManagerTest | 5: anonymous rejection, initialization/logout, re-login/stale handles, deleted/disabled/role/version revocation, idle/absolute expiry, outage fail-closed and minimal redacted identity. |
+| Pbkdf2PasswordHasherTest | 3: fresh real salts/verification, wrong/significant-space/Unicode passwords, rejected legacy/malformed/unknown versions and unbounded work parameters. No actual hash values are logged or stored in fixtures. |
+| JdbcAccountRepositoryTest | 10 scripted JDBC tests: parameter/column binding, PENDING MEMBER RETURNING checks, exact write-only constraint classification, resource closure, rollback/commit/close failures and response-loss uncertainty. No SQL engine is emulated. |
+| AuthArchitectureTest | 3: inward layers, no seed/immutable published V1, no UI SQL/legacy hashing and explicit protected composition. jdeps with target/classes on classpath confirms only JDK/domain imports in domain/application; JDBC is infrastructure only. |
+| AuthenticatedAccessTest | 2: anonymous production no-arg master-data controller construction rejected; retained data connection suppliers cannot cross logout/re-login/disable boundaries. Connection source not called on denial. |
+| AuthenticationDesktopTest | 10 real-FXML tests: success and cleared password; wrong/disabled/outage deny; direct FXML/legacy method deny; logout clears content/selection and re-login identity; disable/expiry navigation deny; closed/opt-in pending registration; queued request UI responsiveness and closed-window result; stale callback cannot invalidate newer identity; polling does not extend idle life; all three actual master-data screens reachable with synthetic service ports. |
+| Owner provisioning | 6 PostgresAccountsTest methods check serialized first-admin decision, existing-admin rejection, ID-bound pending-only approval/security-version increment, last-active-admin disable predicate, affected-row/close/commit/rollback failure and generic outcomes. 1 additional PostgresDatabaseTest verifies the independent owner approval/identity gate. Actual terminal prompts/SQL execution remain unverified. |
+| Migration/configuration | Flyway target 2, exact complete V1/V2 destination sets, no partial/unknown object repair, digest allowlist, application/account-admin identity gates and metadata-resource sanitization checked offline. New privilege-query SQL still needs PostgreSQL acceptance. |
+| Existing slices | All Category/Supplier/Customer service/JDBC/desktop tests remain and pass. Only their composition source assertions were strengthened for AuthModule.protect and same-handle suppliers. No business assertion was removed/weakened or test skipped. |
+| Legacy isolation | All 53 FXML static contracts/resources resolve as before; PostgresTransitionDesktopTest now supplies an explicitly synthetic authenticated context and retains unavailable assertions for every unmigrated menu. Original no-auth shell load assumption is deliberately replaced by rejection tests. |
+| Live PostgreSQL | **19 methods compiled, zero executed**: 13 existing master-data + 6 new PostgresAuthenticationIT. Normal offline tests force SOBOL_PG_ENABLED=false and SOBOL_DB_ENABLED=false. No full login-to-database acceptance is claimed. |
+
+Existing JavaFX unnamed-module warning and the deliberate synthetic warehouse-failure diagnostic remain expected output from unchanged earlier tests; neither is a database error. The first 175/238/184/247 intermediate passes preceded the final Unicode, lifecycle and owner-tool contracts and do not replace the final counts above.
+
+V1 and historical sanitized MySQL schema were compared byte-for-byte (Git-normalized text) with published Phase 6A. SalesDAO, ShipmentDAO and ProductDAO are unchanged. PasswordUtil remains unused historical source, with no active caller; old SHA-256 credentials are not accepted. No test data/hash, owner credential, environment dump or personal record was added. Setup/account commands are future owner-run instructions only. Historical credential revocation remains unconfirmed.
+
+Full staged snapshot security review: tools/review_staged.py PASS on all 265 indexed files; git diff --cached --check passes. Manual review confirms only the 55 inventoried paths, no secrets, user data, generated artifacts or unauthorized SQL.
+
+Client-side session checks, local throttling and a shared application DB role are not a trusted enterprise authorization boundary. Session refresh does not cancel an already-running business transaction; existing navigation/CRUD still includes synchronous I/O. Password reset/change/MFA and centralized audit records remain unavailable. See AUTHENTICATION.md and POSTGRESQL-SETUP.md for exact policies, grants, future terminal command and pending acceptance matrix.
+
+### Phase 6B exact file inventory
+
+A = added; M = modified. No files removed. This is the complete phase scope, not a list of proposed future files.
+
+| Change | Repository-relative path |
+| --- | --- |
+| M | `.gitignore` |
+| M | `AGENTS.md` |
+| M | `README.md` |
+| M | `config/development.env.example` |
+| M | `docs/ARCHITECTURE.md` |
+| A | `docs/AUTHENTICATION.md` |
+| M | `docs/KNOWN-DEFECTS.md` |
+| M | `docs/POSTGRESQL-MODEL.md` |
+| M | `docs/POSTGRESQL-SETUP.md` |
+| M | `docs/VERIFICATION.md` |
+| M | `docs/postgresql-migrations.json` |
+| M | `pom.xml` |
+| A | `src/main/java/application/AuthModule.java` |
+| M | `src/main/java/application/CategoryModule.java` |
+| M | `src/main/java/application/Controller1.java` |
+| M | `src/main/java/application/ControllerSystem.java` |
+| M | `src/main/java/application/CustomerModule.java` |
+| M | `src/main/java/application/Main.java` |
+| M | `src/main/java/application/SupplierModule.java` |
+| A | `src/main/java/com/sobol/auth/application/AccountRepository.java` |
+| A | `src/main/java/com/sobol/auth/application/AuthenticationException.java` |
+| A | `src/main/java/com/sobol/auth/application/AuthenticationService.java` |
+| A | `src/main/java/com/sobol/auth/application/LoginThrottle.java` |
+| A | `src/main/java/com/sobol/auth/application/PasswordHasher.java` |
+| A | `src/main/java/com/sobol/auth/application/SessionManager.java` |
+| A | `src/main/java/com/sobol/auth/domain/Account.java` |
+| A | `src/main/java/com/sobol/auth/infrastructure/JdbcAccountRepository.java` |
+| A | `src/main/java/com/sobol/auth/infrastructure/Pbkdf2PasswordHasher.java` |
+| M | `src/main/java/com/sobol/database/PostgresDatabase.java` |
+| M | `src/main/resources/application/Main1.fxml` |
+| M | `src/main/resources/application/Signin.fxml` |
+| M | `src/main/resources/application/System.fxml` |
+| A | `src/test/java/application/AuthUiTestSupport.java` |
+| A | `src/test/java/application/AuthenticatedAccessTest.java` |
+| A | `src/test/java/application/AuthenticationDesktopTest.java` |
+| M | `src/test/java/application/PostgresTransitionContractTest.java` |
+| M | `src/test/java/application/PostgresTransitionDesktopTest.java` |
+| A | `src/test/java/com/sobol/auth/AuthArchitectureTest.java` |
+| A | `src/test/java/com/sobol/auth/application/AuthTestSupport.java` |
+| A | `src/test/java/com/sobol/auth/application/AuthenticationServiceTest.java` |
+| A | `src/test/java/com/sobol/auth/application/SessionManagerTest.java` |
+| A | `src/test/java/com/sobol/auth/infrastructure/JdbcAccountRepositoryTest.java` |
+| A | `src/test/java/com/sobol/auth/infrastructure/Pbkdf2PasswordHasherTest.java` |
+| M | `src/test/java/com/sobol/category/CategoryArchitectureTest.java` |
+| M | `src/test/java/com/sobol/customer/CustomerArchitectureTest.java` |
+| A | `src/test/java/com/sobol/database/PostgresAccounts.java` |
+| A | `src/test/java/com/sobol/database/PostgresAccountsTest.java` |
+| A | `src/test/java/com/sobol/database/PostgresAuthenticationIT.java` |
+| M | `src/test/java/com/sobol/database/PostgresDatabaseTest.java` |
+| M | `src/test/java/com/sobol/database/PostgresMigrationPlanTest.java` |
+| M | `src/test/java/com/sobol/database/PostgresMigrations.java` |
+| M | `src/test/java/com/sobol/database/PostgresPersistenceIT.java` |
+| M | `src/test/java/com/sobol/supplier/SupplierArchitectureTest.java` |
+| A | `src/test/resources/db/postgresql/V2__accounts.sql` |
+| M | `tools/review_staged.py` |

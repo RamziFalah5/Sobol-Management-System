@@ -8,7 +8,7 @@ import java.util.*;
 /** Explicit, local-only development boundary. Never creates databases, schemas or accounts. */
 public final class PostgresDatabase {
     private PostgresDatabase() { }
-    enum Purpose { APPLICATION, MIGRATION, INTEGRATION }
+    enum Purpose { APPLICATION, MIGRATION, INTEGRATION, ACCOUNT_ADMIN }
 
     public static Connection get() throws SQLException {
         return open(configuration(System.getenv(), Purpose.APPLICATION));
@@ -35,8 +35,9 @@ public final class PostgresDatabase {
         if (purpose == Purpose.INTEGRATION && !"sobol_dev/sobol".equals(env.get("SOBOL_PG_IT_APPROVED")))
             throw unavailable();
         String user = appUser, secret = appSecret;
-        if (purpose == Purpose.MIGRATION) {
-            if (!"sobol_dev/sobol".equals(env.get("SOBOL_PG_MIGRATION_APPROVED"))) throw unavailable();
+        if (purpose == Purpose.MIGRATION || purpose == Purpose.ACCOUNT_ADMIN) {
+            String approval = purpose == Purpose.MIGRATION ? "SOBOL_PG_MIGRATION_APPROVED" : "SOBOL_PG_ACCOUNT_ADMIN_APPROVED";
+            if (!"sobol_dev/sobol".equals(env.get(approval))) throw unavailable();
             user = required(env, "SOBOL_PG_MIGRATION_USER");
             secret = required(env, "SOBOL_PG_MIGRATION_PASSWORD");
             if (!"sobol_migrator".equals(user) || secret.equals(appSecret)) throw unavailable();
@@ -104,7 +105,15 @@ public final class PostgresDatabase {
                                  THEN has_table_privilege(current_user, o.oid, 'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER') ELSE false END)
                                OR (current_user='sobol_app' AND n.nspname='sobol' AND CASE WHEN o.relkind IN ('r','p','v','m','f')
                                  THEN has_table_privilege(current_user, o.oid, 'TRUNCATE,REFERENCES,TRIGGER') ELSE false END))
-                       )
+                       ),
+                       CASE WHEN current_user='sobol_app' AND to_regclass('sobol.account') IS NOT NULL THEN
+                           has_table_privilege(current_user, 'sobol.account', 'UPDATE,DELETE')
+                           OR EXISTS (SELECT 1 FROM pg_catalog.pg_attribute a
+                               WHERE a.attrelid=to_regclass('sobol.account') AND a.attnum>0 AND NOT a.attisdropped
+                               AND (has_column_privilege(current_user, a.attrelid, a.attnum, 'UPDATE')
+                                 OR (a.attname NOT IN ('login','display_name','phone','password_hash')
+                                   AND has_column_privilege(current_user, a.attrelid, a.attnum, 'INSERT'))))
+                           ELSE false END
                 FROM pg_catalog.pg_roles r WHERE r.rolname = current_user
                 """;
         try (Statement p = c.createStatement(); ResultSet r = p.executeQuery(sql)) {
@@ -112,8 +121,8 @@ public final class PostgresDatabase {
                     || !config.user.equals(r.getString(3)) || !config.user.equals(r.getString(4))
                     || !"127.0.0.1/32".equals(r.getString(5)) && !"127.0.0.1".equals(r.getString(5))
                     || r.getBoolean(6) || r.getBoolean(7) || r.getBoolean(9) || !r.getBoolean(10)
-                    || r.getBoolean(11) || r.getBoolean(12) || r.getBoolean(13)
-                    || r.getBoolean(8) != (config.purpose == Purpose.MIGRATION) || r.next()) throw unavailable();
+                    || r.getBoolean(11) || r.getBoolean(12) || r.getBoolean(13) || r.getBoolean(14)
+                    || r.getBoolean(8) != (config.purpose == Purpose.MIGRATION || config.purpose == Purpose.ACCOUNT_ADMIN) || r.next()) throw unavailable();
         }
     }
 

@@ -2,7 +2,7 @@
 
 ## Authority and implementation boundary
 
-The owner's Phase 6A decision makes PostgreSQL the target. The historical 14-table MySQL schema is evidence of former workflows, not a business specification. This document is the design reference for the transition. Only the three master-data tables in V1 are implemented; their server acceptance remains pending an approved PostgreSQL environment. All other entities below are deferred design, not executable migrations or delivered functionality.
+The owner's Phase 6A decision makes PostgreSQL the target. The historical 14-table MySQL schema is evidence of former workflows, not a business specification. This document is the design reference for the transition. The three master-data tables in V1 and account model in V2 are implemented; their server acceptance remains pending an approved PostgreSQL environment. Account schema/policies and the current authentication diagram are specified in [AUTHENTICATION.md](AUTHENTICATION.md). All other business entities below are deferred design, not executable migrations or delivered functionality.
 
 One Maven/JavaFX application remains. No backend, ORM, web frontend or DI framework is added. PostgreSQL JDBC 42.7.14 is production infrastructure. Flyway 13.12.1 core/PostgreSQL support is test-scoped tooling, not a startup action. Version availability was checked against Maven Central and official release notes. Target verification is PostgreSQL 16–18; no installed server version is assumed or tested here.
 
@@ -116,3 +116,15 @@ Every closure requires updated models/services/repositories/queries/controllers/
 - [pgJDBC TLS](https://jdbc.postgresql.org/documentation/ssl/): verify-full validates trust and server identity; require alone encrypts without identity validation.
 - [pgJDBC ServerErrorMessage](https://jdbc.postgresql.org/documentation/publicapi/org/postgresql/util/ServerErrorMessage.html): structured schema/table/constraint fields.
 - [pgJDBC 42.7.14 release](https://jdbc.postgresql.org/changelogs/2026-10-07-42.7.14-release/) and [Flyway release notes](https://documentation.red-gate.com/fd/release-notes-for-flyway-engine-179732572.html): pinned dependency evidence, not server acceptance.
+
+## Phase 6B account implementation
+
+V2 adds independent sobol.account with bigint identity, normalized unique login, bounded display/contact/hash fields, PENDING/ACTIVE/DISABLED status, MEMBER/ADMIN role, positive auth_version and timestamptz timestamps. See AUTHENTICATION.md for the exact column/constraint matrix. It has no relationship to historical user_database and no relationship to Customer/Employee until a justified future design exists. V1 remains byte-for-byte unchanged; target=2, no seeds or administrator defaults. Account integrity and least-privilege SQL remain NOT EXECUTED against PostgreSQL.
+
+```text
+sobol.category    sobol.supplier    sobol.customer    sobol.account
+     (V1)             (V1)             (V1)             (V2)
+Independent identity tables; no speculative FK between business records and login identity.
+```
+
+The historical authentication assessment row above is original evidence. Current login/register/logout use the new layered module and authenticated shell, with no legacy SQL execution. Future full RBAC, password lifecycle/MFA and a trusted server boundary remain undecided/deferred.

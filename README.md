@@ -17,7 +17,7 @@ Recovered JavaFX desktop application for inventory, sales, purchasing, branches,
 
 On Linux/macOS use `./mvnw`. The JAR is a thin artifact: use the Maven JavaFX launcher with resolved dependencies, not `java -jar`.
 
-Database access is **disabled by default**. The sign-in window opens offline. PostgreSQL transition is partial: authentication, inventory, sales, procurement, HR, fleet, dashboard and reporting remain legacy and unavailable. There is no new login bypass and no claim of full production startup/CRUD readiness.
+Database access is **disabled by default**. The sign-in window opens offline. PostgreSQL authentication, sessions and a protected Home are implemented and tested offline; login-to-database acceptance is pending. Only Category, Supplier and Customer are enabled after authentication. Inventory, sales, procurement, HR, fleet and reporting remain unavailable. There is no new login bypass and no claim of full production startup/CRUD readiness.
 
 ## Development database boundary
 
@@ -33,6 +33,8 @@ Existing GitHub history previously contained embedded database credentials. Remo
 - [Implemented Category, Supplier and Customer architecture and module boundaries](docs/ARCHITECTURE.md)
 - [Original defects and unavailable features](docs/KNOWN-DEFECTS.md)
 - [Engineering/Git policy](AGENTS.md)
+
+[Authentication, account policy and session boundary](docs/AUTHENTICATION.md) documents Phase 6B, including explicit owner provisioning and the limits of client-side authorization. Registration is closed by default and never grants an active/admin account.
 
 Phase 6A migrates the three layered persistence slices to PostgreSQL, permits repeated Customer names and blocks navigation into unmigrated business workflows. Live PostgreSQL verification is pending an approved environment; see the target model and measured verification records. No legacy financial/inventory/HR workflow has been migrated.
 

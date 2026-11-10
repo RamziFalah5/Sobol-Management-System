@@ -13,13 +13,20 @@ class PostgresMigrationPlanTest {
                 java.util.Set.of("routine:unknown"), java.util.Set.of("trigger:unknown"), java.util.Set.of("unknown_seq")))
             assertThrows(java.sql.SQLException.class, () -> PostgresMigrations.validateObjectNames(objects));
     }
+    @Test void completeV2DestinationIsAcceptedButPartialAccountObjectsAreRejected() throws Exception {
+        var objects = new java.util.HashSet<>(java.util.Set.of("category", "supplier", "customer", "flyway_schema_history",
+                "category_category_id_seq", "supplier_supplier_id_seq", "customer_customer_id_seq"));
+        objects.add("account"); assertThrows(java.sql.SQLException.class, () -> PostgresMigrations.validateObjectNames(objects));
+        objects.add("account_account_id_seq"); PostgresMigrations.validateObjectNames(objects);
+        objects.add("unexpected"); assertThrows(java.sql.SQLException.class, () -> PostgresMigrations.validateObjectNames(objects));
+    }
     @Test void flywayPlanIsExplicitCreationDisabledAndHasNoAutomaticRepairOrClean() throws Exception {
         var config = PostgresDatabase.configuration(PostgresDatabaseTest.env(), PostgresDatabase.Purpose.MIGRATION);
         var flyway = PostgresMigrations.plan(config).getConfiguration(); // Load configuration only; no SQL/DDL.
         assertTrue(flyway.isCleanDisabled()); assertFalse(flyway.isCreateSchemas());
         assertFalse(flyway.isBaselineOnMigrate()); assertFalse(flyway.isOutOfOrder());
         assertEquals("sobol", flyway.getDefaultSchema()); assertArrayEquals(new String[]{"sobol"}, flyway.getSchemas());
-        assertEquals("1", flyway.getTarget().toString()); assertEquals("classpath:db/postgresql", flyway.getLocations()[0].getDescriptor());
+        assertEquals("2", flyway.getTarget().toString()); assertEquals("classpath:db/postgresql", flyway.getLocations()[0].getDescriptor());
     }
     @Test void historicalDdlAndRunnerAreOutsideExecutableResourcesAndMySqlProfilesAreRetired() throws Exception {
         assertNull(getClass().getResource("/db/migration/V001__historical_schema.sql"));

@@ -26,7 +26,8 @@ class SupplierArchitectureTest {
             assertTrue(source.contains("SupplierService")); assertTrue(source.contains("SupplierModule.service()"));
         }
         String root = Files.readString(Path.of("src/main/java/application/SupplierModule.java"));
-        assertTrue(root.contains("new SupplierService(new JdbcSupplierRepository(PostgresDatabase::get))"));
+        assertTrue(root.contains("AuthModule.protect(PostgresDatabase::get)"));
+        assertTrue(root.contains("new SupplierService(new JdbcSupplierRepository(access::open))"));
         String jdbc = Files.readString(Path.of("src/main/java/com/sobol/supplier/infrastructure/JdbcSupplierRepository.java"));
         assertFalse(jdbc.contains("javafx.")); assertFalse(jdbc.contains("import application."));
         assertFalse(Files.exists(Path.of("src/main/java/application/SupplierDAO.java")));

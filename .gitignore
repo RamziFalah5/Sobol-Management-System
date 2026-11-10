@@ -28,6 +28,7 @@ config/*local*
 *.sql
 !/src/test/resources/db/postgresql/
 !/src/test/resources/db/postgresql/V1__reference_data.sql
+!/src/test/resources/db/postgresql/V2__accounts.sql
 *.sql.gz
 *.dump
 *.zip

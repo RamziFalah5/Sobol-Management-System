@@ -26,7 +26,7 @@
 			<Label styleClass="brand" text="INVENTORY SUITE" />
 			<Separator styleClass="sidebar-sep" />
 
-			<ToggleButton fx:id="btnDashboard" graphicTextGap="10" onAction="#switchToDashboard" selected="true" styleClass="nav-btn" text="Dashboard">
+			<ToggleButton fx:id="btnDashboard" graphicTextGap="10" onAction="#switchToDashboard" selected="true" styleClass="nav-btn" text="Home">
 				<graphic>
 					<ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
 						<Image url="@icons/Dashboard.png" />
@@ -119,7 +119,7 @@
 				</graphic>
 			</ToggleButton>
 
-			<Button onAction="#logout" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 14, 0.25, 0, 6);" styleClass="logout-btn" text="Logout" />
+			<Button fx:id="logoutButton" onAction="#logout" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 14, 0.25, 0, 6);" styleClass="logout-btn" text="Logout" />
 		</VBox>
 	</left>
 

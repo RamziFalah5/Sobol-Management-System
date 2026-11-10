@@ -23,7 +23,8 @@ class CustomerArchitectureTest {
         }
         assertFalse(Files.exists(Path.of("src/main/java/application/CustomerDAO.java")));
         String root = Files.readString(Path.of("src/main/java/application/CustomerModule.java"));
-        assertTrue(root.contains("new CustomerService(new JdbcCustomerRepository(PostgresDatabase::get))"));
+        assertTrue(root.contains("AuthModule.protect(PostgresDatabase::get)"));
+        assertTrue(root.contains("new CustomerService(new JdbcCustomerRepository(access::open))"));
     }
     @Test void infrastructureImplementsThePortWithoutLegacyPresentation() throws Exception {
         String source = Files.readString(Path.of("src/main/java/com/sobol/customer/infrastructure/JdbcCustomerRepository.java"));
